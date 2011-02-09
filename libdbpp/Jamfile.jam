@@ -1,0 +1,14 @@
+alias glibmm : : : :
+	<cflags>"`pkg-config --cflags glibmm-2.4`"
+	<linkflags>"`pkg-config --libs glibmm-2.4`"
+	;
+
+lib dbpp :
+	[ glob *.cpp ] :
+	<cflags>-fPIC
+	<library>glibmm 
+	: :
+	<include>.
+	<library>../libmisc//misc
+	<library>glibmm 
+	;
