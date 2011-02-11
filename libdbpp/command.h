@@ -26,8 +26,7 @@ namespace DB {
 
 			virtual void	bindNull(unsigned int i) = 0;
 
-		protected:
-			std::string sql;
+			const std::string sql;
 	};
 }
 
