@@ -20,6 +20,7 @@ namespace DB {
 		public:
 			virtual ~Connection();
 
+			virtual void	finish() const = 0;
 			virtual int		beginTx() const = 0;
 			virtual int		commitTx() const = 0;
 			virtual int		rollbackTx() const = 0;
