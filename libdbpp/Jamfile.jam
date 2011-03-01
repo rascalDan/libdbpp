@@ -9,6 +9,5 @@ lib dbpp :
 	<library>glibmm 
 	: :
 	<include>.
-	<library>../libmisc//misc
 	<library>glibmm 
 	;
