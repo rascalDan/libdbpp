@@ -32,6 +32,10 @@ namespace DB {
 			virtual SelectCommand * newSelectCommand(const std::string & sql) const = 0;
 			virtual ModifyCommand * newModifyCommand(const std::string & sql) const = 0;
 
+			virtual void beginBulkUpload(const char *, const char *) const = 0;
+			virtual void endBulkUpload(const char *) const = 0;
+			virtual size_t bulkUploadData(const char *, size_t) const = 0;
+
 		private:
 	};
 }
