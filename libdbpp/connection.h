@@ -25,10 +25,14 @@ namespace DB {
 			virtual int		commitTx() const = 0;
 			virtual int		rollbackTx() const = 0;
 			virtual bool	inTx() const = 0;
+			virtual void	savepoint(const std::string &) const;
+			virtual void	rollbackToSavepoint(const std::string &) const;
+			virtual void	releaseSavepoint(const std::string &) const;
 			virtual void	ping() const = 0;
 			virtual BulkDeleteStyle bulkDeleteStyle() const = 0;
 			virtual BulkUpdateStyle bulkUpdateStyle() const = 0;
 
+			virtual void execute(const std::string & sql) const;
 			virtual SelectCommand * newSelectCommand(const std::string & sql) const = 0;
 			virtual ModifyCommand * newModifyCommand(const std::string & sql) const = 0;
 
