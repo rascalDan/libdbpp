@@ -2,6 +2,7 @@ alias glibmm : : : :
 	<cflags>"`pkg-config --cflags glibmm-2.4`"
 	<linkflags>"`pkg-config --libs glibmm-2.4`"
 	;
+lib boost_date_time : : <name>boost_date_time ;
 
 lib dbpp :
 	[ glob *.cpp ] :
@@ -10,4 +11,5 @@ lib dbpp :
 	: :
 	<include>.
 	<library>glibmm 
+	<library>boost_date_time
 	;

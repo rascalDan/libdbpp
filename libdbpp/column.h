@@ -2,8 +2,7 @@
 #define DB_COLUMN_H
 
 #include <glibmm/ustring.h>
-#include <vector>
-#include <stdlib.h>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
 
 namespace DB {
 	class HandleField {
@@ -12,7 +11,8 @@ namespace DB {
 			virtual void string(const char *, size_t len) = 0;
 			virtual void integer(int64_t) = 0;
 			virtual void floatingpoint(double) = 0;
-			virtual void timestamp(const struct tm &) = 0;
+			virtual void interval(const boost::posix_time::time_duration &) = 0;
+			virtual void timestamp(const boost::posix_time::ptime &) = 0;
 	};
 	class Command;
 	class Column {

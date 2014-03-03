@@ -2,6 +2,7 @@
 #define DB_COMMAND_H
 
 #include <glibmm/ustring.h>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
 
 namespace DB {
 	class Command {
@@ -21,8 +22,8 @@ namespace DB {
 
 			virtual void	bindParamS(unsigned int i, const Glib::ustring &) = 0;
 
-			virtual void	bindParamT(unsigned int i, const struct tm *) = 0;
-			virtual void	bindParamT(unsigned int i, time_t) = 0;
+			virtual void	bindParamT(unsigned int i, const boost::posix_time::time_duration &) = 0;
+			virtual void	bindParamT(unsigned int i, const boost::posix_time::ptime &) = 0;
 
 			virtual void	bindNull(unsigned int i) = 0;
 
