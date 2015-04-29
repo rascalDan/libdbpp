@@ -3,6 +3,7 @@
 
 #include <glibmm/ustring.h>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace DB {
 	class HandleField {
@@ -27,6 +28,7 @@ namespace DB {
 			const unsigned int		colNo;
 			const Glib::ustring		name;
 	};
+	typedef boost::shared_ptr<Column> ColumnPtr;
 }
 
 #endif
