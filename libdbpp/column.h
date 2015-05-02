@@ -11,6 +11,7 @@ namespace DB {
 			virtual void null() = 0;
 			virtual void string(const char *, size_t len) = 0;
 			virtual void integer(int64_t) = 0;
+			virtual void boolean(bool) = 0;
 			virtual void floatingpoint(double) = 0;
 			virtual void interval(const boost::posix_time::time_duration &) = 0;
 			virtual void timestamp(const boost::posix_time::ptime &) = 0;

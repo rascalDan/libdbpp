@@ -17,6 +17,8 @@ namespace DB {
 			virtual void	bindParamI(unsigned int i, unsigned long int val) = 0;
 			virtual void	bindParamI(unsigned int i, unsigned long long int val) = 0;
 
+			virtual void	bindParamB(unsigned int i, bool val) = 0;
+
 			virtual void	bindParamF(unsigned int i, double val) = 0;
 			virtual void	bindParamF(unsigned int i, float val) = 0;
 
