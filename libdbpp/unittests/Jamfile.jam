@@ -1,0 +1,20 @@
+import testing ;
+
+path-constant me : . ;
+
+lib boost_utf : : <name>boost_unit_test_framework ;
+lib boost_filesystem ;
+lib boost_system ;
+
+run
+	testConnection.cpp
+	: : :
+	<define>ROOT=\"$(me)\"
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//dbppcore
+	<library>..//adhocutil
+	<library>boost_utf
+	:
+	testConnection
+	;
+

@@ -16,3 +16,6 @@ lib dbppcore :
 	<library>glibmm
 	<library>boost_date_time
 	;
+
+build-project unittests ;
+
