@@ -3,13 +3,16 @@ alias glibmm : : : :
 	<linkflags>"`pkg-config --libs glibmm-2.4`"
 	;
 lib boost_date_time : : <name>boost_date_time ;
+lib adhocutil : : : : <include>/usr/include/adhocutil ;
 
 lib dbpp :
 	[ glob *.cpp ] :
-	<cflags>-fPIC
-	<library>glibmm 
+	<library>glibmm
+	<library>adhocutil
+	<cflags>-fvisibility=hidden
+	<variant>release:<cflags>-flto
 	: :
 	<include>.
-	<library>glibmm 
+	<library>glibmm
 	<library>boost_date_time
 	;

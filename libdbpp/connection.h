@@ -2,6 +2,7 @@
 #define CONNECTION_H
 
 #include <string>
+#include <visibility.h>
 
 namespace DB {
 	class SelectCommand;
@@ -16,7 +17,7 @@ namespace DB {
 		BulkUpdateUsingFromSrc,
 		BulkUpdateUsingJoin,
 	};
-	class Connection {
+	class DLL_PUBLIC Connection {
 		public:
 			virtual ~Connection();
 

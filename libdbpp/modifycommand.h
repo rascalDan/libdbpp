@@ -2,9 +2,10 @@
 #define DB_MODIFYCOMMAND_H
 
 #include "command.h"
+#include <visibility.h>
 
 namespace DB {
-	class ModifyCommand : public virtual Command {
+	class DLL_PUBLIC ModifyCommand : public virtual Command {
 		public:
 			ModifyCommand(const std::string & sql);
 			~ModifyCommand();

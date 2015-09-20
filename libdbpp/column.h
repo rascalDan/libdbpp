@@ -4,9 +4,10 @@
 #include <glibmm/ustring.h>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/shared_ptr.hpp>
+#include <visibility.h>
 
 namespace DB {
-	class HandleField {
+	class DLL_PUBLIC HandleField {
 		public:
 			virtual void null() = 0;
 			virtual void string(const char *, size_t len) = 0;
@@ -17,7 +18,7 @@ namespace DB {
 			virtual void timestamp(const boost::posix_time::ptime &) = 0;
 	};
 	class Command;
-	class Column {
+	class DLL_PUBLIC Column {
 		public:
 			Column(const Glib::ustring &, unsigned int);
 			virtual ~Column() = 0;

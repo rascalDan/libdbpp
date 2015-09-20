@@ -3,9 +3,10 @@
 
 #include <glibmm/ustring.h>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <visibility.h>
 
 namespace DB {
-	class Command {
+	class DLL_PUBLIC Command {
 		public:
 			Command(const std::string & sql);
 			virtual ~Command() = 0;

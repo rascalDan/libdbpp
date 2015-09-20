@@ -3,10 +3,11 @@
 
 #include <stdlib.h>
 #include <exception>
+#include <visibility.h>
 
 namespace DB {
-	class Error : public virtual std::exception { };
-	class ConnectionError : public Error {
+	class DLL_PUBLIC Error : public virtual std::exception { };
+	class DLL_PUBLIC ConnectionError : public Error {
 		public:
 			ConnectionError();
 			ConnectionError(time_t);
