@@ -1,5 +1,7 @@
 #include "selectcommand.h"
 #include "error.h"
+#include <boost/multi_index_container.hpp>
+#include <boost/multi_index/ordered_index.hpp>
 
 namespace DB {
 	class ColumnIndexOutOfRange : public Error {
@@ -17,19 +19,21 @@ namespace DB {
 };
 
 DB::SelectCommand::SelectCommand(const std::string & sql) :
-	DB::Command(sql)
+	DB::Command(sql),
+	columns(new Columns)
 {
 }
 
 DB::SelectCommand::~SelectCommand()
 {
+	delete columns;
 }
 
 const DB::Column&
 DB::SelectCommand::operator[](unsigned int n) const
 {
-	if (n < columns.size()) {
-		return **columns.get<0>().find(n);
+	if (n < columns->size()) {
+		return **columns->get<0>().find(n);
 	}
 	throw ColumnIndexOutOfRange(n);
 }
@@ -38,8 +42,8 @@ const DB::Column&
 DB::SelectCommand::operator[](const Glib::ustring & n) const
 {
 	typedef Columns::nth_index<1>::type CbyName;
-	CbyName::iterator i = columns.get<1>().find(n);
-	if (i != columns.get<1>().end()) {
+	CbyName::iterator i = columns->get<1>().find(n);
+	if (i != columns->get<1>().end()) {
 		return **i;
 	}
 	throw ColumnDoesNotExist(n);
@@ -54,6 +58,12 @@ DB::SelectCommand::getOrdinal(const Glib::ustring & n) const
 unsigned int
 DB::SelectCommand::columnCount() const
 {
-	return columns.size();
+	return columns->size();
+}
+
+void
+DB::SelectCommand::insertColumn(ColumnPtr col)
+{
+	columns->insert(col);
 }
 
