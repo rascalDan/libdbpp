@@ -4,6 +4,7 @@
 #include <string>
 #include <factory.h>
 #include <visibility.h>
+#include <boost/filesystem/path.hpp>
 
 namespace DB {
 	class SelectCommand;
@@ -35,6 +36,7 @@ namespace DB {
 			virtual BulkUpdateStyle bulkUpdateStyle() const = 0;
 
 			virtual void execute(const std::string & sql) const;
+			virtual void executeScript(std::istream & f, const boost::filesystem::path & s) const;
 			virtual SelectCommand * newSelectCommand(const std::string & sql) const = 0;
 			virtual ModifyCommand * newModifyCommand(const std::string & sql) const = 0;
 

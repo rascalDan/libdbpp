@@ -1,21 +1,30 @@
 import package ;
+import lex ;
+
 alias glibmm : : : :
 	<cflags>"`pkg-config --cflags glibmm-2.4`"
 	<linkflags>"`pkg-config --libs glibmm-2.4`"
 	;
 lib boost_date_time : : <name>boost_date_time ;
+lib boost_filesystem ;
+lib boost_system ;
 lib adhocutil : : : : <include>/usr/include/adhocutil ;
 
 lib dbppcore :
-	[ glob *.cpp ] :
+	[ glob *.cpp *.ll ] :
 	<library>glibmm
 	<library>adhocutil
+	<library>boost_system
+	<library>boost_filesystem
 	<cflags>-fvisibility=hidden
 	<variant>release:<cflags>-flto
+	<include>.
 	: :
 	<include>.
 	<library>glibmm
 	<library>boost_date_time
+	<library>boost_system
+	<library>boost_filesystem
 	;
 
 build-project unittests ;

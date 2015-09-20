@@ -3,6 +3,9 @@
 
 #include <factory.h>
 #include <connection.h>
+#include <definedDirs.h>
+#include <fstream>
+#include <vector>
 
 class MockDb : public DB::Connection {
 	public:
@@ -20,13 +23,17 @@ class MockDb : public DB::Connection {
 		DB::BulkDeleteStyle bulkDeleteStyle() const { return DB::BulkDeleteUsingUsing; }
 		DB::BulkUpdateStyle bulkUpdateStyle() const { return DB::BulkUpdateUsingJoin; }
 
-		void execute(const std::string &) const {}
+		void execute(const std::string & sql) const {
+			executed.push_back(sql);
+		}
 		DB::SelectCommand * newSelectCommand(const std::string &) const { return nullptr; }
 		DB::ModifyCommand * newModifyCommand(const std::string &) const { return nullptr; }
 
 		void beginBulkUpload(const char *, const char *) const {}
 		void endBulkUpload(const char *) const {}
 		size_t bulkUploadData(const char *, size_t) const {return 0;}
+
+		mutable std::vector<std::string> executed;
 };
 
 FACTORY(MockDb, DB::ConnectionFactory);
@@ -53,5 +60,18 @@ BOOST_AUTO_TEST_CASE( create )
 BOOST_AUTO_TEST_CASE( resolve )
 {
 	BOOST_REQUIRE_THROW(DB::ConnectionFactory::create("otherdb", "doesn't matter"), AdHoc::LoadLibraryException);
+}
+
+BOOST_AUTO_TEST_CASE( parse )
+{
+	auto mock = DB::ConnectionFactory::create("MockDb", "doesn't matter");
+	std::fstream s((rootDir / "parseTest.sql").string());
+	BOOST_REQUIRE(s.good());
+	mock->executeScript(s, rootDir);
+	MockDb * mockdb = dynamic_cast<MockDb *>(mock);
+	BOOST_REQUIRE(mockdb);
+	BOOST_REQUIRE_EQUAL(2, mockdb->executed.size());
+	BOOST_REQUIRE_EQUAL("INSERT INTO name(t, i) VALUES('string', 3)", mockdb->executed[1]);
+	delete mock;
 }
 

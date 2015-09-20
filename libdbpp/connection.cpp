@@ -2,6 +2,7 @@
 #include "modifycommand.h"
 #include <factory.impl.h>
 #include <buffer.h>
+#include <sqlParse.h>
 
 DB::Connection::~Connection()
 {
@@ -19,6 +20,13 @@ DB::Connection::execute(const std::string & sql) const
 		delete cmd;
 		throw;
 	}
+}
+
+void
+DB::Connection::executeScript(std::istream & f, const boost::filesystem::path & s) const
+{
+	DB::SqlParse p(f, s, this);
+	while (p.yylex()) ;
 }
 
 void
