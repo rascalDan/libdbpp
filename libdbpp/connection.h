@@ -2,6 +2,7 @@
 #define CONNECTION_H
 
 #include <string>
+#include <factory.h>
 #include <visibility.h>
 
 namespace DB {
@@ -41,8 +42,11 @@ namespace DB {
 			virtual void endBulkUpload(const char *) const = 0;
 			virtual size_t bulkUploadData(const char *, size_t) const = 0;
 
+			static boost::optional<std::string> resolvePlugin(const std::type_info &, const std::string &);
 		private:
 	};
+
+	typedef AdHoc::Factory<Connection, std::string> ConnectionFactory;
 }
 
 #endif

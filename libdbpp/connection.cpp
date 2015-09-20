@@ -1,5 +1,7 @@
 #include "connection.h"
 #include "modifycommand.h"
+#include <factory.impl.h>
+#include <buffer.h>
 
 DB::Connection::~Connection()
 {
@@ -36,4 +38,13 @@ DB::Connection::releaseSavepoint(const std::string & sp) const
 {
 	execute("RELEASE SAVEPOINT " + sp);
 }
+
+boost::optional<std::string>
+DB::Connection::resolvePlugin(const std::type_info &, const std::string & name)
+{
+	return stringbf("libdbpp-%s.so", name);
+}
+
+INSTANIATEFACTORY(DB::Connection, std::string);
+PLUGINRESOLVER(DB::ConnectionFactory, DB::Connection::resolvePlugin);
 
