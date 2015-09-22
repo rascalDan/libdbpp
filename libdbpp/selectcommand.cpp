@@ -61,9 +61,9 @@ DB::SelectCommand::columnCount() const
 	return columns->size();
 }
 
-void
+DB::ColumnPtr
 DB::SelectCommand::insertColumn(ColumnPtr col)
 {
-	columns->insert(col);
+	return *columns->insert(col).first;
 }
 

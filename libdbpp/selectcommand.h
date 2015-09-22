@@ -21,7 +21,7 @@ namespace DB {
 			const Column & operator[](const Glib::ustring &) const;
 			unsigned int columnCount() const;
 			unsigned int getOrdinal(const Glib::ustring &) const;
-			void insertColumn(ColumnPtr);
+			ColumnPtr insertColumn(ColumnPtr);
 
 			typedef boost::multi_index_container<ColumnPtr, boost::multi_index::indexed_by<
 				boost::multi_index::ordered_unique<boost::multi_index::member<DB::Column, const unsigned int, &DB::Column::colNo>>,
