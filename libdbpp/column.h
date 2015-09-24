@@ -27,6 +27,13 @@ namespace DB {
 			virtual void apply(HandleField &) const = 0;
 			virtual void rebind(Command *, unsigned int) const = 0;
 
+			void operator>>(std::string &) const;
+			void operator>>(bool &) const;
+			void operator>>(int64_t &) const;
+			void operator>>(double &) const;
+			void operator>>(boost::posix_time::time_duration &) const;
+			void operator>>(boost::posix_time::ptime &) const;
+
 			const unsigned int		colNo;
 			const Glib::ustring		name;
 	};
