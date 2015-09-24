@@ -5,10 +5,11 @@
 #include <vector>
 #include <boost/filesystem/path.hpp>
 #include "connection.h"
+#include <visibility.h>
 
 namespace DB {
 
-class MockDatabase {
+class DLL_PUBLIC MockDatabase {
 	public:
 		MockDatabase(const std::string & mockName);
 		virtual ~MockDatabase();
@@ -30,7 +31,7 @@ class MockDatabase {
 		void DropStatusTable(DB::Connection *) const;
 };
 
-class MockServerDatabase : public MockDatabase {
+class DLL_PUBLIC MockServerDatabase : public MockDatabase {
 	public:
 		MockServerDatabase(const std::string & masterdb, const std::string & name, const std::string & type);
 		virtual ~MockServerDatabase();
