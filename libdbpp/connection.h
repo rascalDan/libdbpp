@@ -1,5 +1,5 @@
-#ifndef CONNECTION_H
-#define CONNECTION_H
+#ifndef DB_CONNECTION_H
+#define DB_CONNECTION_H
 
 #include <string>
 #include <factory.h>

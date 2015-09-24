@@ -1,5 +1,5 @@
-#ifndef MOCKDATABASE_H
-#define MOCKDATABASE_H
+#ifndef DB_MOCKDATABASE_H
+#define DB_MOCKDATABASE_H
 
 #include <string>
 #include <vector>
