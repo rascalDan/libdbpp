@@ -9,9 +9,10 @@ lib boost_date_time : : <name>boost_date_time ;
 lib boost_filesystem ;
 lib boost_system ;
 lib adhocutil : : : : <include>/usr/include/adhocutil ;
+lib boost_utf : : <name>boost_unit_test_framework ;
 
 lib dbppcore :
-	[ glob *.cpp *.ll ] :
+	[ glob *.cpp *.ll : test*.cpp ] :
 	<library>glibmm
 	<library>adhocutil
 	<library>boost_system
@@ -27,7 +28,20 @@ lib dbppcore :
 	<library>boost_filesystem
 	;
 
+lib dbpptestcore :
+	[ glob test*.cpp ]
+	:
+	<define>BOOST_TEST_DYN_LINK
+	<library>dbppcore
+	<library>boost_utf
+	<cflags>-fvisibility=hidden
+	<variant>release:<cflags>-flto
+	: :
+	<include>.
+	;
+
 build-project unittests ;
 
-package.install install : <install-source-root>. : : dbppcore : [ glob *.h ] ;
+package.install install : <install-source-root>. : : dbppcore : [ glob *.h : test*.h ] ;
+package.install install : <install-source-root>. : : dbpptestcore : [ glob test*.h ] ;
 
