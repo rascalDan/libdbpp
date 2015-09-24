@@ -2,6 +2,18 @@
 #include <buffer.h>
 #include <fstream>
 #include <modifycommand.h>
+#include <plugins.impl.h>
+
+namespace AdHoc {
+	template <>
+	PluginOf<DB::MockDatabase>::~PluginOf()
+	{
+		// This implementation doesn't delete .implementation as
+		// mock databases simply unregister themselves (via destructor)
+		// when the mock framework tears them down.
+	}
+}
+INSTANIATEPLUGINOF(DB::MockDatabase);
 
 namespace DB {
 
@@ -10,10 +22,18 @@ unsigned int MockDatabase::mocked = 0;
 MockDatabase::MockDatabase(const std::string & name) :
 	mockName(name)
 {
+	AdHoc::PluginManager::getDefault()->add(AdHoc::PluginPtr(new AdHoc::PluginOf<MockDatabase>(this, mockName, __FILE__, __LINE__)));
 }
 
 MockDatabase::~MockDatabase()
 {
+	AdHoc::PluginManager::getDefault()->remove<MockDatabase>(mockName);
+}
+
+Connection *
+MockDatabase::openConnectionTo(const std::string & mockName)
+{
+	return AdHoc::PluginManager::getDefault()->get<DB::MockDatabase>(mockName)->implementation()->openConnection();
 }
 
 void

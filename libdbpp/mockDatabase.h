@@ -15,6 +15,7 @@ class DLL_PUBLIC MockDatabase {
 		virtual ~MockDatabase();
 
 		virtual DB::Connection * openConnection() const = 0;
+		static Connection * openConnectionTo(const std::string &);
 
 	protected:
 		virtual void CreateNewDatabase() const = 0;
