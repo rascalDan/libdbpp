@@ -43,5 +43,5 @@ lib dbpptestcore :
 build-project unittests ;
 
 package.install install : <install-source-root>. : : dbppcore : [ glob *.h : test*.h ] ;
-package.install install : <install-source-root>. : : dbpptestcore : [ glob test*.h ] ;
+package.install installtest : <install-source-root>. : : dbpptestcore : [ glob test*.h ] ;
 
