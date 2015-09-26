@@ -13,7 +13,7 @@ namespace AdHoc {
 		// when the mock framework tears them down.
 	}
 }
-INSTANIATEPLUGINOF(DB::MockDatabase);
+INSTANTIATEPLUGINOF(DB::MockDatabase);
 
 namespace DB {
 

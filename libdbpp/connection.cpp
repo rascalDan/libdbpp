@@ -53,6 +53,6 @@ DB::Connection::resolvePlugin(const std::type_info &, const std::string & name)
 	return stringbf("libdbpp-%s.so", name);
 }
 
-INSTANIATEFACTORY(DB::Connection, std::string);
+INSTANTIATEFACTORY(DB::Connection, std::string);
 PLUGINRESOLVER(DB::ConnectionFactory, DB::Connection::resolvePlugin);
 
