@@ -107,7 +107,7 @@ MockDatabase::UpdateStatusTable(DB::Connection * conn, const boost::filesystem::
 
 MockServerDatabase::MockServerDatabase(const std::string & masterdb, const std::string & name, const std::string & type) :
 	MockDatabase(name),
-	master(DB::ConnectionFactory::create(type, masterdb)),
+	master(DB::ConnectionFactory::createNew(type, masterdb)),
 	testDbName(stringbf("test_%d_%d", getpid(), ++mocked))
 {
 }

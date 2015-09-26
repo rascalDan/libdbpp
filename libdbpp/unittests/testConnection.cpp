@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE( plugins )
 
 BOOST_AUTO_TEST_CASE( create )
 {
-	auto mock = DB::ConnectionFactory::create("MockDb", "doesn't matter");
+	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
 	BOOST_REQUIRE(mock);
 	// MockDb is fake, just returns nullptr, but the call should otherwise succeed.
 	BOOST_REQUIRE(!mock->newModifyCommand(""));
@@ -59,12 +59,12 @@ BOOST_AUTO_TEST_CASE( create )
 
 BOOST_AUTO_TEST_CASE( resolve )
 {
-	BOOST_REQUIRE_THROW(DB::ConnectionFactory::create("otherdb", "doesn't matter"), AdHoc::LoadLibraryException);
+	BOOST_REQUIRE_THROW(DB::ConnectionFactory::createNew("otherdb", "doesn't matter"), AdHoc::LoadLibraryException);
 }
 
 BOOST_AUTO_TEST_CASE( parse )
 {
-	auto mock = DB::ConnectionFactory::create("MockDb", "doesn't matter");
+	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
 	std::fstream s((rootDir / "parseTest.sql").string());
 	BOOST_REQUIRE(s.good());
 	mock->executeScript(s, rootDir);
