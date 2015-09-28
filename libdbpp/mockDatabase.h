@@ -9,7 +9,7 @@
 
 namespace DB {
 
-class DLL_PUBLIC MockDatabase {
+class DLL_PUBLIC MockDatabase : public AdHoc::AbstractPluginImplementation {
 	public:
 		MockDatabase(const std::string & mockName);
 		virtual ~MockDatabase();
