@@ -12,6 +12,7 @@
 
 namespace DB {
 
+/// @cond
 class SqlParse : public yyFlexLexer {
 	public:
 		SqlParse(std::istream &, const boost::filesystem::path &, const Connection *);
@@ -29,6 +30,7 @@ class SqlParse : public yyFlexLexer {
 		std::string comment;
 		std::string statement;
 };
+/// @endcond
 
 }
 

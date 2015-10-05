@@ -8,6 +8,7 @@ namespace DB {
 
 class SelectCommand;
 
+/// @cond
 class DLL_PUBLIC TestCore {
 	protected:
 		TestCore();
@@ -22,6 +23,7 @@ class DLL_PUBLIC TestCore {
 		template<typename T> void assertScalarValueHelper(SelectCommand & sel, const T & t) const;
 		template<typename T> void assertColumnValueHelper(SelectCommand & sel, unsigned int col, const T & t) const;
 };
+/// @endcond
 
 }
 
