@@ -3,6 +3,7 @@
 #include <factory.impl.h>
 #include <buffer.h>
 #include <sqlParse.h>
+#include <boost/shared_ptr.hpp>
 
 DB::Connection::~Connection()
 {
@@ -11,15 +12,8 @@ DB::Connection::~Connection()
 void
 DB::Connection::execute(const std::string & sql) const
 {
-	ModifyCommand * cmd = newModifyCommand(sql);
-	try {
-		cmd->execute(true);
-		delete cmd;
-	}
-	catch (...) {
-		delete cmd;
-		throw;
-	}
+	auto cmd = boost::shared_ptr<ModifyCommand>(newModifyCommand(sql));
+	cmd->execute(true);
 }
 
 void
