@@ -58,6 +58,9 @@ BOOST_AUTO_TEST_CASE( create )
 
 BOOST_AUTO_TEST_CASE( resolve )
 {
+	auto pq = DB::ConnectionFactory::createNew("postgresql", "user=postgres dbname=postgres");
+	BOOST_REQUIRE(pq);
+	delete pq;
 	BOOST_REQUIRE_THROW(DB::ConnectionFactory::createNew("otherdb", "doesn't matter"), AdHoc::LoadLibraryException);
 }
 
