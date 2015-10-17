@@ -17,9 +17,6 @@ class MockDb : public DB::Connection {
 		int		commitTx() const { return 0; }
 		int		rollbackTx() const { return 0; }
 		bool	inTx() const { return false; }
-		void	savepoint(const std::string &) const {}
-		void	rollbackToSavepoint(const std::string &) const {}
-		void	releaseSavepoint(const std::string &) const {}
 		void	ping() const {}
 		DB::BulkDeleteStyle bulkDeleteStyle() const { return DB::BulkDeleteUsingUsing; }
 		DB::BulkUpdateStyle bulkUpdateStyle() const { return DB::BulkUpdateUsingJoin; }
@@ -74,6 +71,24 @@ BOOST_AUTO_TEST_CASE( parse )
 	BOOST_REQUIRE(mockdb);
 	BOOST_REQUIRE_EQUAL(2, mockdb->executed.size());
 	BOOST_REQUIRE_EQUAL("INSERT INTO name(t, i) VALUES('string', 3)", mockdb->executed[1]);
+	delete mock;
+}
+
+BOOST_AUTO_TEST_CASE( savepoints )
+{
+	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
+	MockDb * mockdb = dynamic_cast<MockDb *>(mock);
+	BOOST_REQUIRE(mockdb);
+	mock->savepoint("sp");
+	BOOST_REQUIRE_EQUAL("SAVEPOINT sp", *mockdb->executed.rbegin());
+	mock->releaseSavepoint("sp");
+	BOOST_REQUIRE_EQUAL("RELEASE SAVEPOINT sp", *mockdb->executed.rbegin());
+	mock->savepoint("sp1");
+	BOOST_REQUIRE_EQUAL("SAVEPOINT sp1", *mockdb->executed.rbegin());
+	mock->savepoint("sp2");
+	BOOST_REQUIRE_EQUAL("SAVEPOINT sp2", *mockdb->executed.rbegin());
+	mock->rollbackToSavepoint("sp1");
+	BOOST_REQUIRE_EQUAL("ROLLBACK TO SAVEPOINT sp1", *mockdb->executed.rbegin());
 	delete mock;
 }
 
