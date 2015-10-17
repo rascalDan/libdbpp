@@ -47,6 +47,12 @@ DB::Connection::resolvePlugin(const std::type_info &, const std::string & name)
 	return stringbf("libdbpp-%s.so", name);
 }
 
+int64_t
+DB::Connection::insertId() const
+{
+	throw std::runtime_error("insertId not implemented for this driver.");
+}
+
 INSTANTIATEFACTORY(DB::Connection, std::string);
 PLUGINRESOLVER(DB::ConnectionFactory, DB::Connection::resolvePlugin);
 

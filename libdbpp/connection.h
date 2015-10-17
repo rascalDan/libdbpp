@@ -67,6 +67,9 @@ namespace DB {
 			/// Load data for the current bulk load operation.
 			virtual size_t bulkUploadData(const char *, size_t) const = 0;
 
+			/// Return the Id used in the last insert
+			virtual int64_t insertId() const;
+
 			/// AdHoc plugin resolver helper for database connectors.
 			static boost::optional<std::string> resolvePlugin(const std::type_info &, const std::string &);
 		private:
