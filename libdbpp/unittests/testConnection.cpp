@@ -7,6 +7,7 @@
 #include <fstream>
 #include <vector>
 
+// LCOV_EXCL_START
 class MockDb : public DB::Connection {
 	public:
 		MockDb(const std::string &) {}
@@ -35,6 +36,7 @@ class MockDb : public DB::Connection {
 
 		mutable std::vector<std::string> executed;
 };
+// LCOV_EXCL_STOP
 
 FACTORY(MockDb, DB::ConnectionFactory);
 
