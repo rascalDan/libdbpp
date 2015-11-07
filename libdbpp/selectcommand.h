@@ -7,6 +7,7 @@
 #include <boost/multi_index/indexed_by.hpp>
 #include <boost/multi_index/ordered_index_fwd.hpp>
 #include <boost/multi_index/member.hpp>
+#include <boost/function/function_fwd.hpp>
 #include <boost/shared_ptr.hpp>
 #include <visibility.h>
 
@@ -31,6 +32,9 @@ namespace DB {
 			unsigned int columnCount() const;
 			/// Get the index of a column by name.
 			unsigned int getOrdinal(const Glib::ustring &) const;
+			/// Push each row through a function accepting one value per column
+			template<typename ... Fn, typename Func = boost::function<void(Fn...)>>
+			void forEachRow(const Func & func);
 
 		protected:
 			/// Helper function so clients need not know about boost::multi_index_container.
