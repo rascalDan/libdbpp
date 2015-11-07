@@ -3,6 +3,7 @@
 
 #include "command.h"
 #include <visibility.h>
+#include <boost/shared_ptr.hpp>
 
 namespace DB {
 	/// Presents a command not expected to return any data.
@@ -15,6 +16,7 @@ namespace DB {
 			/// Execute the command and return effected row count
 			virtual unsigned int	execute(bool allowNoChange = true) = 0;
 	};
+	typedef boost::shared_ptr<ModifyCommand> ModifyCommandPtr;
 }
 
 #endif

@@ -5,6 +5,7 @@
 #include <factory.h>
 #include <visibility.h>
 #include <boost/filesystem/path.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace DB {
 	class SelectCommand;
@@ -75,6 +76,7 @@ namespace DB {
 		private:
 	};
 
+	typedef boost::shared_ptr<Connection> ConnectionPtr;
 	typedef AdHoc::Factory<Connection, std::string> ConnectionFactory;
 }
 

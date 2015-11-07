@@ -7,6 +7,7 @@
 #include <boost/multi_index/indexed_by.hpp>
 #include <boost/multi_index/ordered_index_fwd.hpp>
 #include <boost/multi_index/member.hpp>
+#include <boost/shared_ptr.hpp>
 #include <visibility.h>
 
 namespace DB {
@@ -44,6 +45,7 @@ namespace DB {
 			/// Columns in the result set.
 			Columns * columns;
 	};
+	typedef boost::shared_ptr<SelectCommand> SelectCommandPtr;
 }
 
 #endif
