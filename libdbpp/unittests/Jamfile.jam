@@ -12,6 +12,7 @@ run
 	<library>..//dbppcore
 	<library>..//adhocutil
 	<library>boost_utf
+	<dependency>parseTest.sql
 	:
 	testConnection
 	;
