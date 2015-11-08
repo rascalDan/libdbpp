@@ -6,6 +6,7 @@
 #include <definedDirs.h>
 #include <fstream>
 #include <vector>
+#include <error.h>
 
 // LCOV_EXCL_START
 class MockDb : public DB::Connection {
@@ -93,5 +94,10 @@ BOOST_AUTO_TEST_CASE( savepoints )
 	mock->rollbackToSavepoint("sp1");
 	BOOST_REQUIRE_EQUAL("ROLLBACK TO SAVEPOINT sp1", *mockdb->executed.rbegin());
 	delete mock;
+}
+
+BOOST_AUTO_TEST_CASE( connectError )
+{
+	BOOST_REQUIRE_THROW(DB::ConnectionFactory::createNew("postgresql", "user=fail dbname=nodb"), DB::ConnectionError);
 }
 
