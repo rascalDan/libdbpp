@@ -35,3 +35,9 @@ BOOST_AUTO_TEST_CASE( forEachRow )
 			});
 }
 
+BOOST_AUTO_TEST_CASE( execute )
+{
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	db->execute("UPDATE forEachRow SET a = 2");
+}
+
