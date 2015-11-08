@@ -51,6 +51,8 @@ BOOST_AUTO_TEST_CASE( columns )
 	BOOST_REQUIRE_EQUAL("c", (*sel)[2].name);
 	BOOST_REQUIRE_EQUAL(0, (*sel)["a"].colNo);
 	BOOST_REQUIRE_EQUAL(4, (*sel)["e"].colNo);
+	BOOST_REQUIRE_EQUAL(5, sel->columnCount());
+	BOOST_REQUIRE_EQUAL(1, sel->getOrdinal("b"));
 	BOOST_REQUIRE_THROW((*sel)["f"], DB::ColumnDoesNotExist);
 	BOOST_REQUIRE_THROW((*sel)["aa"], DB::ColumnDoesNotExist);
 	BOOST_REQUIRE_THROW((*sel)[""], DB::ColumnDoesNotExist);
