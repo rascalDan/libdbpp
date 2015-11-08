@@ -67,7 +67,7 @@ MockDatabase::PlaySchemaScript(DB::Connection * conn, const boost::filesystem::p
 	std::ifstream f;
 	f.open(s.string());
 	if (!f.good()) {
-		throw std::runtime_error("Failed to open mock script: " + s.string());
+		throw std::fstream::failure("Failed to open mock script: " + s.string());
 	}
 	conn->executeScript(f, s.parent_path());
 	f.close();

@@ -31,3 +31,17 @@ run
 	testUtils
 	;
 
+run
+	testMock.cpp
+	: : :
+	<define>ROOT=\"$(me)\"
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//dbppcore
+	<library>..//adhocutil
+	<library>../../libpqpp//dbpp-postgresql
+	<library>boost_utf
+	<dependency>badMock.sql
+	:
+	testMock
+	;
+
