@@ -12,7 +12,7 @@ DB::Connection::~Connection()
 void
 DB::Connection::execute(const std::string & sql) const
 {
-	auto cmd = boost::shared_ptr<ModifyCommand>(newModifyCommand(sql));
+	auto cmd = ModifyCommandPtr(newModifyCommand(sql));
 	cmd->execute(true);
 }
 
