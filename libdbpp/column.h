@@ -4,6 +4,7 @@
 #include <glibmm/ustring.h>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/optional.hpp>
 #include <visibility.h>
 
 namespace DB {
@@ -53,6 +54,16 @@ namespace DB {
 			void operator>>(boost::posix_time::time_duration &) const;
 			/// STL like date time extractor.
 			void operator>>(boost::posix_time::ptime &) const;
+			template <typename T>
+			void operator>>(boost::optional<T> & v) const {
+				if (!isNull()) {
+					v = T();
+					operator>>(v.get());
+				}
+				else {
+					v = boost::none;
+				}
+			}
 
 			/// This column's ordinal.
 			const unsigned int		colNo;

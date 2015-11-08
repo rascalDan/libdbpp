@@ -33,6 +33,22 @@ BOOST_AUTO_TEST_CASE( forEachRow )
 			});
 }
 
+BOOST_AUTO_TEST_CASE( forEachRowNulls )
+{
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto sel = DB::SelectCommandPtr(db->newSelectCommand("SELECT a, b, c, d, e, f FROM forEachRow ORDER BY a DESC LIMIT 1"));
+	sel->forEachRow<int64_t, boost::optional<double>, std::string, boost::optional<boost::posix_time::ptime>, boost::optional<boost::posix_time::time_duration>, bool>(
+			[](auto a, auto b, auto c, auto d, auto e, auto f) {
+				BOOST_REQUIRE_EQUAL(2, a);
+				BOOST_REQUIRE(b);
+				BOOST_REQUIRE_EQUAL(2.3, *b);
+				BOOST_REQUIRE_EQUAL("Some text", c);
+				BOOST_REQUIRE(!d);
+				BOOST_REQUIRE(!e);
+				BOOST_REQUIRE_EQUAL(false, f);
+			});
+}
+
 BOOST_AUTO_TEST_CASE( execute )
 {
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));

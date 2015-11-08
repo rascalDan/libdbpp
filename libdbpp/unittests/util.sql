@@ -6,4 +6,5 @@ CREATE TABLE foreachrow (
 		e interval,
 		f boolean);
 INSERT INTO foreachrow(a, b, c, d, e, f) VALUES(1, 2.3, 'Some text', '2015-11-07 13:39:17', '04:03:02', true);
+INSERT INTO foreachrow(a, b, c, f) VALUES(2, 2.3, 'Some text', false);
 
