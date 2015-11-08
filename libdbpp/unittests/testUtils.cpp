@@ -21,14 +21,15 @@ BOOST_GLOBAL_FIXTURE( StandardMockDatabase );
 BOOST_AUTO_TEST_CASE( forEachRow )
 {
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
-	auto sel = DB::SelectCommandPtr(db->newSelectCommand("SELECT a, b, c, d, e FROM forEachRow ORDER BY a LIMIT 1"));
-	sel->forEachRow<int64_t, double, std::string, boost::posix_time::ptime, boost::posix_time::time_duration>(
-			[](auto a, auto b, auto c, auto d, auto e) {
+	auto sel = DB::SelectCommandPtr(db->newSelectCommand("SELECT a, b, c, d, e, f FROM forEachRow ORDER BY a LIMIT 1"));
+	sel->forEachRow<int64_t, double, std::string, boost::posix_time::ptime, boost::posix_time::time_duration, bool>(
+			[](auto a, auto b, auto c, auto d, auto e, auto f) {
 				BOOST_REQUIRE_EQUAL(1, a);
 				BOOST_REQUIRE_EQUAL(2.3, b);
 				BOOST_REQUIRE_EQUAL("Some text", c);
 				BOOST_REQUIRE_EQUAL(boost::posix_time::ptime_from_tm({ 17, 39, 13, 7, 10, 115, 0, 0, 0, 0, 0}), d);
 				BOOST_REQUIRE_EQUAL(boost::posix_time::time_duration(4, 3, 2), e);
+				BOOST_REQUIRE_EQUAL(true, f);
 			});
 }
 
