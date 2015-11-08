@@ -13,6 +13,12 @@ run
 	<library>..//adhocutil
 	<library>boost_utf
 	<dependency>parseTest.sql
+	<dependency>unterminatedComment.sql
+	<dependency>unterminatedString.sql
+	<dependency>unterminatedDollarQuote.sql
+	<dependency>dollarQuote.sql
+	<dependency>scriptDir.sql
+	<dependency>stringParse.sql
 	:
 	testConnection
 	;

@@ -78,6 +78,43 @@ BOOST_AUTO_TEST_CASE( parse )
 	delete mock;
 }
 
+BOOST_AUTO_TEST_CASE( parse2 )
+{
+	auto mock = DB::ConnectionPtr(DB::ConnectionFactory::createNew("MockDb", "doesn't matter"));
+	std::fstream s;
+
+	s.open((rootDir / "dollarQuote.sql").string());
+	mock->executeScript(s, rootDir);
+	s.close();
+
+	s.open((rootDir / "scriptDir.sql").string());
+	mock->executeScript(s, rootDir);
+	s.close();
+
+	s.open((rootDir / "stringParse.sql").string());
+	mock->executeScript(s, rootDir);
+	s.close();
+
+	BOOST_REQUIRE_THROW({
+			s.open((rootDir / "unterminatedComment.sql").string());
+			mock->executeScript(s, rootDir);
+		}, std::runtime_error);
+	s.close();
+
+	BOOST_REQUIRE_THROW({
+			s.open((rootDir / "unterminatedDollarQuote.sql").string());
+			mock->executeScript(s, rootDir);
+		}, std::runtime_error);
+	s.close();
+
+	BOOST_REQUIRE_THROW({
+			s.open((rootDir / "unterminatedString.sql").string());
+			mock->executeScript(s, rootDir);
+		}, std::runtime_error);
+	s.close();
+}
+
+
 BOOST_AUTO_TEST_CASE( savepoints )
 {
 	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
