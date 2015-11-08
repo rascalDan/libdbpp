@@ -4,18 +4,9 @@
 #include <boost/multi_index/ordered_index.hpp>
 
 namespace DB {
-	class ColumnIndexOutOfRange : public Error {
-		public:
-			ColumnIndexOutOfRange(unsigned int n) : colNo(n) { }
+	ColumnIndexOutOfRange::ColumnIndexOutOfRange(unsigned int n) : colNo(n) { }
 
-			const unsigned int colNo;
-	};
-	class ColumnDoesNotExist : public Error {
-		public:
-			ColumnDoesNotExist(const Glib::ustring & n) : colName(n) { }
-
-			const Glib::ustring colName;
-	};
+	ColumnDoesNotExist::ColumnDoesNotExist(const Glib::ustring & n) : colName(n) { }
 };
 
 DB::SelectCommand::SelectCommand(const std::string & sql) :

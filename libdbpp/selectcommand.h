@@ -3,6 +3,7 @@
 
 #include "command.h"
 #include "column.h"
+#include "error.h"
 #include <boost/multi_index_container_fwd.hpp>
 #include <boost/multi_index/indexed_by.hpp>
 #include <boost/multi_index/ordered_index_fwd.hpp>
@@ -13,6 +14,18 @@
 
 namespace DB {
 	class Column;
+	class ColumnIndexOutOfRange : public Error {
+		public:
+			ColumnIndexOutOfRange(unsigned int n);
+
+			const unsigned int colNo;
+	};
+	class ColumnDoesNotExist : public Error {
+		public:
+			ColumnDoesNotExist(const Glib::ustring & n);
+
+			const Glib::ustring colName;
+	};
 	/// Represents a command expected to return data to the client.
 	class DLL_PUBLIC SelectCommand : public virtual Command {
 		public:
