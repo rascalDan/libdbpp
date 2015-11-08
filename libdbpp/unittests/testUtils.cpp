@@ -1,13 +1,10 @@
 #define BOOST_TEST_MODULE DbUtil
 #include <boost/test/unit_test.hpp>
 
-#include <factory.h>
 #include <connection.h>
 #include <selectcommand.h>
 #include <selectcommandUtil.impl.h>
 #include <definedDirs.h>
-#include <fstream>
-#include <vector>
 #include <mock.h>
 #include <boost/date_time/posix_time/posix_time_io.hpp>
 
