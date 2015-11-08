@@ -41,3 +41,20 @@ BOOST_AUTO_TEST_CASE( execute )
 	db->execute("UPDATE forEachRow SET a = 2");
 }
 
+BOOST_AUTO_TEST_CASE( columns )
+{
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto sel = DB::SelectCommandPtr(db->newSelectCommand("SELECT a, b, c, d, e FROM forEachRow ORDER BY a LIMIT 1"));
+	sel->execute();
+	BOOST_REQUIRE_THROW((*sel)[5], DB::ColumnIndexOutOfRange);
+	BOOST_REQUIRE_THROW((*sel)[-1], DB::ColumnIndexOutOfRange);
+	BOOST_REQUIRE_EQUAL(0, (*sel)[0].colNo);
+	BOOST_REQUIRE_EQUAL(4, (*sel)[4].colNo);
+	BOOST_REQUIRE_EQUAL("c", (*sel)[2].name);
+	BOOST_REQUIRE_EQUAL(0, (*sel)["a"].colNo);
+	BOOST_REQUIRE_EQUAL(4, (*sel)["e"].colNo);
+	BOOST_REQUIRE_THROW((*sel)["f"], DB::ColumnDoesNotExist);
+	BOOST_REQUIRE_THROW((*sel)["aa"], DB::ColumnDoesNotExist);
+	BOOST_REQUIRE_THROW((*sel)[""], DB::ColumnDoesNotExist);
+}
+
