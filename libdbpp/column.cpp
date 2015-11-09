@@ -1,15 +1,25 @@
 #include "column.h"
 #include <boost/utility/enable_if.hpp>
 #include <exception>
+#include <buffer.h>
 
-DB::Column::Column(const Glib::ustring & n, unsigned int i) :
+namespace DB {
+Column::Column(const Glib::ustring & n, unsigned int i) :
 	colNo(i),
 	name(n)
 {
 }
 
-DB::Column::~Column()
+Column::~Column()
 {
+}
+
+InvalidConversion::InvalidConversion(const char * const f, const char * const t) : from(f), to(t) { }
+
+std::string
+InvalidConversion::message() const throw()
+{
+	return stringf("Invalid conversion from column type (%s) to value type (%s)", from, to);
 }
 
 template<typename T>
@@ -28,7 +38,7 @@ class Extract : public DB::HandleField {
 		template <typename D, typename dummy = int>
 		void operator()(const D &,
 				typename boost::disable_if<std::is_convertible<D, T>, dummy>::type = 0) {
-			throw std::runtime_error("Invalid type conversion");
+			throw InvalidConversion(typeid(D).name(), typeid(T).name());
 		}
 
 		template <typename D, typename dummy = int>
@@ -42,7 +52,7 @@ class Extract : public DB::HandleField {
 
 #define COLUMNINTO(Type) \
 void \
-DB::Column::operator>>(Type & v) const \
+Column::operator>>(Type & v) const \
 { \
 	Extract<Type> e(v); \
 	apply(e); \
@@ -54,4 +64,5 @@ COLUMNINTO(double);
 COLUMNINTO(std::string);
 COLUMNINTO(boost::posix_time::ptime);
 COLUMNINTO(boost::posix_time::time_duration);
+}
 

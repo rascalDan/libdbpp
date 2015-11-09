@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_CASE( forEachRow )
 	sel->forEachRow<int64_t, double, std::string, boost::posix_time::ptime, boost::posix_time::time_duration, bool>(
 			[](auto a, auto b, auto c, auto d, auto e, auto f) {
 				BOOST_REQUIRE_EQUAL(1, a);
-				BOOST_REQUIRE_EQUAL(2.3, b);
+				BOOST_REQUIRE_CLOSE(4.3, b, 0.001);
 				BOOST_REQUIRE_EQUAL("Some text", c);
 				BOOST_REQUIRE_EQUAL(boost::posix_time::ptime_from_tm({ 17, 39, 13, 7, 10, 115, 0, 0, 0, 0, 0}), d);
 				BOOST_REQUIRE_EQUAL(boost::posix_time::time_duration(4, 3, 2), e);
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE( forEachRowNulls )
 			[](auto a, auto b, auto c, auto d, auto e, auto f) {
 				BOOST_REQUIRE_EQUAL(2, a);
 				BOOST_REQUIRE(b);
-				BOOST_REQUIRE_EQUAL(2.3, *b);
+				BOOST_REQUIRE_CLOSE(4.3, *b, 0.001);
 				BOOST_REQUIRE_EQUAL("Some text", c);
 				BOOST_REQUIRE(!d);
 				BOOST_REQUIRE(!e);
@@ -72,5 +72,33 @@ BOOST_AUTO_TEST_CASE( columns )
 	BOOST_REQUIRE_THROW((*sel)["f"], DB::ColumnDoesNotExist);
 	BOOST_REQUIRE_THROW((*sel)["aa"], DB::ColumnDoesNotExist);
 	BOOST_REQUIRE_THROW((*sel)[""], DB::ColumnDoesNotExist);
+}
+
+BOOST_AUTO_TEST_CASE( extract )
+{
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto sel = DB::SelectCommandPtr(db->newSelectCommand("SELECT a, b, c FROM forEachRow WHERE f"));
+	BOOST_REQUIRE(sel->fetch());
+	int64_t lint;
+	double ldouble;
+	std::string lstring;
+	// Plain
+	(*sel)[0] >> lint;
+	(*sel)[1] >> ldouble;
+	(*sel)[2] >> lstring;
+	BOOST_REQUIRE_EQUAL(2, lint);
+	BOOST_REQUIRE_CLOSE(4.3, ldouble, 0.001);
+	BOOST_REQUIRE_EQUAL("Some text", lstring);
+	// Converted
+	(*sel)[1] >> lint;
+	(*sel)[0] >> ldouble;
+	BOOST_REQUIRE_EQUAL(4, lint);
+	BOOST_REQUIRE_CLOSE(2, ldouble, 0.001);
+	// Bad conversions
+	BOOST_REQUIRE_THROW((*sel)[2] >> lint, DB::InvalidConversion);
+	BOOST_REQUIRE_THROW((*sel)[2] >> ldouble, DB::InvalidConversion);
+	BOOST_REQUIRE_THROW((*sel)[1] >> lstring, DB::InvalidConversion);
+	BOOST_REQUIRE_THROW((*sel)[0] >> lstring, DB::InvalidConversion);
+	BOOST_REQUIRE(!sel->fetch());
 }
 
