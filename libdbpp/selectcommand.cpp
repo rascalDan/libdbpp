@@ -2,11 +2,24 @@
 #include "error.h"
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/ordered_index.hpp>
+#include <buffer.h>
 
 namespace DB {
 	ColumnIndexOutOfRange::ColumnIndexOutOfRange(unsigned int n) : colNo(n) { }
 
+	std::string
+	ColumnIndexOutOfRange::message() const throw()
+	{
+		return stringf("Column (%u) index out of range", colNo);
+	}
+
 	ColumnDoesNotExist::ColumnDoesNotExist(const Glib::ustring & n) : colName(n) { }
+
+	std::string
+	ColumnDoesNotExist::message() const throw()
+	{
+		return stringf("Column (%s) does not exist", colName.c_str());
+	}
 };
 
 DB::SelectCommand::SelectCommand(const std::string & sql) :

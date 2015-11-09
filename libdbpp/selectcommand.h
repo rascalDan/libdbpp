@@ -11,18 +11,21 @@
 #include <boost/function/function_fwd.hpp>
 #include <boost/shared_ptr.hpp>
 #include <visibility.h>
+#include <exception.h>
 
 namespace DB {
 	class Column;
-	class ColumnIndexOutOfRange : public Error {
+	class DLL_PUBLIC ColumnIndexOutOfRange : public AdHoc::Exception<Error> {
 		public:
 			ColumnIndexOutOfRange(unsigned int n);
+			std::string message() const throw() override;
 
 			const unsigned int colNo;
 	};
-	class ColumnDoesNotExist : public Error {
+	class DLL_PUBLIC ColumnDoesNotExist : public AdHoc::Exception<Error> {
 		public:
 			ColumnDoesNotExist(const Glib::ustring & n);
+			std::string message() const throw() override;
 
 			const Glib::ustring colName;
 	};
