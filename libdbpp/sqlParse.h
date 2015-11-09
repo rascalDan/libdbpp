@@ -3,6 +3,7 @@
 
 #include <istream>
 #include <string>
+#include <exception.h>
 #include "connection.h"
 #include <boost/filesystem/path.hpp>
 #ifndef yyFlexLexer
@@ -11,6 +12,14 @@
 #endif
 
 namespace DB {
+class DLL_PUBLIC SqlParseException : public AdHoc::StdException {
+	public:
+		SqlParseException(const char *, unsigned int);
+	private:
+		std::string message() const throw() override;
+		const char * reason;
+		const unsigned int line;
+};
 
 /// @cond
 class SqlParse : public yyFlexLexer {

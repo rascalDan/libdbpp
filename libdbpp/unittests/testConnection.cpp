@@ -7,6 +7,7 @@
 #include <fstream>
 #include <vector>
 #include <error.h>
+#include <sqlParse.h>
 
 // LCOV_EXCL_START
 class MockDb : public DB::Connection {
@@ -98,19 +99,19 @@ BOOST_AUTO_TEST_CASE( parse2 )
 	BOOST_REQUIRE_THROW({
 			s.open((rootDir / "unterminatedComment.sql").string());
 			mock->executeScript(s, rootDir);
-		}, std::runtime_error);
+		}, DB::SqlParseException);
 	s.close();
 
 	BOOST_REQUIRE_THROW({
 			s.open((rootDir / "unterminatedDollarQuote.sql").string());
 			mock->executeScript(s, rootDir);
-		}, std::runtime_error);
+		}, DB::SqlParseException);
 	s.close();
 
 	BOOST_REQUIRE_THROW({
 			s.open((rootDir / "unterminatedString.sql").string());
 			mock->executeScript(s, rootDir);
-		}, std::runtime_error);
+		}, DB::SqlParseException);
 	s.close();
 }
 

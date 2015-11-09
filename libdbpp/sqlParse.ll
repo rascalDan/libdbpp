@@ -9,6 +9,7 @@
 
 %{
 #include <stdexcept>
+#include <buffer.h>
 #include "sqlParse.h"
 #pragma GCC diagnostic ignored "-Wsign-compare"
 %}
@@ -52,7 +53,7 @@ scriptdir "$SCRIPTDIR"
 }
 
 <COMMENT><<EOF>> {
-	throw std::runtime_error("Unterminated comment");
+	throw SqlParseException("Unterminated comment", yylineno);
 }
 
 {comment} {
@@ -97,7 +98,7 @@ scriptdir "$SCRIPTDIR"
 }
 
 <DOLLARQUOTE><<EOF>> {
-	throw std::runtime_error("Unterminated dollar quoted string");
+	throw SqlParseException("Unterminated dollar quoted string", yylineno);
 }
 
 <QUOTE>{any} {
@@ -105,7 +106,7 @@ scriptdir "$SCRIPTDIR"
 }
 
 <QUOTE><<EOF>> {
-	throw std::runtime_error("Unterminated quoted string");
+	throw SqlParseException("Unterminated quoted string", yylineno);
 }
 
 <STATEMENT>{term} {
@@ -124,6 +125,13 @@ scriptdir "$SCRIPTDIR"
 %%
 
 namespace DB {
+  SqlParseException::SqlParseException(const char * r, unsigned int l) : reason(r), line(l) { }
+
+  std::string
+  SqlParseException::message() const throw()
+  {
+    return stringf("Error parsing SQL script: %s at line %u", reason, line);
+  }
 
   SqlParse::SqlParse(std::istream & f, const boost::filesystem::path & s, const Connection * c) :
     yyFlexLexer(&f, NULL),
