@@ -56,6 +56,9 @@ class DLL_PUBLIC MockServerDatabase : public MockDatabase {
 		MockServerDatabase(const std::string & masterdb, const std::string & name, const std::string & type);
 		virtual ~MockServerDatabase();
 
+		/// Get the database instance name on the server.
+		const std::string & databaseName() const;
+
 	protected:
 		virtual void CreateNewDatabase() const override;
 		virtual void DropDatabase() const override;

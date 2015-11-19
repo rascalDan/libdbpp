@@ -117,6 +117,12 @@ MockServerDatabase::~MockServerDatabase()
 	delete master;
 }
 
+const std::string &
+MockServerDatabase::databaseName() const
+{
+	return testDbName;
+}
+
 void
 MockServerDatabase::CreateNewDatabase() const
 {
