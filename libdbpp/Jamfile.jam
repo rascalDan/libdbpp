@@ -8,6 +8,7 @@ alias glibmm : : : :
 lib boost_date_time : : <name>boost_date_time ;
 lib boost_filesystem ;
 lib boost_system ;
+lib boost_thread ;
 lib adhocutil : : : : <include>/usr/include/adhocutil ;
 lib boost_utf : : <name>boost_unit_test_framework ;
 
@@ -16,6 +17,7 @@ lib dbppcore :
 	<library>glibmm
 	<library>adhocutil
 	<library>boost_system
+	<library>boost_thread
 	<library>boost_filesystem
 	<cflags>-fvisibility=hidden
 	<variant>release:<cflags>-flto
