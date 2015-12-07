@@ -39,22 +39,20 @@ MockDatabase::openConnectionTo(const std::string & mockName)
 void
 MockDatabase::PlaySchemaScripts(const std::vector<boost::filesystem::path> & ss) const
 {
-	DB::Connection * conn = openConnection();
+	auto conn = ConnectionPtr(openConnection());
 	try {
-		CreateStatusTable(conn);
+		CreateStatusTable(conn.get());
 		for (auto s : ss) {
 			conn->beginTx();
-			PlaySchemaScript(conn, s);
+			PlaySchemaScript(conn.get(), s);
 			conn->commitTx();
 		}
-		DropStatusTable(conn);
-		delete conn;
+		DropStatusTable(conn.get());
 	}
 	catch (...) {
 		if (conn->inTx()) {
 			conn->rollbackTx();
 		}
-		delete conn;
 		DropDatabase();
 		throw;
 	}
@@ -81,11 +79,10 @@ MockDatabase::CreateStatusTable(DB::Connection * conn) const
 				pid int, \
 				script varchar(256), \
 				scriptdir varchar(256))");
-	auto ins = conn->newModifyCommand(
+	auto ins = ModifyCommandPtr(conn->newModifyCommand(
 			"INSERT INTO public._libdbpp_teststatus(pid) VALUES(?)"));
 	ins->bindParamI(0, getpid());
 	ins->execute();
-	delete ins;
 }
 
 void
@@ -97,12 +94,11 @@ MockDatabase::DropStatusTable(DB::Connection * conn) const
 void
 MockDatabase::UpdateStatusTable(DB::Connection * conn, const boost::filesystem::path & script) const
 {
-	auto upd = conn->newModifyCommand(
+	auto upd = ModifyCommandPtr(conn->newModifyCommand(
 			"UPDATE public._libdbpp_teststatus SET script = ?, scriptdir = ?"));
 	upd->bindParamS(0, script.string());
 	upd->bindParamS(1, script.parent_path().string());
 	upd->execute();
-	delete upd;
 }
 
 MockServerDatabase::MockServerDatabase(const std::string & masterdb, const std::string & name, const std::string & type) :
