@@ -6,7 +6,7 @@
 namespace DB {
 Column::Column(const Glib::ustring & n, unsigned int i) :
 	colNo(i),
-	name(n)
+	name(n.collate_key())
 {
 }
 

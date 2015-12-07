@@ -81,7 +81,7 @@ namespace DB {
 			/// This column's ordinal.
 			const unsigned int		colNo;
 			/// This column's name.
-			const Glib::ustring		name;
+			const std::string		name;
 	};
 	typedef boost::shared_ptr<Column> ColumnPtr;
 }

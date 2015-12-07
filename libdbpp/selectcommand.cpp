@@ -46,7 +46,7 @@ const DB::Column&
 DB::SelectCommand::operator[](const Glib::ustring & n) const
 {
 	typedef Columns::nth_index<1>::type CbyName;
-	CbyName::iterator i = columns->get<1>().find(n);
+	CbyName::iterator i = columns->get<1>().find(n.collate_key());
 	if (i != columns->get<1>().end()) {
 		return **i;
 	}

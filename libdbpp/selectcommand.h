@@ -8,6 +8,7 @@
 #include <boost/multi_index/indexed_by.hpp>
 #include <boost/multi_index/ordered_index_fwd.hpp>
 #include <boost/multi_index/member.hpp>
+#include <boost/multi_index/mem_fun.hpp>
 #include <boost/function/function_fwd.hpp>
 #include <boost/shared_ptr.hpp>
 #include <visibility.h>
@@ -59,7 +60,7 @@ namespace DB {
 			/// Friendly typedef cos boost::multi_index_container definitions are massive.
 			typedef boost::multi_index_container<ColumnPtr, boost::multi_index::indexed_by<
 				boost::multi_index::ordered_unique<boost::multi_index::member<DB::Column, const unsigned int, &DB::Column::colNo>>,
-				boost::multi_index::ordered_unique<boost::multi_index::member<DB::Column, const Glib::ustring, &DB::Column::name>>
+				boost::multi_index::ordered_unique<boost::multi_index::member<DB::Column, const std::string, &DB::Column::name>>
 								>> Columns;
 
 			/// Columns in the result set.
