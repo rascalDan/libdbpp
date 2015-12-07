@@ -77,12 +77,12 @@ void
 MockDatabase::CreateStatusTable(DB::Connection * conn) const
 {
 	conn->execute(
-			"CREATE TABLE _p2_teststatus( \
+			"CREATE TABLE public._libdbpp_teststatus( \
 				pid int, \
 				script varchar(256), \
 				scriptdir varchar(256))");
 	auto ins = conn->newModifyCommand(
-			"INSERT INTO _p2_teststatus(pid) VALUES(?)");
+			"INSERT INTO public._libdbpp_teststatus(pid) VALUES(?)"));
 	ins->bindParamI(0, getpid());
 	ins->execute();
 	delete ins;
@@ -91,14 +91,14 @@ MockDatabase::CreateStatusTable(DB::Connection * conn) const
 void
 MockDatabase::DropStatusTable(DB::Connection * conn) const
 {
-	conn->execute("DROP TABLE _p2_teststatus");
+	conn->execute("DROP TABLE public._libdbpp_teststatus");
 }
 
 void
 MockDatabase::UpdateStatusTable(DB::Connection * conn, const boost::filesystem::path & script) const
 {
 	auto upd = conn->newModifyCommand(
-			"UPDATE _p2_teststatus SET script = ?, scriptdir = ?");
+			"UPDATE public._libdbpp_teststatus SET script = ?, scriptdir = ?"));
 	upd->bindParamS(0, script.string());
 	upd->bindParamS(1, script.parent_path().string());
 	upd->execute();
