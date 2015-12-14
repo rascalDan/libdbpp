@@ -2,24 +2,74 @@
 #define DB_CONNECTION_H
 
 #include <string>
+#include <set>
 #include <factory.h>
+#include <exception.h>
 #include <visibility.h>
 #include <boost/filesystem/path.hpp>
 #include <boost/shared_ptr.hpp>
 
+namespace AdHoc {
+	class Buffer;
+}
+
 namespace DB {
+	class Command;
 	class SelectCommand;
 	class ModifyCommand;
+
 	enum BulkDeleteStyle {
 		BulkDeleteUsingSubSelect,
 		BulkDeleteUsingUsing,
 		BulkDeleteUsingUsingAlias,
 	};
+
 	enum BulkUpdateStyle {
-		BulkUpdateByIteration,
-		BulkUpdateUsingFromSrc,
-		BulkUpdateUsingJoin,
+		BulkUpdateUsingFromSrc = 1,
+		BulkUpdateUsingJoin = 2,
 	};
+
+	typedef std::string TableName;
+	typedef std::string ColumnName;
+	typedef std::set<ColumnName> ColumnNames;
+	typedef ColumnNames PrimaryKey;
+	typedef PrimaryKey::const_iterator PKI;
+
+	struct PatchResult {
+		unsigned int deletes;
+		unsigned int updates;
+		unsigned int inserts;
+	};
+
+	class DLL_PUBLIC SqlWriter {
+		public:
+			virtual void writeSql(AdHoc::Buffer &) = 0;
+			virtual void bindParams(Command *, unsigned int &);
+	};
+
+	class DLL_PUBLIC TablePatch {
+		public:
+			TablePatch();
+
+			TableName src;
+			TableName dest;
+			PrimaryKey pk;
+			ColumnNames cols;
+			SqlWriter * insteadOfDelete;
+			SqlWriter * where;
+			SqlWriter * order;
+	};
+
+	class DLL_PUBLIC PatchCheckFailure : public AdHoc::StdException {
+		public:
+			std::string message() const throw() override;
+	};
+
+	class DLL_PUBLIC TransactionRequired : public std::logic_error {
+		public:
+			TransactionRequired();
+	};
+
 	/// Base class for connections to a database.
 	class DLL_PUBLIC Connection {
 		public:
@@ -71,8 +121,15 @@ namespace DB {
 			/// Return the Id used in the last insert
 			virtual int64_t insertId() const;
 
+			/// Patch one table's contents into another.
+			PatchResult patchTable(TablePatch * tp);
+
 			/// AdHoc plugin resolver helper for database connectors.
 			static boost::optional<std::string> resolvePlugin(const std::type_info &, const std::string &);
+		protected:
+			unsigned int patchDeletes(TablePatch * tp);
+			unsigned int patchUpdates(TablePatch * tp);
+			unsigned int patchInserts(TablePatch * tp);
 		private:
 	};
 

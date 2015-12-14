@@ -24,6 +24,23 @@ run
 	;
 
 run
+	testPatch.cpp
+	: :
+	patch.sql
+	source.dat
+	target.dat
+	:
+	<define>ROOT=\"$(me)\"
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//dbppcore
+	<library>..//adhocutil
+	<library>../../libpqpp//dbpp-postgresql
+	<library>boost_utf
+	:
+	testPatch
+	;
+
+run
 	testConnectionPool.cpp
 	: : :
 	<define>ROOT=\"$(me)\"

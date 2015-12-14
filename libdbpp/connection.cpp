@@ -53,6 +53,23 @@ DB::Connection::insertId() const
 	throw std::runtime_error("insertId not implemented for this driver.");
 }
 
+DB::TablePatch::TablePatch() :
+	insteadOfDelete(nullptr),
+	where(nullptr),
+	order(nullptr)
+{
+}
+
+void
+DB::SqlWriter::bindParams(DB::Command *, unsigned int &)
+{
+}
+
+DB::TransactionRequired::TransactionRequired() :
+	std::logic_error("A transaction must be opened before performing this operation")
+{
+}
+
 INSTANTIATEFACTORY(DB::Connection, std::string);
 PLUGINRESOLVER(DB::ConnectionFactory, DB::Connection::resolvePlugin);
 
