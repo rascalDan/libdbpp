@@ -20,7 +20,6 @@ lib dbppcore :
 	<library>boost_thread
 	<library>boost_filesystem
 	<cflags>-fvisibility=hidden
-	<variant>release:<cflags>-flto
 	<include>.
 	: :
 	<include>.
@@ -37,7 +36,6 @@ lib dbpptestcore :
 	<library>dbppcore
 	<library>boost_utf
 	<cflags>-fvisibility=hidden
-	<variant>release:<cflags>-flto
 	: :
 	<include>.
 	;
