@@ -82,6 +82,8 @@ BOOST_AUTO_TEST_CASE( parse )
 BOOST_AUTO_TEST_CASE( parse2 )
 {
 	auto mock = DB::ConnectionPtr(DB::ConnectionFactory::createNew("MockDb", "doesn't matter"));
+	auto mockdb = boost::dynamic_pointer_cast<MockDb>(mock);
+	BOOST_REQUIRE(mockdb);
 	std::fstream s;
 
 	s.open((rootDir / "dollarQuote.sql").string());
@@ -95,6 +97,8 @@ BOOST_AUTO_TEST_CASE( parse2 )
 	s.open((rootDir / "stringParse.sql").string());
 	mock->executeScript(s, rootDir);
 	s.close();
+	BOOST_REQUIRE_EQUAL(4, mockdb->executed.size());
+	BOOST_REQUIRE_EQUAL("INSERT INTO name(t, i) VALUES('fancy string '' \\' \\r \\n', 7)", mockdb->executed[3]);
 
 	BOOST_REQUIRE_THROW({
 			s.open((rootDir / "unterminatedComment.sql").string());

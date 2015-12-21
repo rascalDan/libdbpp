@@ -24,6 +24,7 @@ term ;
 any ({other}|{space})
 quote '
 quote_apos ''
+quote_esc \\.
 dolq_start [A-Za-z\200-\377_]
 dolq_cont [A-Za-z\200-\377_0-9]
 dollarquote \$({dolq_start}{dolq_cont}*)?\$
@@ -89,6 +90,10 @@ scriptdir "$SCRIPTDIR"
 }
 
 <QUOTE>{quote_apos} {
+	statement += YYText();
+}
+
+<QUOTE>{quote_esc} {
 	statement += YYText();
 }
 
