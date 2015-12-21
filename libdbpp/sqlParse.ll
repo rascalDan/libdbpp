@@ -60,6 +60,10 @@ scriptdir "$SCRIPTDIR"
 	Comment(YYText());
 }
 
+<INITIAL>{term} {
+	// Random terminator
+}
+
 {other} {
 	statement += YYText();
 	yy_push_state(STATEMENT);
