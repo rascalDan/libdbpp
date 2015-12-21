@@ -32,17 +32,11 @@ class DLL_PUBLIC MockDatabase : public AdHoc::AbstractPluginImplementation {
 		virtual void PlaySchemaScript(DB::Connection *, const boost::filesystem::path & s) const;
 		/// Implementation specific method to drop a database.
 		virtual void DropDatabase() const = 0;
-		/// Update the status table.
-		virtual void UpdateStatusTable(DB::Connection *, const boost::filesystem::path &) const;
 
 		/// The name of this mocked database.
 		const std::string mockName;
 		/// Internal counter of mocked databases (for unique name generation)
 		static unsigned int mocked;
-
-	private:
-		void CreateStatusTable(DB::Connection *) const;
-		void DropStatusTable(DB::Connection *) const;
 };
 
 /// MockServerDatabase extends MockDatabase with the functionality to connect to a database service
