@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE( parse )
 	mock->executeScript(s, rootDir);
 	MockDb * mockdb = dynamic_cast<MockDb *>(mock);
 	BOOST_REQUIRE(mockdb);
-	BOOST_REQUIRE_EQUAL(2, mockdb->executed.size());
+	BOOST_REQUIRE_EQUAL(3, mockdb->executed.size());
 	BOOST_REQUIRE_EQUAL("INSERT INTO name(t, i) VALUES('string', 3)", mockdb->executed[1]);
 	delete mock;
 }

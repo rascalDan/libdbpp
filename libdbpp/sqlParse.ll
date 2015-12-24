@@ -22,7 +22,7 @@ comment			("--"{non_newline}*)
 other .
 term ;
 any ({other}|{space})
-quote '
+quote ('|\")
 quote_apos ''
 quote_esc \\.
 dolq_start [A-Za-z\200-\377_]

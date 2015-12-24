@@ -13,3 +13,6 @@ INSERT INTO name(t, i) VALUES('string', 3);
 /*! comments with a ;*/;
 /*! Because reasons */;
 
+SET @cmd="SET @broken_views = (select count(*) from information_schema.views"
+  " where table_schema='performance_schema')";
+
