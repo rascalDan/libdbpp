@@ -3,7 +3,7 @@
 
 #include <connection.h>
 #include <definedDirs.h>
-#include <mock.h>
+#include <pq-mock.h>
 #include <command.h>
 #include <buffer.h>
 

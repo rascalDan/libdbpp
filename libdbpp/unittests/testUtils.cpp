@@ -5,7 +5,7 @@
 #include <selectcommand.h>
 #include <selectcommandUtil.impl.h>
 #include <definedDirs.h>
-#include <mock.h>
+#include <pq-mock.h>
 #include <boost/date_time/posix_time/posix_time_io.hpp>
 
 class StandardMockDatabase : public PQ::Mock {

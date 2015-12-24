@@ -3,7 +3,7 @@
 
 #include <definedDirs.h>
 #include <fstream>
-#include <mock.h>
+#include <pq-mock.h>
 #include "error.h"
 
 BOOST_AUTO_TEST_CASE( missingMock )

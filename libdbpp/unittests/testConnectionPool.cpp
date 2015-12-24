@@ -2,7 +2,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <connectionPool.h>
-#include <mock.h>
+#include <pq-mock.h>
 #include <buffer.h>
 
 class MockPool : public PQ::Mock, public DB::ConnectionPool {
