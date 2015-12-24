@@ -1,5 +1,6 @@
 #include "connection.h"
 #include "modifycommand.h"
+#include "error.h"
 #include <factory.impl.h>
 #include <buffer.h>
 #include <sqlParse.h>
@@ -19,6 +20,9 @@ DB::Connection::execute(const std::string & sql) const
 void
 DB::Connection::executeScript(std::istream & f, const boost::filesystem::path & s) const
 {
+	if (!f.good()) {
+		throw SqlParseException("Script stream not in good state.", 0);
+	}
 	DB::SqlParse p(f, s, this);
 	while (p.yylex()) ;
 }

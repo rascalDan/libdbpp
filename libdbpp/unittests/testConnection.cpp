@@ -66,11 +66,18 @@ BOOST_AUTO_TEST_CASE( resolve )
 	BOOST_REQUIRE_THROW(DB::ConnectionFactory::createNew("otherdb", "doesn't matter"), AdHoc::LoadLibraryException);
 }
 
+BOOST_AUTO_TEST_CASE( parseBad )
+{
+	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
+	std::fstream s("/bad");
+	BOOST_REQUIRE_THROW(mock->executeScript(s, rootDir), DB::SqlParseException);
+	delete mock;
+}
+
 BOOST_AUTO_TEST_CASE( parse )
 {
 	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
 	std::fstream s((rootDir / "parseTest.sql").string());
-	BOOST_REQUIRE(s.good());
 	mock->executeScript(s, rootDir);
 	MockDb * mockdb = dynamic_cast<MockDb *>(mock);
 	BOOST_REQUIRE(mockdb);
@@ -84,7 +91,7 @@ BOOST_AUTO_TEST_CASE( parse2 )
 	auto mock = DB::ConnectionPtr(DB::ConnectionFactory::createNew("MockDb", "doesn't matter"));
 	auto mockdb = boost::dynamic_pointer_cast<MockDb>(mock);
 	BOOST_REQUIRE(mockdb);
-	std::fstream s;
+	std::ifstream s;
 
 	s.open((rootDir / "dollarQuote.sql").string());
 	mock->executeScript(s, rootDir);
