@@ -18,6 +18,11 @@ DB::TransactionStillOpen::message() const throw()
 	return "A transaction is still open.";
 }
 
+DB::Connection::Connection() :
+	txOpenDepth(0)
+{
+}
+
 DB::Connection::~Connection()
 {
 }
@@ -39,6 +44,64 @@ DB::ModifyCommandPtr
 DB::Connection::modify(const std::string & sql)
 {
 	return DB::ModifyCommandPtr(newModifyCommand(sql));
+}
+
+void
+DB::Connection::finish() const
+{
+	if (inTx()) {
+		throw TransactionStillOpen();
+	}
+}
+
+void
+DB::Connection::beginTx()
+{
+	if (inTx()) {
+		savepoint(stringbf("tx_sp_%p_%d", this, txOpenDepth));
+	}
+	else {
+		beginTxInt();
+	}
+	txOpenDepth += 1;
+}
+
+void
+DB::Connection::commitTx()
+{
+	switch (txOpenDepth) {
+		case 0:
+			throw TransactionRequired();
+		case 1:
+			commitTxInt();
+			break;
+		default:
+			releaseSavepoint(stringbf("tx_sp_%p_%d", this, txOpenDepth - 1));
+			break;
+	}
+	txOpenDepth -= 1;
+}
+
+void
+DB::Connection::rollbackTx()
+{
+	switch (txOpenDepth) {
+		case 0:
+			throw TransactionRequired();
+		case 1:
+			rollbackTxInt();
+			break;
+		default:
+			rollbackToSavepoint(stringbf("tx_sp_%p_%d", this, txOpenDepth - 1));
+			break;
+	}
+	txOpenDepth -= 1;
+}
+
+bool
+DB::Connection::inTx() const
+{
+	return txOpenDepth > 0;
 }
 
 void

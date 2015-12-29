@@ -12,14 +12,12 @@
 // LCOV_EXCL_START
 class MockDb : public DB::Connection {
 	public:
-		MockDb(const std::string &) : txDepth(0) {}
+		MockDb(const std::string &) {}
 
-		void	finish() const override {}
-		int		beginTx() const override { return ++txDepth; }
-		int		commitTx() const override { return --txDepth; }
-		int		rollbackTx() const override { return --txDepth; }
-		bool	inTx() const override { return txDepth > 0; }
-		void	ping() const override {}
+		void beginTxInt() override { }
+		void commitTxInt() override { }
+		void rollbackTxInt() override { }
+		void ping() const override {}
 		DB::BulkDeleteStyle bulkDeleteStyle() const override { return DB::BulkDeleteUsingUsing; }
 		DB::BulkUpdateStyle bulkUpdateStyle() const override { return DB::BulkUpdateUsingJoin; }
 
@@ -30,7 +28,6 @@ class MockDb : public DB::Connection {
 		DB::ModifyCommand * newModifyCommand(const std::string &) override { return nullptr; }
 
 		mutable std::vector<std::string> executed;
-		mutable unsigned int txDepth;
 };
 // LCOV_EXCL_STOP
 
@@ -121,6 +118,42 @@ BOOST_AUTO_TEST_CASE( parse2 )
 			mock->executeScript(s, rootDir);
 		}, DB::SqlParseException);
 	s.close();
+}
+
+BOOST_AUTO_TEST_CASE( finish )
+{
+	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
+	BOOST_REQUIRE(mock);
+	BOOST_REQUIRE_EQUAL(false, mock->inTx());
+	mock->beginTx();
+	BOOST_REQUIRE_THROW(mock->finish(), DB::TransactionStillOpen);
+	mock->rollbackTx();
+	mock->finish();
+	mock->beginTx();
+	BOOST_REQUIRE_THROW(mock->finish(), DB::TransactionStillOpen);
+	mock->commitTx();
+	mock->finish();
+	delete mock;
+}
+
+BOOST_AUTO_TEST_CASE( tx )
+{
+	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
+	BOOST_REQUIRE(mock);
+	BOOST_REQUIRE_EQUAL(false, mock->inTx());
+	mock->beginTx(); // 1
+	BOOST_REQUIRE_EQUAL(true, mock->inTx());
+	mock->beginTx(); // 2
+	BOOST_REQUIRE_EQUAL(true, mock->inTx());
+	mock->commitTx(); // 1
+	BOOST_REQUIRE_EQUAL(true, mock->inTx());
+	mock->beginTx(); // 2
+	BOOST_REQUIRE_EQUAL(true, mock->inTx());
+	mock->rollbackTx(); // 1
+	BOOST_REQUIRE_EQUAL(true, mock->inTx());
+	mock->rollbackTx(); // 0
+	BOOST_REQUIRE_EQUAL(false, mock->inTx());
+	delete mock;
 }
 
 BOOST_AUTO_TEST_CASE( txscope )

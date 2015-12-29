@@ -45,7 +45,6 @@ namespace DB {
 			std::string statement;
 	};
 	/// @endcond
-
 }
 
 #endif

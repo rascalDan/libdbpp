@@ -87,15 +87,15 @@ namespace DB {
 			virtual ~Connection();
 
 			/// Perform final checks before closing.
-			virtual void	finish() const = 0;
+			void finish() const;
 			/// Open a new transaction.
-			virtual int		beginTx() const = 0;
+			void beginTx();
 			/// Commit an open transaction.
-			virtual int		commitTx() const = 0;
+			void commitTx();
 			/// Rollback an open transaction.
-			virtual int		rollbackTx() const = 0;
+			void rollbackTx();
 			/// Test to see if a transaction is currently open.
-			virtual bool	inTx() const = 0;
+			bool inTx() const;
 			/// Create a named save point.
 			virtual void savepoint(const std::string &);
 			/// Rollback to a named save point.
@@ -103,7 +103,7 @@ namespace DB {
 			/// Release a named save point.
 			virtual void releaseSavepoint(const std::string &);
 			/// Test server connection availability.
-			virtual void	ping() const = 0;
+			virtual void ping() const = 0;
 			/// @cond
 			virtual BulkDeleteStyle bulkDeleteStyle() const = 0;
 			virtual BulkUpdateStyle bulkUpdateStyle() const = 0;
@@ -143,6 +143,16 @@ namespace DB {
 			static boost::optional<std::string> resolvePlugin(const std::type_info &, const std::string &);
 
 		protected:
+			/// Create a new connection.
+			Connection();
+
+			/// Internal begin transaction.
+			virtual void beginTxInt() = 0;
+			/// Internal commit transaction.
+			virtual void commitTxInt() = 0;
+			/// Internal rollbacj transaction.
+			virtual void rollbackTxInt() = 0;
+
 			/// Internal perform table patch delete operations.
 			virtual unsigned int patchDeletes(TablePatch * tp);
 			/// Internal perform table patch update operations.
@@ -151,6 +161,7 @@ namespace DB {
 			virtual unsigned int patchInserts(TablePatch * tp);
 
 		private:
+			unsigned int txOpenDepth;
 	};
 
 	/// Helper class for beginning/committing/rolling back transactions in accordance with scope and exceptions.
