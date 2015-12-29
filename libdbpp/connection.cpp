@@ -74,6 +74,22 @@ DB::TransactionRequired::TransactionRequired() :
 {
 }
 
+DB::TransactionScope::TransactionScope(DB::Connection * c) :
+	conn(c)
+{
+	conn->beginTx();
+}
+
+DB::TransactionScope::~TransactionScope()
+{
+	if (std::uncaught_exception()) {
+		conn->rollbackTx();
+	}
+	else {
+		conn->commitTx();
+	}
+}
+
 INSTANTIATEFACTORY(DB::Connection, std::string);
 PLUGINRESOLVER(DB::ConnectionFactory, DB::Connection::resolvePlugin);
 

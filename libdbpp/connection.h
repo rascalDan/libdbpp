@@ -133,6 +133,20 @@ namespace DB {
 		private:
 	};
 
+	/// Helper class for beginning/committing/rolling back transactions in accordance with scope and exceptions.
+	class DLL_PUBLIC TransactionScope {
+		public:
+			/// Create a new helper and associated transaction on the given connection.
+			TransactionScope(DB::Connection *);
+			~TransactionScope();
+
+		private:
+			TransactionScope(const TransactionScope &) = delete;
+			void operator=(const TransactionScope &) = delete;
+
+			Connection * conn;
+	};
+
 	typedef boost::shared_ptr<Connection> ConnectionPtr;
 	typedef AdHoc::Factory<Connection, std::string> ConnectionFactory;
 }

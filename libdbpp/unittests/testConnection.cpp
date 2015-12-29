@@ -12,13 +12,13 @@
 // LCOV_EXCL_START
 class MockDb : public DB::Connection {
 	public:
-		MockDb(const std::string &) {}
+		MockDb(const std::string &) : txDepth(0) {}
 
 		void	finish() const {}
-		int		beginTx() const { return 0; }
-		int		commitTx() const { return 0; }
-		int		rollbackTx() const { return 0; }
-		bool	inTx() const { return false; }
+		int		beginTx() const { return ++txDepth; }
+		int		commitTx() const { return --txDepth; }
+		int		rollbackTx() const { return --txDepth; }
+		bool	inTx() const { return txDepth > 0; }
 		void	ping() const {}
 		DB::BulkDeleteStyle bulkDeleteStyle() const { return DB::BulkDeleteUsingUsing; }
 		DB::BulkUpdateStyle bulkUpdateStyle() const { return DB::BulkUpdateUsingJoin; }
@@ -34,6 +34,7 @@ class MockDb : public DB::Connection {
 		size_t bulkUploadData(const char *, size_t) const {return 0;}
 
 		mutable std::vector<std::string> executed;
+		mutable unsigned int txDepth;
 };
 // LCOV_EXCL_STOP
 
@@ -126,6 +127,25 @@ BOOST_AUTO_TEST_CASE( parse2 )
 	s.close();
 }
 
+BOOST_AUTO_TEST_CASE( txscope )
+{
+	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
+	BOOST_REQUIRE(mock);
+	BOOST_REQUIRE_EQUAL(false, mock->inTx());
+	{
+		DB::TransactionScope tx(mock);
+		BOOST_REQUIRE_EQUAL(true, mock->inTx());
+	}
+	BOOST_REQUIRE_EQUAL(false, mock->inTx());
+	try {
+		DB::TransactionScope tx(mock);
+		BOOST_REQUIRE_EQUAL(true, mock->inTx());
+		throw std::exception();
+	}
+	catch (...) {
+		BOOST_REQUIRE_EQUAL(false, mock->inTx());
+	}
+}
 
 BOOST_AUTO_TEST_CASE( savepoints )
 {
