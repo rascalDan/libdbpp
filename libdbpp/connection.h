@@ -143,9 +143,13 @@ namespace DB {
 			static boost::optional<std::string> resolvePlugin(const std::type_info &, const std::string &);
 
 		protected:
-			unsigned int patchDeletes(TablePatch * tp);
-			unsigned int patchUpdates(TablePatch * tp);
-			unsigned int patchInserts(TablePatch * tp);
+			/// Internal perform table patch delete operations.
+			virtual unsigned int patchDeletes(TablePatch * tp);
+			/// Internal perform table patch update operations.
+			virtual unsigned int patchUpdates(TablePatch * tp);
+			/// Internal perform table patch insert operations.
+			virtual unsigned int patchInserts(TablePatch * tp);
+
 		private:
 	};
 
