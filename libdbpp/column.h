@@ -52,8 +52,6 @@ namespace DB {
 			virtual bool isNull() const = 0;
 			/// Apply a field handler (any sub-class of HandleField)
 			virtual void apply(HandleField &) const = 0;
-			/// Rebind this field to another command (limited support).
-			virtual void rebind(Command *, unsigned int) const = 0;
 
 			/// STL like string extractor.
 			void operator>>(std::string &) const;
