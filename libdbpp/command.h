@@ -5,8 +5,21 @@
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/shared_ptr.hpp>
 #include <visibility.h>
+#include "error.h"
 
 namespace DB {
+	/// Exception thrown when binding a parameter of type the connector doesn't support.
+	class DLL_PUBLIC ParameterTypeNotSupported : public Error {
+		public:
+			ParameterTypeNotSupported();
+	};
+
+	/// Exception thrown when binding a parameter out of range of those defined in the command.
+	class DLL_PUBLIC ParameterOutOfRange : public Error {
+		public:
+			ParameterOutOfRange();
+	};
+
 	/// Represents the basics of any command to be executed against a database.
 	class DLL_PUBLIC Command {
 		public:

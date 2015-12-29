@@ -9,3 +9,7 @@ DB::ModifyCommand::~ModifyCommand()
 {
 }
 
+DB::NoRowsAffected::NoRowsAffected()
+{
+}
+

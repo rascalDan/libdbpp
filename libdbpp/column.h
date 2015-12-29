@@ -10,17 +10,6 @@
 #include "error.h"
 
 namespace DB {
-	/// Exception thrown on an attempt to convert betweem incompatible types.
-	class DLL_PUBLIC InvalidConversion : public AdHoc::Exception<Error> {
-		public:
-			InvalidConversion(const char * const, const char * const);
-
-		private:
-			std::string message() const throw() override;
-			const char * from;
-			const char * to;
-	};
-
 	/// Abstract class for something that can handle field data. See Column::apply.
 	class DLL_PUBLIC HandleField {
 		public:

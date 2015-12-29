@@ -1,13 +1,13 @@
 #include "error.h"
 #include <time.h>
 
-DB::ConnectionError::ConnectionError() :
-	FailureTime(time(NULL))
-{
-}
+namespace DB {
+	ColumnTypeNotSupported::ColumnTypeNotSupported()
+	{
+	}
 
-DB::ConnectionError::ConnectionError(time_t t) :
-	FailureTime(t)
-{
+	BulkUploadNotSupported::BulkUploadNotSupported()
+	{
+	}
 }
 

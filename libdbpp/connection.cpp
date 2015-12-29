@@ -6,6 +6,17 @@
 #include <sqlParse.h>
 #include <boost/shared_ptr.hpp>
 
+DB::ConnectionError::ConnectionError() :
+	FailureTime(time(NULL))
+{
+}
+
+std::string
+DB::TransactionStillOpen::message() const throw()
+{
+	return "A transaction is still open.";
+}
+
 DB::Connection::~Connection()
 {
 }
@@ -69,9 +80,10 @@ DB::SqlWriter::bindParams(DB::Command *, unsigned int &)
 {
 }
 
-DB::TransactionRequired::TransactionRequired() :
-	std::logic_error("A transaction must be opened before performing this operation")
+std::string
+DB::TransactionRequired::message() const throw()
 {
+	return "A transaction must be opened before performing this operation";
 }
 
 DB::TransactionScope::TransactionScope(DB::Connection * c) :

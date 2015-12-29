@@ -165,8 +165,3 @@ BOOST_AUTO_TEST_CASE( savepoints )
 	delete mock;
 }
 
-BOOST_AUTO_TEST_CASE( connectError )
-{
-	BOOST_REQUIRE_THROW(DB::ConnectionFactory::createNew("postgresql", "user=fail dbname=nodb"), DB::ConnectionError);
-}
-

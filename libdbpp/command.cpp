@@ -9,3 +9,11 @@ DB::Command::~Command()
 {
 }
 
+DB::ParameterTypeNotSupported::ParameterTypeNotSupported()
+{
+}
+
+DB::ParameterOutOfRange::ParameterOutOfRange()
+{
+}
+

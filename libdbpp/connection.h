@@ -8,6 +8,7 @@
 #include <visibility.h>
 #include <boost/filesystem/path.hpp>
 #include <boost/shared_ptr.hpp>
+#include "error.h"
 
 namespace AdHoc {
 	class Buffer;
@@ -51,6 +52,16 @@ namespace DB {
 			virtual void bindParams(Command *, unsigned int &);
 	};
 
+	/// Base class for database connectivity errors.
+	class DLL_PUBLIC ConnectionError : public Error {
+		public:
+			/// Default constructor, sets FailureTime to now.
+			ConnectionError();
+
+			/// The time of connectivity failure.
+			const time_t FailureTime;
+	};
+
 	class DLL_PUBLIC TablePatch {
 		public:
 			TablePatch();
@@ -64,15 +75,28 @@ namespace DB {
 			SqlWriter * order;
 	};
 
+	/// Exception thrown when finishing a connection that still has a transaction open.
+	class DLL_PUBLIC TransactionStillOpen : public AdHoc::StdException {
+		private:
+			std::string message() const throw() override;
+	};
+
+	/// Exception thrown when attempting to open a transaction when one is already open.
+	class DLL_PUBLIC TransactionAlreadyOpen : public AdHoc::StdException {
+		private:
+			std::string message() const throw() override;
+	};
+
 	/// Exception thrown when attempting to perform a table patch with invalid settings.
 	class DLL_PUBLIC PatchCheckFailure : public AdHoc::StdException {
 		private:
 			std::string message() const throw() override;
 	};
 
-	class DLL_PUBLIC TransactionRequired : public std::logic_error {
-		public:
-			TransactionRequired();
+	/// Exception thrown when attempting to perform an action that requires a transaction when one is not open.
+	class DLL_PUBLIC TransactionRequired : public AdHoc::StdException {
+		private:
+			std::string message() const throw() override;
 	};
 
 	/// Base class for connections to a database.
@@ -131,6 +155,7 @@ namespace DB {
 
 			/// AdHoc plugin resolver helper for database connectors.
 			static boost::optional<std::string> resolvePlugin(const std::type_info &, const std::string &);
+
 		protected:
 			unsigned int patchDeletes(TablePatch * tp);
 			unsigned int patchUpdates(TablePatch * tp);
