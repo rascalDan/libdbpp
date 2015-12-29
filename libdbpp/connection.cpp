@@ -75,11 +75,6 @@ DB::TablePatch::TablePatch() :
 {
 }
 
-void
-DB::SqlWriter::bindParams(DB::Command *, unsigned int &)
-{
-}
-
 std::string
 DB::TransactionRequired::message() const throw()
 {

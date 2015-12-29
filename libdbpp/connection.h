@@ -16,6 +16,7 @@ namespace AdHoc {
 
 namespace DB {
 	class Command;
+	class SqlWriter;
 	class SelectCommand;
 	class ModifyCommand;
 
@@ -44,12 +45,6 @@ namespace DB {
 		unsigned int updates;
 		/// Number of rows inserted.
 		unsigned int inserts;
-	};
-
-	class DLL_PUBLIC SqlWriter {
-		public:
-			virtual void writeSql(AdHoc::Buffer &) = 0;
-			virtual void bindParams(Command *, unsigned int &);
 	};
 
 	/// Base class for database connectivity errors.

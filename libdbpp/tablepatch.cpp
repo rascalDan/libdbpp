@@ -1,6 +1,7 @@
 #include "connection.h"
 #include "modifycommand.h"
 #include "selectcommand.h"
+#include "sqlWriter.h"
 #include <buffer.h>
 #include <safeMapFind.h>
 #include <scopeExit.h>
