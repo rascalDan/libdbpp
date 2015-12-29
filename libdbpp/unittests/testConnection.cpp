@@ -14,14 +14,14 @@ class MockDb : public DB::Connection {
 	public:
 		MockDb(const std::string &) : txDepth(0) {}
 
-		void	finish() const {}
-		int		beginTx() const { return ++txDepth; }
-		int		commitTx() const { return --txDepth; }
-		int		rollbackTx() const { return --txDepth; }
-		bool	inTx() const { return txDepth > 0; }
-		void	ping() const {}
-		DB::BulkDeleteStyle bulkDeleteStyle() const { return DB::BulkDeleteUsingUsing; }
-		DB::BulkUpdateStyle bulkUpdateStyle() const { return DB::BulkUpdateUsingJoin; }
+		void	finish() const override {}
+		int		beginTx() const override { return ++txDepth; }
+		int		commitTx() const override { return --txDepth; }
+		int		rollbackTx() const override { return --txDepth; }
+		bool	inTx() const override { return txDepth > 0; }
+		void	ping() const override {}
+		DB::BulkDeleteStyle bulkDeleteStyle() const override { return DB::BulkDeleteUsingUsing; }
+		DB::BulkUpdateStyle bulkUpdateStyle() const override { return DB::BulkUpdateUsingJoin; }
 
 		void execute(const std::string & sql) override {
 			executed.push_back(sql);

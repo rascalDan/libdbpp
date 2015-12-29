@@ -19,7 +19,7 @@ class Mock : public PQ::Mock {
 
 class OrderByA : public DB::SqlWriter {
 	public:
-		void writeSql(AdHoc::Buffer & b)
+		void writeSql(AdHoc::Buffer & b) override
 		{
 			b.append("a");
 		}
@@ -27,11 +27,11 @@ class OrderByA : public DB::SqlWriter {
 
 class WhereAequals1 : public DB::SqlWriter {
 	public:
-		void writeSql(AdHoc::Buffer & b)
+		void writeSql(AdHoc::Buffer & b) override
 		{
 			b.append("a.a = ?");
 		}
-		void bindParams(DB::Command * cmd, unsigned int & o)
+		void bindParams(DB::Command * cmd, unsigned int & o) override
 		{
 			cmd->bindParamI(o++, 1);
 		}
@@ -39,11 +39,11 @@ class WhereAequals1 : public DB::SqlWriter {
 
 class MarkDeleted : public DB::SqlWriter {
 	public:
-		void writeSql(AdHoc::Buffer & b)
+		void writeSql(AdHoc::Buffer & b) override
 		{
 			b.append("deleted = ?");
 		}
-		void bindParams(DB::Command * cmd, unsigned int & o)
+		void bindParams(DB::Command * cmd, unsigned int & o) override
 		{
 			cmd->bindParamB(o++, true);
 		}
