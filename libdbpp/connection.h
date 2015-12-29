@@ -97,11 +97,11 @@ namespace DB {
 			/// Test to see if a transaction is currently open.
 			virtual bool	inTx() const = 0;
 			/// Create a named save point.
-			virtual void	savepoint(const std::string &) const;
+			virtual void savepoint(const std::string &);
 			/// Rollback to a named save point.
-			virtual void	rollbackToSavepoint(const std::string &) const;
+			virtual void rollbackToSavepoint(const std::string &);
 			/// Release a named save point.
-			virtual void	releaseSavepoint(const std::string &) const;
+			virtual void releaseSavepoint(const std::string &);
 			/// Test server connection availability.
 			virtual void	ping() const = 0;
 			/// @cond
@@ -110,11 +110,11 @@ namespace DB {
 			/// @endcond
 
 			/// Straight up execute a statement (no access to result set)
-			virtual void execute(const std::string & sql) const;
+			virtual void execute(const std::string & sql);
 			/// Execute a script from a stream.
 			/// @param f the script.
 			/// @param s the location of the script.
-			virtual void executeScript(std::istream & f, const boost::filesystem::path & s) const;
+			virtual void executeScript(std::istream & f, const boost::filesystem::path & s);
 			/// Create a new select command with the given SQL.
 			virtual SelectCommand * newSelectCommand(const std::string & sql) const = 0;
 			/// Create a new select command with the given SQL [smart pointer].

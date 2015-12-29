@@ -142,7 +142,7 @@ namespace DB {
     return stringf("Error parsing SQL script: %s at line %u", reason, line);
   }
 
-  SqlParse::SqlParse(std::istream & f, const boost::filesystem::path & s, const Connection * c) :
+  SqlParse::SqlParse(std::istream & f, const boost::filesystem::path & s, Connection * c) :
     yyFlexLexer(&f, NULL),
     conn(c),
     scriptDir(s)

@@ -23,10 +23,9 @@ DB::Connection::~Connection()
 }
 
 void
-DB::Connection::execute(const std::string & sql) const
+DB::Connection::execute(const std::string & sql)
 {
-	auto cmd = ModifyCommandPtr(newModifyCommand(sql));
-	cmd->execute(true);
+	modify(sql)->execute(true);
 }
 
 
@@ -43,7 +42,7 @@ DB::Connection::modify(const std::string & sql)
 }
 
 void
-DB::Connection::executeScript(std::istream & f, const boost::filesystem::path & s) const
+DB::Connection::executeScript(std::istream & f, const boost::filesystem::path & s)
 {
 	if (!f.good()) {
 		throw SqlParseException("Script stream not in good state.", 0);
@@ -53,19 +52,19 @@ DB::Connection::executeScript(std::istream & f, const boost::filesystem::path & 
 }
 
 void
-DB::Connection::savepoint(const std::string & sp) const
+DB::Connection::savepoint(const std::string & sp)
 {
 	execute("SAVEPOINT " + sp);
 }
 
 void
-DB::Connection::rollbackToSavepoint(const std::string & sp) const
+DB::Connection::rollbackToSavepoint(const std::string & sp)
 {
 	execute("ROLLBACK TO SAVEPOINT " + sp);
 }
 
 void
-DB::Connection::releaseSavepoint(const std::string & sp) const
+DB::Connection::releaseSavepoint(const std::string & sp)
 {
 	execute("RELEASE SAVEPOINT " + sp);
 }

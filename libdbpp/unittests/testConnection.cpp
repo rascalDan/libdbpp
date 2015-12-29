@@ -23,7 +23,7 @@ class MockDb : public DB::Connection {
 		DB::BulkDeleteStyle bulkDeleteStyle() const { return DB::BulkDeleteUsingUsing; }
 		DB::BulkUpdateStyle bulkUpdateStyle() const { return DB::BulkUpdateUsingJoin; }
 
-		void execute(const std::string & sql) const {
+		void execute(const std::string & sql) override {
 			executed.push_back(sql);
 		}
 		DB::SelectCommand * newSelectCommand(const std::string &) const { return nullptr; }
@@ -61,9 +61,9 @@ BOOST_AUTO_TEST_CASE( create )
 
 BOOST_AUTO_TEST_CASE( resolve )
 {
-	auto pq = DB::ConnectionFactory::createNew("postgresql", "user=postgres dbname=postgres");
-	BOOST_REQUIRE(pq);
-	delete pq;
+	auto libname = DB::Connection::resolvePlugin(typeid(DB::Connection), "postgresql");
+	BOOST_REQUIRE(libname);
+	BOOST_REQUIRE_EQUAL("libdbpp-postgresql.so", *libname);
 	BOOST_REQUIRE_THROW(DB::ConnectionFactory::createNew("otherdb", "doesn't matter"), AdHoc::LoadLibraryException);
 }
 

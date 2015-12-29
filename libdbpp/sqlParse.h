@@ -26,25 +26,25 @@ namespace DB {
 			const unsigned int line;
 	};
 
-/// @cond
-class SqlParse : public yyFlexLexer {
-	public:
-		SqlParse(std::istream &, const boost::filesystem::path &, const Connection *);
-		int yylex() override;
+	/// @cond
+	class SqlParse : public yyFlexLexer {
+		public:
+			SqlParse(std::istream &, const boost::filesystem::path &, Connection *);
+			int yylex() override;
 
-		void Comment(const std::string &) const;
-		void Statement(const std::string &) const;
+			void Comment(const std::string &) const;
+			void Statement(const std::string &) const;
 
-	protected:
-		void LexerError(const char *) override;
+		protected:
+			void LexerError(const char *) override;
 
-	private:
-		const DB::Connection * conn;
-		const boost::filesystem::path scriptDir;
-		std::string comment;
-		std::string statement;
-};
-/// @endcond
+		private:
+			DB::Connection * const conn;
+			const boost::filesystem::path scriptDir;
+			std::string comment;
+			std::string statement;
+	};
+	/// @endcond
 
 }
 
