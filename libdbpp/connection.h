@@ -116,11 +116,11 @@ namespace DB {
 			/// @param s the location of the script.
 			virtual void executeScript(std::istream & f, const boost::filesystem::path & s);
 			/// Create a new select command with the given SQL.
-			virtual SelectCommand * newSelectCommand(const std::string & sql) const = 0;
+			virtual SelectCommand * newSelectCommand(const std::string & sql) = 0;
 			/// Create a new select command with the given SQL [smart pointer].
 			virtual boost::shared_ptr<SelectCommand> select(const std::string & sql);
 			/// Create a new modify command with the given SQL.
-			virtual ModifyCommand * newModifyCommand(const std::string & sql) const = 0;
+			virtual ModifyCommand * newModifyCommand(const std::string & sql) = 0;
 			/// Create a new modify command with the given SQL [smart pointer].
 			virtual boost::shared_ptr<ModifyCommand> modify(const std::string & sql);
 

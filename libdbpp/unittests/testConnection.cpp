@@ -26,8 +26,8 @@ class MockDb : public DB::Connection {
 		void execute(const std::string & sql) override {
 			executed.push_back(sql);
 		}
-		DB::SelectCommand * newSelectCommand(const std::string &) const { return nullptr; }
-		DB::ModifyCommand * newModifyCommand(const std::string &) const { return nullptr; }
+		DB::SelectCommand * newSelectCommand(const std::string &) override { return nullptr; }
+		DB::ModifyCommand * newModifyCommand(const std::string &) override { return nullptr; }
 
 		mutable std::vector<std::string> executed;
 		mutable unsigned int txDepth;
