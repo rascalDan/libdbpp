@@ -1,5 +1,6 @@
 #include "connection.h"
 #include "modifycommand.h"
+#include "selectcommand.h"
 #include "error.h"
 #include <factory.impl.h>
 #include <buffer.h>
@@ -26,6 +27,19 @@ DB::Connection::execute(const std::string & sql) const
 {
 	auto cmd = ModifyCommandPtr(newModifyCommand(sql));
 	cmd->execute(true);
+}
+
+
+DB::SelectCommandPtr
+DB::Connection::select(const std::string & sql)
+{
+	return DB::SelectCommandPtr(newSelectCommand(sql));
+}
+
+DB::ModifyCommandPtr
+DB::Connection::modify(const std::string & sql)
+{
+	return DB::ModifyCommandPtr(newModifyCommand(sql));
 }
 
 void
