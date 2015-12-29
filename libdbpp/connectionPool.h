@@ -20,6 +20,8 @@ namespace DB {
 			/// Create a new connection.
 			Connection * createResource() const override;
 			/// Ping a connection.
+			void returnTestResource(const Connection *) const override;
+			/// Ping a connection.
 			void testResource(const Connection *) const override;
 
 		private:

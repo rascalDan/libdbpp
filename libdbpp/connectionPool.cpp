@@ -19,6 +19,12 @@ namespace DB {
 	}
 
 	void
+	ConnectionPool::returnTestResource(const Connection * c) const
+	{
+		c->finish();
+	}
+
+	void
 	ConnectionPool::testResource(const Connection * c) const
 	{
 		c->ping();
