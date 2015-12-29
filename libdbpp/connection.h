@@ -35,9 +35,13 @@ namespace DB {
 	typedef ColumnNames PrimaryKey;
 	typedef PrimaryKey::const_iterator PKI;
 
+	/// Result of a table patch operation.
 	struct PatchResult {
+		/// Number of rows deleted.
 		unsigned int deletes;
+		/// Number of rows updated.
 		unsigned int updates;
+		/// Number of rows inserted.
 		unsigned int inserts;
 	};
 
@@ -60,8 +64,9 @@ namespace DB {
 			SqlWriter * order;
 	};
 
+	/// Exception thrown when attempting to perform a table patch with invalid settings.
 	class DLL_PUBLIC PatchCheckFailure : public AdHoc::StdException {
-		public:
+		private:
 			std::string message() const throw() override;
 	};
 

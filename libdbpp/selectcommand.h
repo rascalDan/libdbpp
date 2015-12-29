@@ -16,20 +16,35 @@
 
 namespace DB {
 	class Column;
+
+	/// Exception thrown when the requested column is outside the range of the result set.
 	class DLL_PUBLIC ColumnIndexOutOfRange : public AdHoc::Exception<Error> {
 		public:
+			/// New ColumnIndexOutOfRange exception
+			/// @param n Index requested
 			ColumnIndexOutOfRange(unsigned int n);
-			std::string message() const throw() override;
 
+			/// Index requested
 			const unsigned int colNo;
+
+		private:
+			std::string message() const throw() override;
 	};
+
+	/// Exception thrown when the requested column does not exist in the result set.
 	class DLL_PUBLIC ColumnDoesNotExist : public AdHoc::Exception<Error> {
 		public:
+			/// New ColumnDoesNotExist exception
+			/// @param n Name requested
 			ColumnDoesNotExist(const Glib::ustring & n);
-			std::string message() const throw() override;
 
+			/// Name requested
 			const Glib::ustring colName;
+
+		private:
+			std::string message() const throw() override;
 	};
+
 	/// Represents a command expected to return data to the client.
 	class DLL_PUBLIC SelectCommand : public virtual Command {
 		public:

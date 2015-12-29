@@ -12,14 +12,19 @@
 #endif
 
 namespace DB {
-class DLL_PUBLIC SqlParseException : public AdHoc::StdException {
-	public:
-		SqlParseException(const char *, unsigned int);
-	private:
-		std::string message() const throw() override;
-		const char * reason;
-		const unsigned int line;
-};
+	/// Exception representing a failure to parse an SQL script
+	class DLL_PUBLIC SqlParseException : public AdHoc::StdException {
+		public:
+			/// Create a new SqlParseException
+			/// @param what What went wrong
+			/// @param line What line number
+			SqlParseException(const char * what, unsigned int line);
+
+		private:
+			std::string message() const throw() override;
+			const char * reason;
+			const unsigned int line;
+	};
 
 /// @cond
 class SqlParse : public yyFlexLexer {

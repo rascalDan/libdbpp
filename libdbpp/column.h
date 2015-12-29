@@ -65,6 +65,7 @@ namespace DB {
 			void operator>>(boost::posix_time::time_duration &) const;
 			/// STL like date time extractor.
 			void operator>>(boost::posix_time::ptime &) const;
+			/// STL like wrapper for optional types.
 			template <typename T>
 			void operator>>(boost::optional<T> & v) const {
 				if (!isNull()) {
