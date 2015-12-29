@@ -1,11 +1,19 @@
 #include "connection.h"
 #include "modifycommand.h"
 #include "selectcommand.h"
+#include "tablepatch.h"
 #include "sqlWriter.h"
 #include <buffer.h>
 #include <safeMapFind.h>
 #include <scopeExit.h>
 #include <boost/algorithm/string/join.hpp>
+
+DB::TablePatch::TablePatch() :
+	insteadOfDelete(nullptr),
+	where(nullptr),
+	order(nullptr)
+{
+}
 
 DB::PatchResult
 DB::Connection::patchTable(TablePatch * tp)

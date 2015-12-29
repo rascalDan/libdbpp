@@ -5,6 +5,7 @@
 #include <definedDirs.h>
 #include <pq-mock.h>
 #include <command.h>
+#include <tablepatch.h>
 #include <sqlWriter.h>
 #include <buffer.h>
 

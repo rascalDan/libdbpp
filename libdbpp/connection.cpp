@@ -68,13 +68,6 @@ DB::Connection::insertId() const
 	throw std::runtime_error("insertId not implemented for this driver.");
 }
 
-DB::TablePatch::TablePatch() :
-	insteadOfDelete(nullptr),
-	where(nullptr),
-	order(nullptr)
-{
-}
-
 std::string
 DB::TransactionRequired::message() const throw()
 {

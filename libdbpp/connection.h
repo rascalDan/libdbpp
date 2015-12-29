@@ -16,9 +16,9 @@ namespace AdHoc {
 
 namespace DB {
 	class Command;
-	class SqlWriter;
 	class SelectCommand;
 	class ModifyCommand;
+	class TablePatch;
 
 	enum BulkDeleteStyle {
 		BulkDeleteUsingSubSelect,
@@ -55,19 +55,6 @@ namespace DB {
 
 			/// The time of connectivity failure.
 			const time_t FailureTime;
-	};
-
-	class DLL_PUBLIC TablePatch {
-		public:
-			TablePatch();
-
-			TableName src;
-			TableName dest;
-			PrimaryKey pk;
-			ColumnNames cols;
-			SqlWriter * insteadOfDelete;
-			SqlWriter * where;
-			SqlWriter * order;
 	};
 
 	/// Exception thrown when finishing a connection that still has a transaction open.
