@@ -134,7 +134,7 @@ namespace DB {
 			virtual size_t bulkUploadData(const char *, size_t) const;
 
 			/// Return the Id used in the last insert
-			virtual int64_t insertId() const;
+			virtual int64_t insertId();
 
 			/// Patch one table's contents into another.
 			PatchResult patchTable(TablePatch * tp);

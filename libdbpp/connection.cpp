@@ -94,7 +94,7 @@ DB::Connection::resolvePlugin(const std::type_info &, const std::string & name)
 }
 
 int64_t
-DB::Connection::insertId() const
+DB::Connection::insertId()
 {
 	throw std::runtime_error("insertId not implemented for this driver.");
 }
