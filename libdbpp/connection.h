@@ -127,11 +127,11 @@ namespace DB {
 			/// Begin a bulk upload operation.
 			/// @param table the target table.
 			/// @param opts database specific options to the load command.
-			virtual void beginBulkUpload(const char * table, const char * opts) const = 0;
+			virtual void beginBulkUpload(const char * table, const char * opts);
 			/// Finish a bulk upload operation.
-			virtual void endBulkUpload(const char *) const = 0;
+			virtual void endBulkUpload(const char *);
 			/// Load data for the current bulk load operation.
-			virtual size_t bulkUploadData(const char *, size_t) const = 0;
+			virtual size_t bulkUploadData(const char *, size_t) const;
 
 			/// Return the Id used in the last insert
 			virtual int64_t insertId() const;

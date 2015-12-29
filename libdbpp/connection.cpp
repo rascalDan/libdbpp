@@ -69,6 +69,24 @@ DB::Connection::releaseSavepoint(const std::string & sp)
 	execute("RELEASE SAVEPOINT " + sp);
 }
 
+void
+DB::Connection::beginBulkUpload(const char *, const char *)
+{
+	throw DB::BulkUploadNotSupported();
+}
+
+void
+DB::Connection::endBulkUpload(const char *)
+{
+	throw DB::BulkUploadNotSupported();
+}
+
+size_t
+DB::Connection::bulkUploadData(const char *, size_t) const
+{
+	throw DB::BulkUploadNotSupported();
+}
+
 boost::optional<std::string>
 DB::Connection::resolvePlugin(const std::type_info &, const std::string & name)
 {

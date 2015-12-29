@@ -29,10 +29,6 @@ class MockDb : public DB::Connection {
 		DB::SelectCommand * newSelectCommand(const std::string &) const { return nullptr; }
 		DB::ModifyCommand * newModifyCommand(const std::string &) const { return nullptr; }
 
-		void beginBulkUpload(const char *, const char *) const {}
-		void endBulkUpload(const char *) const {}
-		size_t bulkUploadData(const char *, size_t) const {return 0;}
-
 		mutable std::vector<std::string> executed;
 		mutable unsigned int txDepth;
 };
