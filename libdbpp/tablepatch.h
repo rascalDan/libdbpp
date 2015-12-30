@@ -38,6 +38,12 @@ namespace DB {
 			SqlWriter * where;
 			/// An optional SQL writer to append an order by clause.
 			SqlWriter * order;
+			/// Enable deletion
+			bool doDeletes;
+			/// Enable updates
+			bool doUpdates;
+			/// Enable insertion
+			bool doInserts;
 	};
 }
 

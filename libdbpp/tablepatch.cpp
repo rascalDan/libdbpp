@@ -10,7 +10,10 @@
 DB::TablePatch::TablePatch() :
 	insteadOfDelete(nullptr),
 	where(nullptr),
-	order(nullptr)
+	order(nullptr),
+	doDeletes(true),
+	doUpdates(true),
+	doInserts(true)
 {
 }
 
@@ -25,9 +28,9 @@ DB::Connection::patchTable(TablePatch * tp)
 	}
 	TransactionScope tx(this);
 	return {
-		patchDeletes(tp),
-		patchUpdates(tp),
-		patchInserts(tp)
+		tp->doDeletes ? patchDeletes(tp) : 0,
+		tp->doUpdates ? patchUpdates(tp) : 0,
+		tp->doInserts ? patchInserts(tp) : 0
 	};
 }
 
