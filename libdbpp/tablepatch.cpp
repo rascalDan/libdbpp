@@ -5,7 +5,6 @@
 #include "sqlWriter.h"
 #include <buffer.h>
 #include <safeMapFind.h>
-#include <scopeExit.h>
 #include <boost/algorithm/string/join.hpp>
 
 DB::TablePatch::TablePatch() :
@@ -24,12 +23,7 @@ DB::Connection::patchTable(TablePatch * tp)
 	if (!inTx()) {
 		throw TransactionRequired();
 	}
-	auto savepointName = stringbf("TablePatch_%p_%d", tp, getpid());
-	savepoint(savepointName);
-	AdHoc::ScopeExit _(AdHoc::ScopeExit::Event(),
-			[this, savepointName](){ releaseSavepoint(savepointName); },
-			[this, savepointName](){ rollbackToSavepoint(savepointName); }
-		);
+	TransactionScope tx(this);
 	return {
 		patchDeletes(tp),
 		patchUpdates(tp),
