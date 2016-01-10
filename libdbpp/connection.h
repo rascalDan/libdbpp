@@ -132,6 +132,10 @@ namespace DB {
 			virtual void endBulkUpload(const char *);
 			/// Load data for the current bulk load operation.
 			virtual size_t bulkUploadData(const char *, size_t) const;
+			/// Load bulk data from a file (wrapper)
+			size_t bulkUploadData(std::istream &) const;
+			/// Load bulk data from a file (wrapper)
+			size_t bulkUploadData(FILE *) const;
 
 			/// Return the Id used in the last insert
 			virtual int64_t insertId();

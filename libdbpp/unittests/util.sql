@@ -8,3 +8,5 @@ CREATE TABLE foreachrow (
 INSERT INTO foreachrow(a, b, c, d, e, f) VALUES(1, 4.3, 'Some text', '2015-11-07 13:39:17', '04:03:02', true);
 INSERT INTO foreachrow(a, b, c, f) VALUES(2, 4.3, 'Some text', false);
 
+CREATE TABLE bulk1(a int, b int, c text, d text);
+CREATE TABLE bulk2(a int, b int, c text, d text);

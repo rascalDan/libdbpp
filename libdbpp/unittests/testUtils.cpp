@@ -5,6 +5,7 @@
 #include <selectcommand.h>
 #include <selectcommandUtil.impl.h>
 #include <definedDirs.h>
+#include <fstream>
 #include <pq-mock.h>
 #include <boost/date_time/posix_time/posix_time_io.hpp>
 
@@ -100,5 +101,30 @@ BOOST_AUTO_TEST_CASE( extract )
 	BOOST_REQUIRE_THROW((*sel)[1] >> lstring, DB::InvalidConversion);
 	BOOST_REQUIRE_THROW((*sel)[0] >> lstring, DB::InvalidConversion);
 	BOOST_REQUIRE(!sel->fetch());
+}
+
+BOOST_AUTO_TEST_CASE( bulkLoadStream )
+{
+	std::ifstream in((rootDir / "source.dat").string());
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	db->beginBulkUpload("bulk1", "");
+	BOOST_REQUIRE_EQUAL(56, db->bulkUploadData(in));
+	db->endBulkUpload(nullptr);
+	db->select("SELECT COUNT(*) FROM bulk1")->forEachRow<int64_t>([](auto n) {
+			BOOST_REQUIRE_EQUAL(4, n);
+		});
+}
+
+BOOST_AUTO_TEST_CASE( bulkLoadFile )
+{
+	auto f = fopen((rootDir / "source.dat").c_str(), "r");
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	db->beginBulkUpload("bulk2", "");
+	BOOST_REQUIRE_EQUAL(56, db->bulkUploadData(f));
+	db->endBulkUpload(nullptr);
+	fclose(f);
+	db->select("SELECT COUNT(*) FROM bulk2")->forEachRow<int64_t>([](auto n) {
+			BOOST_REQUIRE_EQUAL(4, n);
+		});
 }
 

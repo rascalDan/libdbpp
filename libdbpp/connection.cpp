@@ -150,6 +150,36 @@ DB::Connection::bulkUploadData(const char *, size_t) const
 	throw DB::BulkUploadNotSupported();
 }
 
+size_t
+DB::Connection::bulkUploadData(std::istream & in) const
+{
+	if (!in.good()) throw std::runtime_error("Input stream is not good");
+	char buf[BUFSIZ];
+	size_t total = 0;
+	for (std::streamsize r; (r = in.readsome(buf, sizeof(buf))) > 0; ) {
+		bulkUploadData(buf, r);
+		total += r;
+	}
+	return total;
+}
+
+size_t
+DB::Connection::bulkUploadData(FILE * in) const
+{
+	if (!in) throw std::runtime_error("Input file handle is null");
+	char buf[BUFSIZ];
+	size_t total = 0, r;
+	while ((r = fread(buf, 1, sizeof(buf), in)) > 0) {
+		bulkUploadData(buf, r);
+		total += r;
+	}
+	if ((int)r < 0) {
+		throw std::system_error(-r, std::system_category());
+	}
+	return total;
+
+}
+
 boost::optional<std::string>
 DB::Connection::resolvePlugin(const std::type_info &, const std::string & name)
 {
