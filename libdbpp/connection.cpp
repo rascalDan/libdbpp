@@ -6,6 +6,7 @@
 #include <buffer.h>
 #include <sqlParse.h>
 #include <boost/shared_ptr.hpp>
+#include <system_error>
 
 DB::ConnectionError::ConnectionError() :
 	FailureTime(time(NULL))
