@@ -19,7 +19,6 @@ lib dbppcore :
 	<library>boost_system
 	<library>boost_thread
 	<library>boost_filesystem
-	<cflags>-fvisibility=hidden
 	<include>.
 	: :
 	<include>.
@@ -35,7 +34,6 @@ lib dbpptestcore :
 	<define>BOOST_TEST_DYN_LINK
 	<library>dbppcore
 	<library>boost_utf
-	<cflags>-fvisibility=hidden
 	: :
 	<include>.
 	;
