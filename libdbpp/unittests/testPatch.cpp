@@ -8,6 +8,7 @@
 #include <tablepatch.h>
 #include <sqlWriter.h>
 #include <buffer.h>
+#include <selectcommandUtil.impl.h>
 
 class Mock : public PQ::Mock {
 	public:
@@ -130,6 +131,21 @@ BOOST_AUTO_TEST_CASE( testOrder )
 	tp.cols = {"a", "b", "c", "d"};
 	tp.pk = {"a", "b"};
 	tp.order = &order;
+	tp.beforeDelete = [](DB::SelectCommandPtr i) {
+			i->forEachRow<int64_t, int64_t, std::string, std::string>([](auto a, auto b, auto c, auto d) {
+						fprintf(stderr, "<< %ld %ld %s %s\n", a, b, c.c_str(), d.c_str());
+					});
+			};
+	tp.beforeUpdate = [](DB::SelectCommandPtr i) {
+			i->forEachRow<int64_t, int64_t, std::string, std::string, std::string, std::string>([](auto a, auto b, auto c1, auto d1, auto c2, auto d2) {
+						fprintf(stderr, "== %ld %ld %s->%s %s->%s\n", a, b, c1.c_str(), c2.c_str(), d1.c_str(), d2.c_str());
+					});
+			};
+	tp.beforeInsert = [](DB::SelectCommandPtr i) {
+			i->forEachRow<int64_t, int64_t, std::string, std::string>([](auto a, auto b, auto c, auto d) {
+						fprintf(stderr, ">> %ld %ld %s %s\n", a, b, c.c_str(), d.c_str());
+					});
+			};
 	db->beginTx();
 	auto r = db->patchTable(&tp);
 	db->commitTx();

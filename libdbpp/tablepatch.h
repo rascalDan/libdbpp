@@ -7,6 +7,7 @@
 #include <connection.h>
 #include <modifycommand.h>
 #include <selectcommand.h>
+#include <boost/function.hpp>
 
 namespace DB {
 	class SqlWriter;
@@ -19,6 +20,7 @@ namespace DB {
 			typedef std::set<ColumnName> ColumnNames;
 			typedef ColumnNames PrimaryKey;
 			typedef PrimaryKey::const_iterator PKI;
+			typedef boost::function<void(DB::SelectCommandPtr)> AuditFunction;
 
 		public:
 			/// Default constructor
@@ -44,6 +46,12 @@ namespace DB {
 			bool doUpdates;
 			/// Enable insertion
 			bool doInserts;
+			/// Before delete audit
+			AuditFunction beforeDelete;
+			/// Before update audit
+			AuditFunction beforeUpdate;
+			/// Before insert audit
+			AuditFunction beforeInsert;
 	};
 }
 
