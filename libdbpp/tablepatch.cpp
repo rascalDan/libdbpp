@@ -8,6 +8,7 @@
 #include <boost/algorithm/string/join.hpp>
 
 DB::TablePatch::TablePatch() :
+	srcExpr(nullptr),
 	insteadOfDelete(nullptr),
 	where(nullptr),
 	order(nullptr),
@@ -27,11 +28,21 @@ DB::Connection::patchTable(TablePatch * tp)
 		throw TransactionRequired();
 	}
 	TransactionScope tx(this);
-	return {
+	bool ownedExpr = false;
+	if (!tp->srcExpr && !tp->src.empty()) {
+		tp->srcExpr = new DB::StaticSqlWriter(tp->src);
+		ownedExpr = true;
+	}
+	DB::PatchResult r {
 		tp->doDeletes ? patchDeletes(tp) : 0,
 		tp->doUpdates ? patchUpdates(tp) : 0,
 		tp->doInserts ? patchInserts(tp) : 0
 	};
+	if (ownedExpr) {
+		delete tp->srcExpr;
+		tp->srcExpr = nullptr;
+	}
+	return r;
 }
 
 template<typename Container>
@@ -107,12 +118,14 @@ DB::Connection::patchDeletes(TablePatch * tp)
 		AdHoc::Buffer toDelSql;
 		toDelSql.append("SELECT ");
 		append(toDelSql, tp->cols, ", ", "a.%s", selfCols);
-		toDelSql.appendbf(" FROM %s a LEFT OUTER JOIN %s b ON ",
-				tp->dest, tp->src);
+		toDelSql.appendbf(" FROM %s a LEFT OUTER JOIN ", tp->dest);
+		tp->srcExpr->writeSql(toDelSql);
+		toDelSql.append(" b ON ");
 		append(toDelSql, tp->pk, " AND ", " a.%s = b.%s", selfCols, selfCols);
 		patchDeletesSelect(toDelSql, tp);
 		auto del = select(toDelSql);
 		unsigned int offset = 0;
+		tp->srcExpr->bindParams(del.get(), offset);
 		if (tp->where) {
 			tp->where->bindParams(del.get(), offset);
 		}
@@ -144,8 +157,10 @@ DB::Connection::patchDeletes(TablePatch * tp)
 				// -----------------------------------------------------------------
 				toDelSql.append(") IN (SELECT ");
 				append(toDelSql, tp->pk, ", ", "a.%s", selfCols);
-				toDelSql.appendbf(" FROM %s a LEFT OUTER JOIN %s b ON ",
-						tp->dest, tp->src);
+				toDelSql.appendbf(" FROM %s a LEFT OUTER JOIN ",
+						tp->dest);
+				tp->srcExpr->writeSql(toDelSql);
+				toDelSql.append(" b ON ");
 				append(toDelSql, tp->pk, " AND ", " a.%s = b.%s", selfCols, selfCols);
 				patchDeletesSelect(toDelSql, tp);
 				toDelSql.append(")");
@@ -163,9 +178,9 @@ DB::Connection::patchDeletes(TablePatch * tp)
 							(bulkDeleteStyle() == BulkDeleteUsingUsingAlias ? "a" : tp->dest),
 							tp->dest);
 				}
-				toDelSql.appendbf(" LEFT OUTER JOIN %s b ",
-						tp->src);
-				toDelSql.append(" ON ");
+				toDelSql.append(" LEFT OUTER JOIN ");
+				tp->srcExpr->writeSql(toDelSql);
+				toDelSql.append(" b ON ");
 				append(toDelSql, tp->pk, " AND ", " a.%s = b.%s ", selfCols, selfCols);
 				if (tp->insteadOfDelete) {
 					tp->insteadOfDelete->writeSql(toDelSql);
@@ -176,6 +191,7 @@ DB::Connection::patchDeletes(TablePatch * tp)
 	}
 	auto del = ModifyCommandPtr(newModifyCommand(toDelSql));
 	unsigned int offset = 0;
+	tp->srcExpr->bindParams(del.get(), offset);
 	if (tp->insteadOfDelete) {
 		tp->insteadOfDelete->bindParams(del.get(), offset);
 	}
@@ -219,7 +235,9 @@ DB::Connection::patchUpdates(TablePatch * tp)
 		append(updSql, tp->pk, ", ", "a.%s", selfCols);
 		appendIf(updSql, tp->cols, isNotKey(tp), "", ", a.%1% old_%1%", selfCols);
 		appendIf(updSql, tp->cols, isNotKey(tp), "", ", b.%1% new_%1%", selfCols);
-		updSql.appendbf(" FROM %s a, %s b ", tp->dest, tp->src);
+		updSql.appendbf(" FROM %s a, ", tp->dest);
+		tp->srcExpr->writeSql(updSql);
+		updSql.append(" b ");
 		patchUpdatesSelect(updSql, tp);
 		if (tp->order) {
 			updSql.append(" ORDER BY ");
@@ -227,6 +245,7 @@ DB::Connection::patchUpdates(TablePatch * tp)
 		}
 		auto upd = select(updSql);
 		unsigned int offset = 0;
+		tp->srcExpr->bindParams(upd.get(), offset);
 		if (tp->where) {
 			tp->where->bindParams(upd.get(), offset);
 		}
@@ -245,14 +264,16 @@ DB::Connection::patchUpdates(TablePatch * tp)
 				updSql.appendbf("UPDATE %s a SET ",
 						tp->dest);
 				appendIf(updSql, tp->cols, isNotKey(tp), ", ", " %s = b.%s ", selfCols, selfCols);
-				updSql.appendbf(" FROM %s b ",
-						tp->src);
+				updSql.append(" FROM ");
+				tp->srcExpr->writeSql(updSql);
+				updSql.append(" b ");
 				patchUpdatesSelect(updSql, tp);
 				// -----------------------------------------------------------------
 				// Execute the bulk update command ---------------------------------
 				// -----------------------------------------------------------------
 				auto upd = ModifyCommandPtr(newModifyCommand(updSql));
 				unsigned int offset = 0;
+				tp->srcExpr->bindParams(upd.get(), offset);
 				if (tp->where) {
 					tp->where->bindParams(upd.get(), offset);
 				}
@@ -265,8 +286,10 @@ DB::Connection::patchUpdates(TablePatch * tp)
 				// Build SQL for list of updates to perform ------------------------
 				// -----------------------------------------------------------------
 				AdHoc::Buffer updSql;
-				updSql.appendbf("UPDATE %s a, %s b SET ",
-						tp->dest, tp->src);
+				updSql.appendbf("UPDATE %s a, ",
+						tp->dest);
+				tp->srcExpr->writeSql(updSql);
+				updSql.append(" b SET ");
 				appendIf(updSql, tp->cols, isNotKey(tp), ", ", " a.%s = b.%s ", selfCols, selfCols);
 				patchUpdatesSelect(updSql, tp);
 				if (tp->order) {
@@ -278,6 +301,7 @@ DB::Connection::patchUpdates(TablePatch * tp)
 				// -----------------------------------------------------------------
 				auto upd = ModifyCommandPtr(newModifyCommand(updSql));
 				unsigned int offset = 0;
+				tp->where->bindParams(upd.get(), offset);
 				if (tp->where) {
 					tp->where->bindParams(upd.get(), offset);
 				}
@@ -297,8 +321,10 @@ patchInsertsSelect(AdHoc::Buffer & toInsSql, DB::TablePatch * tp)
 {
 	toInsSql.append("SELECT ");
 	append(toInsSql, tp->cols, ", ", "b.%s", selfCols);
-	toInsSql.appendbf(" FROM %s b LEFT OUTER JOIN %s a ON ",
-			tp->src, tp->dest);
+	toInsSql.append(" FROM  ");
+	tp->srcExpr->writeSql(toInsSql);
+	toInsSql.appendbf(" b LEFT OUTER JOIN %s a ON ",
+			tp->dest);
 	append(toInsSql, tp->pk, " AND ", " a.%s = b.%s", selfCols, selfCols);
 	toInsSql.append(" WHERE ");
 	append(toInsSql, tp->pk, " AND ", " a.%s IS NULL", selfCols);
@@ -315,8 +341,9 @@ DB::Connection::patchInserts(TablePatch * tp)
 		AdHoc::Buffer toInsSql;
 		patchInsertsSelect(toInsSql, tp);
 		auto ins = select(toInsSql);
+		unsigned int offset = 0;
+		tp->srcExpr->bindParams(ins.get(), offset);
 		if (tp->order) {
-			unsigned int offset = 0;
 			tp->order->bindParams(ins.get(), offset);
 		}
 		tp->beforeInsert(ins);
@@ -331,8 +358,9 @@ DB::Connection::patchInserts(TablePatch * tp)
 	toInsSql.append(")\n");
 	patchInsertsSelect(toInsSql, tp);
 	auto ins = ModifyCommandPtr(newModifyCommand(toInsSql));
+	unsigned int offset = 0;
+	tp->srcExpr->bindParams(ins.get(), offset);
 	if (tp->order) {
-		unsigned int offset = 0;
 		tp->order->bindParams(ins.get(), offset);
 	}
 	return ins->execute();

@@ -28,6 +28,8 @@ namespace DB {
 
 			/// Source table name.
 			TableName src;
+			/// Source expression.
+			SqlWriter * srcExpr;
 			/// Destination table name.
 			TableName dest;
 			/// Columns comprising the [effective] primary key.

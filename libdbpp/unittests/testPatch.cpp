@@ -18,12 +18,9 @@ class Mock : public PQ::Mock {
 		}
 };
 
-class OrderByA : public DB::SqlWriter {
+class OrderByA : public DB::StaticSqlWriter {
 	public:
-		void writeSql(AdHoc::Buffer & b) override
-		{
-			b.append("a");
-		}
+		OrderByA() : DB::StaticSqlWriter("a") { }
 };
 
 class WhereAequals1 : public DB::SqlWriter {
@@ -191,6 +188,79 @@ BOOST_AUTO_TEST_CASE( testInstead )
 	db->commitTx();
 	BOOST_REQUIRE_EQUAL(2, r.deletes);
 	BOOST_REQUIRE_EQUAL(2, r.inserts);
+	BOOST_REQUIRE_EQUAL(1, r.updates);
+}
+
+BOOST_AUTO_TEST_CASE( testSrcExprTable )
+{
+	Mock mock;
+	DB::StaticSqlWriter s("source");
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	BOOST_REQUIRE(db);
+	DB::TablePatch tp;
+	tp.srcExpr = &s;
+	tp.dest = "target";
+	tp.cols = {"a", "b", "c", "d"};
+	tp.pk = {"a", "b"};
+	db->beginTx();
+	auto r = db->patchTable(&tp);
+	db->commitTx();
+	BOOST_REQUIRE_EQUAL(2, r.deletes);
+	BOOST_REQUIRE_EQUAL(2, r.inserts);
+	BOOST_REQUIRE_EQUAL(1, r.updates);
+}
+
+BOOST_AUTO_TEST_CASE( testSrcExprSelectTable )
+{
+	Mock mock;
+	DB::StaticSqlWriter s("(SELECT * FROM source)");
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	BOOST_REQUIRE(db);
+	DB::TablePatch tp;
+	tp.srcExpr = &s;
+	tp.dest = "target";
+	tp.cols = {"a", "b", "c", "d"};
+	tp.pk = {"a", "b"};
+	db->beginTx();
+	auto r = db->patchTable(&tp);
+	db->commitTx();
+	BOOST_REQUIRE_EQUAL(2, r.deletes);
+	BOOST_REQUIRE_EQUAL(2, r.inserts);
+	BOOST_REQUIRE_EQUAL(1, r.updates);
+}
+
+class BindInt : public DB::StaticSqlWriter {
+	public:
+		BindInt(const std::string & s, int i) :
+			DB::StaticSqlWriter(s),
+			myInt(i)
+		{
+		}
+
+		void bindParams(DB::Command * c, unsigned int & offset) override
+		{
+			c->bindParamI(offset++, myInt);
+		}
+
+		int myInt;
+};
+
+BOOST_AUTO_TEST_CASE( testSrcExprSelectFilteredTable )
+{
+	Mock mock;
+	BindInt s("(SELECT s.* FROM source s WHERE s.a = ?)", 1);
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	BOOST_REQUIRE(db);
+	DB::TablePatch tp;
+	tp.srcExpr = &s;
+	tp.dest = "target";
+	tp.cols = {"a", "b", "c", "d"};
+	tp.pk = {"a", "b"};
+	db->beginTx();
+	auto r = db->patchTable(&tp);
+	db->commitTx();
+	BOOST_REQUIRE_EQUAL(2, r.deletes);
+	BOOST_REQUIRE_EQUAL(1, r.inserts);
 	BOOST_REQUIRE_EQUAL(1, r.updates);
 }
 
