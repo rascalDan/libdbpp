@@ -16,6 +16,58 @@
 
 namespace DB {
 	class Column;
+	class SelectCommand;
+
+	/// @cond
+	class DLL_PUBLIC RowBase {
+		public:
+			RowBase(SelectCommand *);
+
+			/// Get a column reference by index.
+			const Column & operator[](unsigned int col) const;
+			/// Get a column reference by name.
+			const Column & operator[](const Glib::ustring &) const;
+
+		protected:
+			SelectCommand * sel;
+	};
+
+	template<typename ... Fn>
+	class Row : public RowBase {
+		public:
+			Row(SelectCommand *);
+
+			/// Get value of column C in current row.
+			template<unsigned int C>
+			typename std::tuple_element<C, std::tuple<Fn...>>::type value() const;
+	};
+
+	template<typename ... Fn>
+	class RowRangeIterator {
+		public:
+			RowRangeIterator(SelectCommand *);
+
+			bool operator!=(const RowRangeIterator &) const;
+			void operator++();
+			Row<Fn...> operator*() const;
+
+		private:
+			SelectCommand * sel;
+			bool validRow;
+	};
+
+	template<typename ... Fn>
+	class RowRange {
+		public:
+			RowRange(SelectCommand *);
+
+			RowRangeIterator<Fn...> begin() const;
+			RowRangeIterator<Fn...> end() const;
+
+		private:
+			SelectCommand * sel;
+	};
+	/// @endcond
 
 	/// Exception thrown when the requested column is outside the range of the result set.
 	class DLL_PUBLIC ColumnIndexOutOfRange : public AdHoc::Exception<Error> {
@@ -67,6 +119,9 @@ namespace DB {
 			/// Push each row through a function accepting one value per column
 			template<typename ... Fn, typename Func = boost::function<void(Fn...)>>
 			void forEachRow(const Func & func);
+			/// Support for a C++ row range for
+			template<typename ... Fn>
+			RowRange<Fn...> as();
 
 		protected:
 			/// Helper function so clients need not know about boost::multi_index_container.

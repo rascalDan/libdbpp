@@ -71,3 +71,20 @@ DB::SelectCommand::insertColumn(ColumnPtr col)
 	return *columns->insert(col).first;
 }
 
+DB::RowBase::RowBase(SelectCommand * s) :
+	sel(s)
+{
+}
+
+const DB::Column&
+DB::RowBase::operator[](const Glib::ustring & n) const
+{
+	return sel->operator[](n);
+}
+
+const DB::Column&
+DB::RowBase::operator[](unsigned int col) const
+{
+	return sel->operator[](col);
+}
+

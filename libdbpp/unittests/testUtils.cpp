@@ -50,6 +50,26 @@ BOOST_AUTO_TEST_CASE( forEachRowNulls )
 			});
 }
 
+BOOST_AUTO_TEST_CASE( stdforOverRows )
+{
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	unsigned int count = 0;
+	int64_t totalOfa = 0;
+	std::string totalOfc;
+	auto sel = db->select("SELECT a, c FROM forEachRow ORDER BY a DESC");
+	for (const auto & row : sel->as<int64_t, std::string>()) {
+		count += 1;
+		BOOST_REQUIRE_EQUAL("a", row[0].name);
+		BOOST_REQUIRE_EQUAL(1, row["c"].colNo);
+		int64_t a = row.value<0>();
+		totalOfa += a;
+		totalOfc += row.value<1>();
+	}
+	BOOST_REQUIRE_EQUAL(count, 2);
+	BOOST_REQUIRE_EQUAL(totalOfa, 3);
+	BOOST_REQUIRE_EQUAL(totalOfc, "Some textSome text");
+}
+
 BOOST_AUTO_TEST_CASE( execute )
 {
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
