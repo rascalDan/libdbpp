@@ -30,6 +30,7 @@ namespace DB {
 			/// @param buffer The buffer
 			void writeSql(AdHoc::Buffer & buffer);
 
+			/// The SQL to write.
 			std::string sql;
 	};
 }
