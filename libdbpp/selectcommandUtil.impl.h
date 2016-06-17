@@ -5,6 +5,7 @@
 #include <boost/function.hpp>
 #include <boost/utility/enable_if.hpp>
 
+/// @cond
 namespace DB {
 	template<typename Fields, typename Func, unsigned int field, typename ... Fn>
 	inline typename boost::disable_if_c<field < std::tuple_size<Fields>::value>::type
@@ -30,6 +31,7 @@ namespace DB {
 		}
 	}
 }
+/// @endcond
 
 #endif
 
