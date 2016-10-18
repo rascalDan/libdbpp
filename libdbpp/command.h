@@ -5,6 +5,7 @@
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/shared_ptr.hpp>
 #include <visibility.h>
+#include <type_traits>
 #include "error.h"
 
 namespace DB {
@@ -64,8 +65,9 @@ namespace DB {
 
 #define OPTWRAPPER(func) \
 			template<typename O> \
-			inline void func(unsigned int i, const O & o) { \
-				if (o) \
+			inline typename std::enable_if<std::is_constructible<bool, const O &>::value>::type func(unsigned int i, const O & o) { \
+				bool nn(o); \
+				if (nn) \
 					func(i, *o); \
 				else \
 					bindNull(i); \
