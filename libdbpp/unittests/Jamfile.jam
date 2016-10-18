@@ -3,6 +3,7 @@ import testing ;
 path-constant me : . ;
 
 lib boost_utf : : <name>boost_unit_test_framework ;
+lib IceUtil ;
 
 run
 	testConnection.cpp
@@ -62,6 +63,7 @@ run
 	<library>..//adhocutil
 	<library>../../libpqpp//dbpp-postgresql
 	<library>boost_utf
+	<library>IceUtil
 	<dependency>util.sql
 	:
 	testUtils

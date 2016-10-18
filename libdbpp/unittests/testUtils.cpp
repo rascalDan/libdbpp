@@ -3,11 +3,14 @@
 
 #include <connection.h>
 #include <selectcommand.h>
+#include <modifycommand.h>
 #include <selectcommandUtil.impl.h>
 #include <definedDirs.h>
 #include <fstream>
 #include <pq-mock.h>
 #include <boost/date_time/posix_time/posix_time_io.hpp>
+#include <IceUtil/Exception.h>
+#include <IceUtil/Optional.h>
 
 class StandardMockDatabase : public PQ::Mock {
 	public:
@@ -146,5 +149,104 @@ BOOST_AUTO_TEST_CASE( bulkLoadFile )
 	db->select("SELECT COUNT(*) FROM bulk2")->forEachRow<int64_t>([](auto n) {
 			BOOST_REQUIRE_EQUAL(4, n);
 		});
+}
+
+BOOST_AUTO_TEST_CASE( nullBind )
+{
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto ins = db->modify("INSERT INTO forEachRow VALUES(?, ?, ?, ?, ?, ?)");
+	ins->bindParamI(0, boost::optional<int>());
+	ins->bindParamF(1, boost::optional<double>());
+	ins->bindParamS(2, boost::optional<Glib::ustring>());
+	ins->bindParamT(3, boost::optional<boost::posix_time::ptime>());
+	ins->bindParamT(4, boost::optional<boost::posix_time::time_duration>());
+	ins->bindParamB(5, boost::optional<bool>());
+	ins->execute();
+	auto sel = DB::SelectCommandPtr(db->newSelectCommand("SELECT a, b, c, d, e, f FROM forEachRow WHERE a IS NULL AND b IS NULL AND c IS NULL AND d IS NULL AND e IS NULL AND f IS NULL"));
+	unsigned int count = 0;
+	for (const auto & row : sel->as<>()) {
+		(void)row;
+		count += 1;
+	}
+	BOOST_REQUIRE_EQUAL(1, count);
+}
+
+BOOST_AUTO_TEST_CASE( iceNullBind )
+{
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto ins = db->modify("INSERT INTO forEachRow VALUES(?, ?, ?, ?, ?, ?)");
+	ins->bindParamI(0, IceUtil::Optional<int>());
+	ins->bindParamF(1, IceUtil::Optional<double>());
+	ins->bindParamS(2, IceUtil::Optional<Glib::ustring>());
+	ins->bindParamT(3, IceUtil::Optional<boost::posix_time::ptime>());
+	ins->bindParamT(4, IceUtil::Optional<boost::posix_time::time_duration>());
+	ins->bindParamB(5, IceUtil::Optional<bool>());
+	ins->execute();
+	auto sel = DB::SelectCommandPtr(db->newSelectCommand("SELECT a, b, c, d, e, f FROM forEachRow WHERE a IS NULL AND b IS NULL AND c IS NULL AND d IS NULL AND e IS NULL AND f IS NULL"));
+	unsigned int count = 0;
+	for (const auto & row : sel->as<>()) {
+		(void)row;
+		count += 1;
+	}
+	BOOST_REQUIRE_EQUAL(2, count);
+}
+
+BOOST_AUTO_TEST_CASE( charStarBindNull )
+{
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	db->modify("DELETE FROM forEachRow")->execute();
+	auto ins = db->modify("INSERT INTO forEachRow(a, c) VALUES(?, ?)");
+	char * cs = NULL;
+	char * cs2 = strdup("a thing");
+	ins->bindParamS(0, cs);
+	ins->bindParamS(1, cs2);
+	ins->execute();
+	const char * ccs = cs;
+	const char * ccs2 = cs2;
+	ins->bindParamS(0, ccs);
+	ins->bindParamS(1, ccs2);
+	ins->execute();
+	const char * const ccsc = ccs;
+	const char * const ccsc2 = ccs2;
+	ins->bindParamS(0, ccsc);
+	ins->bindParamS(1, ccsc2);
+	ins->execute();
+	free(cs2);
+	auto sel = DB::SelectCommandPtr(db->newSelectCommand("SELECT a, c FROM forEachRow"));
+	for (const auto & row : sel->as<boost::optional<int64_t>, boost::optional<std::string>>()) {
+		BOOST_REQUIRE(row[0].isNull());
+		BOOST_REQUIRE(!row[1].isNull());
+	}
+}
+
+BOOST_AUTO_TEST_CASE( bindIntPtr )
+{
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	db->modify("DELETE FROM forEachRow")->execute();
+	auto ins = db->modify("INSERT INTO forEachRow(a, b) VALUES(?, ?)");
+	int * is = NULL;
+	int * is2 = new int(53);
+	ins->bindParamI(0, is);
+	ins->bindParamI(1, is2);
+	ins->execute();
+	const int * cis = is;
+	const int * cis2 = is2;
+	ins->bindParamI(0, cis);
+	ins->bindParamI(1, cis2);
+	ins->execute();
+	const int * const cisc = cis;
+	const int * const cisc2 = cis2;
+	ins->bindParamI(0, cisc);
+	ins->bindParamI(1, cisc2);
+	ins->execute();
+	delete is2;
+	auto sel = DB::SelectCommandPtr(db->newSelectCommand("SELECT a, b FROM forEachRow"));
+	unsigned int total = 0;
+	for (const auto & row : sel->as<boost::optional<int64_t>, boost::optional<double>>()) {
+		BOOST_REQUIRE(row[0].isNull());
+		BOOST_REQUIRE(!row[1].isNull());
+		total += *row.value<1>();
+	}
+	BOOST_REQUIRE_EQUAL(159, total);
 }
 

@@ -61,6 +61,22 @@ namespace DB {
 
 			/// The SQL statement.
 			const std::string sql;
+
+#define OPTWRAPPER(func) \
+			template<typename O> \
+			inline void func(unsigned int i, const O & o) { \
+				if (o) \
+					func(i, *o); \
+				else \
+					bindNull(i); \
+			}
+			OPTWRAPPER(bindParamI);
+			OPTWRAPPER(bindParamF);
+			OPTWRAPPER(bindParamS);
+			OPTWRAPPER(bindParamB);
+			OPTWRAPPER(bindParamT);
+			void bindParamS(unsigned int, const char * const);
+			void bindParamS(unsigned int, char * const);
 	};
 	typedef boost::shared_ptr<Command> CommandPtr;
 }

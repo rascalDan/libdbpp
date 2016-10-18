@@ -17,3 +17,22 @@ DB::ParameterOutOfRange::ParameterOutOfRange()
 {
 }
 
+void
+DB::Command::bindParamS(unsigned int i, const char * const o)
+{
+	if (o)
+		bindParamS(i, Glib::ustring(o));
+	else
+		bindNull(i);
+}
+
+
+void
+DB::Command::bindParamS(unsigned int i, char * const o)
+{
+	if (o)
+		bindParamS(i, Glib::ustring(o));
+	else
+		bindNull(i);
+}
+
