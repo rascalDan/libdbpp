@@ -219,6 +219,15 @@ BOOST_AUTO_TEST_CASE( charStarBindNull )
 	}
 }
 
+BOOST_AUTO_TEST_CASE( bind )
+{
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto m = db->modify("doesn't matter, only testing compile");
+	m->bindParamI(0, (unsigned char)1);
+	m->bindParamI(0, (char)1);
+	m->bindParamI(0, (time_t)1);
+}
+
 BOOST_AUTO_TEST_CASE( bindIntPtr )
 {
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));

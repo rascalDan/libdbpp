@@ -65,7 +65,12 @@ namespace DB {
 
 #define OPTWRAPPER(func) \
 			template<typename O> \
-			inline typename std::enable_if<std::is_constructible<bool, const O &>::value>::type func(unsigned int i, const O & o) { \
+			inline auto \
+			func(unsigned int i, const O & o) -> typename std::enable_if< \
+					std::is_constructible<bool, const O &>::value \
+					&& !std::is_void<decltype(*o)>::value \
+					>::type\
+			{ \
 				bool nn(o); \
 				if (nn) \
 					func(i, *o); \
