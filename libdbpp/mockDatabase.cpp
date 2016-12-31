@@ -1,5 +1,5 @@
 #include "mockDatabase.h"
-#include <buffer.h>
+#include <compileTimeFormatter.h>
 #include <fstream>
 #include <modifycommand.h>
 #include <plugins.impl.h>
@@ -68,10 +68,11 @@ MockDatabase::PlaySchemaScript(DB::Connection * conn, const boost::filesystem::p
 	f.close();
 }
 
+AdHocFormatter(MockServerDatabaseName, "test_%?_%?");
 MockServerDatabase::MockServerDatabase(const std::string & masterdb, const std::string & name, const std::string & type) :
 	MockDatabase(name),
 	master(DB::ConnectionFactory::createNew(type, masterdb)),
-	testDbName(stringbf("test_%d_%d", getpid(), ++mocked))
+	testDbName(MockServerDatabaseName::get(getpid(), ++mocked))
 {
 }
 

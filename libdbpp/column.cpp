@@ -1,7 +1,7 @@
 #include "column.h"
 #include <boost/utility/enable_if.hpp>
 #include <exception>
-#include <buffer.h>
+#include <compileTimeFormatter.h>
 
 namespace DB {
 Column::Column(const Glib::ustring & n, unsigned int i) :
@@ -16,10 +16,11 @@ Column::~Column()
 
 InvalidConversion::InvalidConversion(const char * const f, const char * const t) : from(f), to(t) { }
 
+AdHocFormatter(InvalidConversionMsg, "Invalid conversion from column type (%?) to value type (%?)");
 std::string
 InvalidConversion::message() const throw()
 {
-	return stringf("Invalid conversion from column type (%s) to value type (%s)", from, to);
+	return InvalidConversionMsg::get(from, to);
 }
 
 template<typename T>

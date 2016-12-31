@@ -3,7 +3,7 @@
 #include "selectcommand.h"
 #include "error.h"
 #include <factory.impl.h>
-#include <buffer.h>
+#include <compileTimeFormatter.h>
 #include <sqlParse.h>
 #include <boost/shared_ptr.hpp>
 #include <system_error>
@@ -55,11 +55,13 @@ DB::Connection::finish() const
 	}
 }
 
+AdHocFormatter(SavePointFmt, "tx_sp_%?_%?");
+
 void
 DB::Connection::beginTx()
 {
 	if (inTx()) {
-		savepoint(stringbf("tx_sp_%p_%d", this, txOpenDepth));
+		savepoint(SavePointFmt::get(this, txOpenDepth));
 	}
 	else {
 		beginTxInt();
@@ -77,7 +79,7 @@ DB::Connection::commitTx()
 			commitTxInt();
 			break;
 		default:
-			releaseSavepoint(stringbf("tx_sp_%p_%d", this, txOpenDepth - 1));
+			releaseSavepoint(SavePointFmt::get(this, txOpenDepth - 1));
 			break;
 	}
 	txOpenDepth -= 1;
@@ -93,7 +95,7 @@ DB::Connection::rollbackTx()
 			rollbackTxInt();
 			break;
 		default:
-			rollbackToSavepoint(stringbf("tx_sp_%p_%d", this, txOpenDepth - 1));
+			rollbackToSavepoint(SavePointFmt::get(this, txOpenDepth - 1));
 			break;
 	}
 	txOpenDepth -= 1;
@@ -181,10 +183,11 @@ DB::Connection::bulkUploadData(FILE * in) const
 
 }
 
+AdHocFormatter(PluginLibraryFormat, "libdbpp-%?.so");
 boost::optional<std::string>
 DB::Connection::resolvePlugin(const std::type_info &, const std::string & name)
 {
-	return stringbf("libdbpp-%s.so", name);
+	return PluginLibraryFormat::get(name);
 }
 
 int64_t

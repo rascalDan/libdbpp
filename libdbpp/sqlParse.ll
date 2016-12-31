@@ -9,7 +9,7 @@
 
 %{
 #include <stdexcept>
-#include <buffer.h>
+#include <compileTimeFormatter.h>
 #include "sqlParse.h"
 #pragma GCC diagnostic ignored "-Wsign-compare"
 %}
@@ -136,10 +136,11 @@ scriptdir "$SCRIPTDIR"
 namespace DB {
   SqlParseException::SqlParseException(const char * r, unsigned int l) : reason(r), line(l) { }
 
+	AdHocFormatter(SqlParseExceptionMsg, "Error parsing SQL script: %? at line %?");
   std::string
   SqlParseException::message() const throw()
   {
-    return stringf("Error parsing SQL script: %s at line %u", reason, line);
+    return SqlParseExceptionMsg::get(reason, line);
   }
 
   SqlParse::SqlParse(std::istream & f, const boost::filesystem::path & s, Connection * c) :
