@@ -18,6 +18,7 @@ namespace AdHoc {
 }
 INSTANTIATEPLUGINOF(DB::MockDatabase);
 INSTANTIATEFACTORY(DB::MockDatabase, const std::string &, const std::string &, const std::vector<boost::filesystem::path> &);
+PLUGINRESOLVER(DB::MockDatabaseFactory, DB::Connection::resolvePlugin);
 
 namespace DB {
 

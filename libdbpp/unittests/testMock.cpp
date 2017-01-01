@@ -11,7 +11,7 @@ BOOST_AUTO_TEST_CASE( noFactory )
 {
 	BOOST_REQUIRE_THROW({
 		DB::MockDatabaseFactory::get("not-found");
-	}, AdHoc::NoSuchPluginException);
+	}, AdHoc::LoadLibraryException);
 }
 
 BOOST_AUTO_TEST_CASE( mockFactory )
