@@ -23,7 +23,11 @@ namespace DB {
 
 	class DLL_PUBLIC CommandOptions {
 		public:
+			CommandOptions() = default;
+			CommandOptions(std::size_t hash);
 			virtual ~CommandOptions() = default;
+
+			boost::optional<std::size_t> hash;
 	};
 
 	/// Represents the basics of any command to be executed against a database.
