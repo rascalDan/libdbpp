@@ -6,7 +6,7 @@ lib boost_utf : : <name>boost_unit_test_framework ;
 lib IceUtil ;
 
 run
-	testConnection.cpp
+	testConnection.cpp mockdb.cpp
 	: : :
 	<define>ROOT=\"$(me)\"
 	<define>BOOST_TEST_DYN_LINK
@@ -70,7 +70,7 @@ run
 	;
 
 run
-	testMock.cpp
+	testMock.cpp mockdb.cpp
 	: : :
 	<define>ROOT=\"$(me)\"
 	<define>BOOST_TEST_DYN_LINK

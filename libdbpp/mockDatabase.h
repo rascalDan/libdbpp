@@ -63,6 +63,7 @@ class DLL_PUBLIC MockServerDatabase : public MockDatabase {
 		const std::string testDbName;
 };
 
+typedef AdHoc::Factory<MockDatabase, const std::string &, const std::string &, const std::vector<boost::filesystem::path> &> MockDatabaseFactory;
 }
 
 #endif

@@ -1,8 +1,11 @@
+#define BOOST_FILESYSTEM_DYN_LINK
+#define BOOST_FILESYSTEM_SOURCE
 #include "mockDatabase.h"
 #include <compileTimeFormatter.h>
 #include <fstream>
 #include <modifycommand.h>
 #include <plugins.impl.h>
+#include <factory.impl.h>
 
 namespace AdHoc {
 	template <>
@@ -14,6 +17,7 @@ namespace AdHoc {
 	}
 }
 INSTANTIATEPLUGINOF(DB::MockDatabase);
+INSTANTIATEFACTORY(DB::MockDatabase, const std::string &, const std::string &, const std::vector<boost::filesystem::path> &);
 
 namespace DB {
 

@@ -8,39 +8,7 @@
 #include <vector>
 #include <error.h>
 #include <sqlParse.h>
-
-// LCOV_EXCL_START
-class MockDb : public DB::Connection {
-	public:
-		MockDb(const std::string &) {}
-
-		void beginTxInt() override { }
-		void commitTxInt() override { }
-		void rollbackTxInt() override { }
-		void ping() const override {}
-		DB::BulkDeleteStyle bulkDeleteStyle() const override { return DB::BulkDeleteUsingUsing; }
-		DB::BulkUpdateStyle bulkUpdateStyle() const override { return DB::BulkUpdateUsingJoin; }
-
-		void execute(const std::string & sql) override {
-			executed.push_back(sql);
-		}
-		DB::SelectCommand * newSelectCommand(const std::string &) override { return nullptr; }
-		DB::ModifyCommand * newModifyCommand(const std::string &) override { return nullptr; }
-
-		mutable std::vector<std::string> executed;
-};
-// LCOV_EXCL_STOP
-
-FACTORY(MockDb, DB::ConnectionFactory);
-
-BOOST_AUTO_TEST_CASE( plugins )
-{
-	auto pm = AdHoc::PluginManager::getDefault();
-	BOOST_REQUIRE(pm);
-	BOOST_REQUIRE_EQUAL(1, pm->count());
-	BOOST_REQUIRE_EQUAL(1, pm->getAll().size());
-	BOOST_REQUIRE_EQUAL(1, pm->getAll<DB::ConnectionFactory>().size());
-}
+#include "mockdb.h"
 
 BOOST_AUTO_TEST_CASE( create )
 {
