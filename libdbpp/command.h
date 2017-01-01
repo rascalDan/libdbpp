@@ -77,12 +77,17 @@ namespace DB {
 				else \
 					bindNull(i); \
 			}
+			/// @cond
 			OPTWRAPPER(bindParamI);
 			OPTWRAPPER(bindParamF);
 			OPTWRAPPER(bindParamS);
 			OPTWRAPPER(bindParamB);
 			OPTWRAPPER(bindParamT);
+			/// @endcond
+#undef OPTWRAPPER
+			/// Bind a (possibly null) c-string to parameter i.
 			void bindParamS(unsigned int, const char * const);
+			/// Bind a (possibly null) c-string to parameter i.
 			void bindParamS(unsigned int, char * const);
 	};
 	typedef boost::shared_ptr<Command> CommandPtr;
