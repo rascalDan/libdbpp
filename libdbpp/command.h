@@ -21,6 +21,11 @@ namespace DB {
 			ParameterOutOfRange();
 	};
 
+	class DLL_PUBLIC CommandOptions {
+		public:
+			virtual ~CommandOptions() = default;
+	};
+
 	/// Represents the basics of any command to be executed against a database.
 	class DLL_PUBLIC Command {
 		public:

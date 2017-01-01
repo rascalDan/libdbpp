@@ -29,22 +29,22 @@ DB::Connection::~Connection()
 }
 
 void
-DB::Connection::execute(const std::string & sql)
+DB::Connection::execute(const std::string & sql, const CommandOptions * opts)
 {
-	modify(sql)->execute(true);
+	modify(sql, opts)->execute(true);
 }
 
 
 DB::SelectCommandPtr
-DB::Connection::select(const std::string & sql)
+DB::Connection::select(const std::string & sql, const CommandOptions * opts)
 {
-	return DB::SelectCommandPtr(newSelectCommand(sql));
+	return DB::SelectCommandPtr(newSelectCommand(sql, opts));
 }
 
 DB::ModifyCommandPtr
-DB::Connection::modify(const std::string & sql)
+DB::Connection::modify(const std::string & sql, const CommandOptions * opts)
 {
-	return DB::ModifyCommandPtr(newModifyCommand(sql));
+	return DB::ModifyCommandPtr(newModifyCommand(sql, opts));
 }
 
 void

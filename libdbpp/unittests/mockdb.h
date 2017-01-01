@@ -15,9 +15,9 @@ class MockDb : public DB::Connection {
 		DB::BulkDeleteStyle bulkDeleteStyle() const override;
 		DB::BulkUpdateStyle bulkUpdateStyle() const override;
 
-		void execute(const std::string & sql) override;
-		DB::SelectCommand * newSelectCommand(const std::string &) override;
-		DB::ModifyCommand * newModifyCommand(const std::string &) override;
+		void execute(const std::string & sql, const DB::CommandOptions *) override;
+		DB::SelectCommand * newSelectCommand(const std::string &, const DB::CommandOptions *) override;
+		DB::ModifyCommand * newModifyCommand(const std::string &, const DB::CommandOptions *) override;
 
 		mutable std::vector<std::string> executed;
 };
