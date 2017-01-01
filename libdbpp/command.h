@@ -21,12 +21,15 @@ namespace DB {
 			ParameterOutOfRange();
 	};
 
+	/// Represents the basic options that can be passed when creating new commands.
 	class DLL_PUBLIC CommandOptions {
 		public:
 			CommandOptions() = default;
+			/// Constructor which populates the hash value only.
 			CommandOptions(std::size_t hash);
 			virtual ~CommandOptions() = default;
 
+			/// An (optional) hash of the SQL statement.
 			boost::optional<std::size_t> hash;
 	};
 
