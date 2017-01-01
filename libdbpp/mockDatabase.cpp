@@ -72,11 +72,11 @@ MockDatabase::PlaySchemaScript(DB::Connection * conn, const boost::filesystem::p
 	f.close();
 }
 
-AdHocFormatter(MockServerDatabaseName, "test_%?_%?");
+AdHocFormatter(MockServerDatabaseName, "libdbpp_mock_%?_%?_%?");
 MockServerDatabase::MockServerDatabase(const std::string & masterdb, const std::string & name, const std::string & type) :
 	MockDatabase(name),
 	master(DB::ConnectionFactory::createNew(type, masterdb)),
-	testDbName(MockServerDatabaseName::get(getpid(), ++mocked))
+	testDbName(MockServerDatabaseName::get(name, getpid(), ++mocked))
 {
 }
 
