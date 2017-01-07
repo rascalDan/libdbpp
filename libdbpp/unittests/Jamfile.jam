@@ -2,6 +2,9 @@ import testing ;
 
 path-constant me : . ;
 
+lib pq ;
+lib boost_date_time ;
+lib boost_system ;
 lib boost_utf : : <name>boost_unit_test_framework ;
 lib IceUtil ;
 
@@ -24,6 +27,27 @@ run
 	testConnection
 	;
 
+alias libpq : : : :
+	<cflags>"-I`pg_config --includedir`"
+	<linkflags>"-L`pg_config --libdir`"
+	<library>pq
+	;
+
+lib dbpp-local-postgresql :
+	[ glob ../../libpqpp/*.cpp ] :
+	<library>../..//glibmm
+	<library>libpq
+	<library>..//adhocutil
+	<library>..//dbppcore
+	<library>boost_date_time
+	<library>boost_system
+	: :
+	<include>../../libpqpp
+	<cflags>"-I`pg_config --includedir`"
+	<library>../..//glibmm
+	<library>..//dbppcore
+	;
+
 run
 	testPatch.cpp
 	: :
@@ -35,7 +59,7 @@ run
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//dbppcore
 	<library>..//adhocutil
-	<library>../../libpqpp//dbpp-postgresql
+	<library>dbpp-local-postgresql
 	<library>boost_utf
 	:
 	testPatch
@@ -48,7 +72,7 @@ run
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//dbppcore
 	<library>..//adhocutil
-	<library>../../libpqpp//dbpp-postgresql
+	<library>dbpp-local-postgresql
 	<library>boost_utf
 	:
 	testConnectionPool
@@ -61,7 +85,7 @@ run
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//dbppcore
 	<library>..//adhocutil
-	<library>../../libpqpp//dbpp-postgresql
+	<library>dbpp-local-postgresql
 	<library>boost_utf
 	<library>IceUtil
 	<dependency>util.sql
@@ -76,7 +100,7 @@ run
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//dbppcore
 	<library>..//adhocutil
-	<library>../../libpqpp//dbpp-postgresql
+	<library>dbpp-local-postgresql
 	<library>boost_utf
 	<dependency>badMock.sql
 	:
