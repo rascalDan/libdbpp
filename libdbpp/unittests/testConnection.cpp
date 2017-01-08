@@ -171,13 +171,32 @@ BOOST_AUTO_TEST_CASE( commandOptions )
 	BOOST_REQUIRE_EQUAL(1234, *optsDefault->hash);
 }
 
-BOOST_AUTO_TEST_CASE( commandOptionsPq )
+BOOST_AUTO_TEST_CASE( commandOptionsPq1 )
 {
-	auto optsBase = DB::CommandOptionsFactory::createNew("postgresql", 1234, {});
+	auto optsBase = DB::CommandOptionsFactory::createNew("postgresql", 12345, {
+		{"no-cursor", ""},
+		{"page-size", "5"}
+	});
 	BOOST_REQUIRE(optsBase);
 	auto optsPq = dynamic_cast<PQ::CommandOptions *>(optsBase);
 	BOOST_REQUIRE(optsPq);
 	BOOST_REQUIRE(optsBase->hash);
-	BOOST_REQUIRE_EQUAL(1234, *optsBase->hash);
+	BOOST_REQUIRE_EQUAL(12345, *optsBase->hash);
+	BOOST_REQUIRE(!optsPq->useCursor);
+	BOOST_REQUIRE_EQUAL(5, optsPq->fetchTuples);
+}
+
+BOOST_AUTO_TEST_CASE( commandOptionsPq2 )
+{
+	auto optsBase = DB::CommandOptionsFactory::createNew("postgresql", 123456, {
+		{"page-size", "50"}
+	});
+	BOOST_REQUIRE(optsBase);
+	auto optsPq = dynamic_cast<PQ::CommandOptions *>(optsBase);
+	BOOST_REQUIRE(optsPq);
+	BOOST_REQUIRE(optsBase->hash);
+	BOOST_REQUIRE_EQUAL(123456, *optsBase->hash);
+	BOOST_REQUIRE(optsPq->useCursor);
+	BOOST_REQUIRE_EQUAL(50, optsPq->fetchTuples);
 }
 

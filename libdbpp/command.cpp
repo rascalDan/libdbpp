@@ -4,7 +4,7 @@
 
 INSTANTIATEFACTORY(DB::CommandOptions, std::size_t, const DB::CommandOptionsMap &);
 NAMEDFACTORY("", DB::CommandOptions, DB::CommandOptionsFactory);
-PLUGINRESOLVER(DB::CommandOptions, DB::Connection::resolvePlugin);
+PLUGINRESOLVER(DB::CommandOptionsFactory, DB::Connection::resolvePlugin);
 
 DB::Command::Command(const std::string & s) :
 	sql(s)
@@ -26,6 +26,12 @@ DB::ParameterOutOfRange::ParameterOutOfRange()
 DB::CommandOptions::CommandOptions(std::size_t h, const CommandOptionsMap &) :
 	hash(h)
 {
+}
+
+bool
+DB::CommandOptions::isSet(const CommandOptionsMap & map, const std::string & key)
+{
+	return (map.find(key) != map.end());
 }
 
 void

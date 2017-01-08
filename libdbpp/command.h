@@ -4,6 +4,7 @@
 #include <glibmm/ustring.h>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/lexical_cast.hpp>
 #include <visibility.h>
 #include <factory.h>
 #include <type_traits>
@@ -34,6 +35,18 @@ namespace DB {
 
 			/// An (optional) hash of the SQL statement.
 			boost::optional<std::size_t> hash;
+
+		protected:
+			template<typename X>
+			static X get(const CommandOptionsMap & map, const std::string & key, const X & def)
+			{
+				auto i = map.find(key);
+				if (i != map.end()) {
+					return boost::lexical_cast<X>(i->second);
+				}
+				return def;
+			}
+			static bool isSet(const CommandOptionsMap & map, const std::string & key);
 	};
 
 	/// Represents the basics of any command to be executed against a database.
