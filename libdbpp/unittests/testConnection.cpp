@@ -3,6 +3,7 @@
 
 #include <factory.h>
 #include <connection.h>
+#include <pq-command.h>
 #include <definedDirs.h>
 #include <fstream>
 #include <vector>
@@ -160,5 +161,23 @@ BOOST_AUTO_TEST_CASE( savepoints )
 	mock->rollbackToSavepoint("sp1");
 	BOOST_REQUIRE_EQUAL("ROLLBACK TO SAVEPOINT sp1", *mockdb->executed.rbegin());
 	delete mock;
+}
+
+BOOST_AUTO_TEST_CASE( commandOptions )
+{
+	auto optsDefault = DB::CommandOptionsFactory::createNew("", 1234, {});
+	BOOST_REQUIRE(optsDefault);
+	BOOST_REQUIRE(optsDefault->hash);
+	BOOST_REQUIRE_EQUAL(1234, *optsDefault->hash);
+}
+
+BOOST_AUTO_TEST_CASE( commandOptionsPq )
+{
+	auto optsBase = DB::CommandOptionsFactory::createNew("postgresql", 1234, {});
+	BOOST_REQUIRE(optsBase);
+	auto optsPq = dynamic_cast<PQ::CommandOptions *>(optsBase);
+	BOOST_REQUIRE(optsPq);
+	BOOST_REQUIRE(optsBase->hash);
+	BOOST_REQUIRE_EQUAL(1234, *optsBase->hash);
 }
 

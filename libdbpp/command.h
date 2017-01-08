@@ -5,6 +5,7 @@
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/shared_ptr.hpp>
 #include <visibility.h>
+#include <factory.h>
 #include <type_traits>
 #include "error.h"
 
@@ -21,12 +22,14 @@ namespace DB {
 			ParameterOutOfRange();
 	};
 
+	typedef std::map<std::string, std::string> CommandOptionsMap;
+
 	/// Represents the basic options that can be passed when creating new commands.
 	class DLL_PUBLIC CommandOptions {
 		public:
 			CommandOptions() = default;
 			/// Constructor which populates the hash value only.
-			CommandOptions(std::size_t hash);
+			CommandOptions(std::size_t hash, const CommandOptionsMap & = CommandOptionsMap());
 			virtual ~CommandOptions() = default;
 
 			/// An (optional) hash of the SQL statement.
@@ -103,6 +106,7 @@ namespace DB {
 			void bindParamS(unsigned int, char * const);
 	};
 	typedef boost::shared_ptr<Command> CommandPtr;
+	typedef AdHoc::Factory<CommandOptions, std::size_t, const CommandOptionsMap &> CommandOptionsFactory;
 }
 
 #endif

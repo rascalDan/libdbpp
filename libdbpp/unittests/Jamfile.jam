@@ -16,6 +16,7 @@ run
 	<library>..//dbppcore
 	<library>..//adhocutil
 	<library>boost_utf
+	<library>dbpp-local-postgresql
 	<dependency>parseTest.sql
 	<dependency>unterminatedComment.sql
 	<dependency>unterminatedString.sql

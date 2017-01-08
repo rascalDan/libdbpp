@@ -1,4 +1,10 @@
 #include "command.h"
+#include "connection.h"
+#include <factory.impl.h>
+
+INSTANTIATEFACTORY(DB::CommandOptions, std::size_t, const DB::CommandOptionsMap &);
+NAMEDFACTORY("", DB::CommandOptions, DB::CommandOptionsFactory);
+PLUGINRESOLVER(DB::CommandOptions, DB::Connection::resolvePlugin);
 
 DB::Command::Command(const std::string & s) :
 	sql(s)
@@ -17,7 +23,7 @@ DB::ParameterOutOfRange::ParameterOutOfRange()
 {
 }
 
-DB::CommandOptions::CommandOptions(std::size_t h) :
+DB::CommandOptions::CommandOptions(std::size_t h, const CommandOptionsMap &) :
 	hash(h)
 {
 }
