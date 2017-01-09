@@ -37,6 +37,7 @@ namespace DB {
 			boost::optional<std::size_t> hash;
 
 		protected:
+			/// Helper function to extract values from a CommandOptionsMap
 			template<typename X>
 			static X get(const CommandOptionsMap & map, const std::string & key, const X & def)
 			{
@@ -46,6 +47,7 @@ namespace DB {
 				}
 				return def;
 			}
+			/// Helper function to test if a value is set in a CommandOptionsMap
 			static bool isSet(const CommandOptionsMap & map, const std::string & key);
 	};
 
