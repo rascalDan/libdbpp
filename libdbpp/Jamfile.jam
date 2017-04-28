@@ -1,10 +1,6 @@
 import package ;
 import lex ;
 
-alias glibmm : : : :
-	<cflags>"`pkg-config --cflags glibmm-2.4`"
-	<linkflags>"`pkg-config --libs glibmm-2.4`"
-	;
 lib boost_date_time : : <name>boost_date_time ;
 lib boost_filesystem ;
 lib boost_system ;
@@ -15,7 +11,7 @@ lib boost_utf : : <name>boost_unit_test_framework ;
 
 lib dbppcore :
 	[ glob *.cpp *.ll : test*.cpp createMockDb.cpp ] :
-	<library>glibmm
+	<library>..//glibmm
 	<library>adhocutil
 	<library>boost_system
 	<library>boost_thread
@@ -23,7 +19,7 @@ lib dbppcore :
 	<include>.
 	: :
 	<include>.
-	<library>glibmm
+	<library>..//glibmm
 	<library>boost_date_time
 	<library>boost_system
 	<library>boost_filesystem
