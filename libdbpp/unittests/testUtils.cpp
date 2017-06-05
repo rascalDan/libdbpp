@@ -314,6 +314,9 @@ testExtractT(DB::Row<T> row) {
 template<typename T>
 void
 testExtractT(DB::SelectCommandPtr sel) {
+	// test default construct
+	T test;
+	(void)test;
 	for (const auto & row : sel->as<T>()) { testExtractT(row); }
 	for (const auto & row : sel->as<boost::optional<T>>()) { testExtractT(row); }
 }
