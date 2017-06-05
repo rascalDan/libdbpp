@@ -63,12 +63,6 @@ TestCore::assertColumnValueHelper(DB::SelectCommand & sel, unsigned int col, con
 	sel[col].apply(a);
 }
 
-bool
-operator==(const DB::Blob a, const DB::Blob b)
-{
-	return a.len == b.len && memcmp(a.data, b.data, a.len) == 0;
-}
-
 AdHocFormatter(BlobDbg, "Blob[length=%?, addr=%?]");
 std::ostream &
 operator<<(std::ostream & s, const DB::Blob b)

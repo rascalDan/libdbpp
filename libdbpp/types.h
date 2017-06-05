@@ -28,6 +28,8 @@ namespace DB {
 			{
 			}
 
+			bool operator==(const DB::Blob b) const;
+
 			/// The beginning of the binary data.
 			const void * data;
 			/// The length of the binary data.
