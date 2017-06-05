@@ -304,3 +304,34 @@ BOOST_AUTO_TEST_CASE( testBlobVecStruct )
 	BOOST_REQUIRE_EQUAL(vec.len, 20 * 16);
 }
 
+// These just compile time support, actual data extraction should be tested by the implementing connector.
+template<typename T>
+void
+testExtractT(DB::Row<T> row) {
+	row.template value<0>();
+}
+
+template<typename T>
+void
+testExtractT(DB::SelectCommandPtr sel) {
+	for (const auto & row : sel->as<T>()) { testExtractT(row); }
+	for (const auto & row : sel->as<boost::optional<T>>()) { testExtractT(row); }
+}
+
+BOOST_AUTO_TEST_CASE( testExtractTypes )
+{
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto sel = DB::SelectCommandPtr(db->newSelectCommand("SELECT 1 FROM forEachRow LIMIT 0"));
+	// testExtractT<int8_t>(sel);
+	// testExtractT<int16_t>(sel);
+	// testExtractT<int32_t>(sel);
+	testExtractT<int64_t>(sel);
+	testExtractT<bool>(sel);
+	testExtractT<std::string>(sel);
+	// testExtractT<float>(sel);
+	testExtractT<double>(sel);
+	testExtractT<boost::posix_time::ptime>(sel);
+	testExtractT<boost::posix_time::time_duration>(sel);
+	testExtractT<DB::Blob>(sel);
+}
+

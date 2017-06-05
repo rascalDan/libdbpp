@@ -9,6 +9,8 @@ namespace DB {
 	/// Wrapper class for reference an existing block of binary data.
 	class DLL_PUBLIC Blob {
 		public:
+			/// Construct a default blob pointing to no data.
+			Blob();
 			/// Construct a reference using C-style pointer and length.
 			Blob(const void * data, size_t len);
 			/// Construct a reference using C++ template pointer to an object.
