@@ -259,3 +259,48 @@ BOOST_AUTO_TEST_CASE( bindIntPtr )
 	BOOST_REQUIRE_EQUAL(159, total);
 }
 
+BOOST_AUTO_TEST_CASE( testBlobRaw )
+{
+	DB::Blob ptr(this, 1);	
+	BOOST_REQUIRE_EQUAL(ptr.data, this);
+	BOOST_REQUIRE_EQUAL(ptr.len, 1);
+}
+
+BOOST_AUTO_TEST_CASE( testBlobObject )
+{
+	int32_t x = 20;
+	DB::Blob obj(&x);
+	BOOST_REQUIRE_EQUAL(obj.data, &x);
+	BOOST_REQUIRE_EQUAL(obj.len, 4);
+}
+
+BOOST_AUTO_TEST_CASE( testBlobVec )
+{
+	std::vector<uint8_t> buf(20, 0);
+	DB::Blob vec(buf);
+	BOOST_REQUIRE_EQUAL(vec.data, &buf[0]);
+	BOOST_REQUIRE_EQUAL(vec.len, 20);
+}
+
+struct S {
+	int64_t a;
+	int64_t b;
+};
+BOOST_STATIC_ASSERT(sizeof(S) == 16);
+
+BOOST_AUTO_TEST_CASE( testBlobStruct )
+{
+	S s = { 8, 4 };
+	DB::Blob str(&s);
+	BOOST_REQUIRE_EQUAL(str.data, &s);
+	BOOST_REQUIRE_EQUAL(str.len, 16);
+}
+
+BOOST_AUTO_TEST_CASE( testBlobVecStruct )
+{
+	std::vector<S> buf(20, {4, 8});
+	DB::Blob vec(buf);
+	BOOST_REQUIRE_EQUAL(vec.data, &buf[0]);
+	BOOST_REQUIRE_EQUAL(vec.len, 20 * 16);
+}
+

@@ -7,6 +7,7 @@
 #include <boost/optional.hpp>
 #include <visibility.h>
 #include <exception.h>
+#include "types.h"
 #include "error.h"
 
 namespace DB {
@@ -27,6 +28,8 @@ namespace DB {
 			virtual void interval(const boost::posix_time::time_duration &) = 0;
 			/// The field is a timestamp/date/datetime.
 			virtual void timestamp(const boost::posix_time::ptime &) = 0;
+			/// The field is a BLOB.
+			virtual void blob(const Blob &);
 	};
 
 	class Command;
@@ -54,6 +57,8 @@ namespace DB {
 			void operator>>(boost::posix_time::time_duration &) const;
 			/// STL like date time extractor.
 			void operator>>(boost::posix_time::ptime &) const;
+			/// STL like BLOB extractor.
+			void operator>>(Blob &) const;
 			/// STL like wrapper for optional types.
 			template <typename T>
 			void operator>>(boost::optional<T> & v) const {

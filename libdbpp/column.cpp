@@ -23,6 +23,12 @@ InvalidConversion::message() const throw()
 	return InvalidConversionMsg::get(from, to);
 }
 
+void
+DB::HandleField::blob(const DB::Blob &)
+{
+	throw DB::ColumnTypeNotSupported();
+}
+
 template<typename T>
 class Extract : public DB::HandleField {
 	public:
@@ -34,6 +40,7 @@ class Extract : public DB::HandleField {
 		void string(const char * v, size_t len) override { (*this)(std::string(v, len)); }
 		void timestamp(const boost::posix_time::ptime & v) override { (*this)(v); }
 		void interval(const boost::posix_time::time_duration & v) override { (*this)(v); }
+		void blob(const Blob & v) override { (*this)(v); }
 		void null() override { }
 
 		template <typename D, typename dummy = int>
@@ -65,5 +72,6 @@ COLUMNINTO(double);
 COLUMNINTO(std::string);
 COLUMNINTO(boost::posix_time::ptime);
 COLUMNINTO(boost::posix_time::time_duration);
+COLUMNINTO(Blob);
 }
 

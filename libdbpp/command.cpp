@@ -53,3 +53,9 @@ DB::Command::bindParamS(unsigned int i, char * const o)
 		bindNull(i);
 }
 
+void
+DB::Command::bindParamBLOB(unsigned int, const Blob &)
+{
+	throw ParameterTypeNotSupported();
+}
+

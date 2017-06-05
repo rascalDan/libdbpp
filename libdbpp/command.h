@@ -8,6 +8,7 @@
 #include <visibility.h>
 #include <factory.h>
 #include <type_traits>
+#include "types.h"
 #include "error.h"
 
 namespace DB {
@@ -86,6 +87,9 @@ namespace DB {
 			virtual void	bindParamT(unsigned int i, const boost::posix_time::time_duration &) = 0;
 			/// Bind a date time to parameter i.
 			virtual void	bindParamT(unsigned int i, const boost::posix_time::ptime &) = 0;
+
+			/// Bind a BLOB to parameter i.
+			virtual void	bindParamBLOB(unsigned int i, const Blob &);
 
 			/// Bind null to parameter i.
 			virtual void	bindNull(unsigned int i) = 0;
