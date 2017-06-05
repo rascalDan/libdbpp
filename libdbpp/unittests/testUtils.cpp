@@ -11,6 +11,7 @@
 #include <boost/date_time/posix_time/posix_time_io.hpp>
 #include <IceUtil/Exception.h>
 #include <IceUtil/Optional.h>
+#include <testCore.h>
 
 class StandardMockDatabase : public PQ::Mock {
 	public:
@@ -302,6 +303,23 @@ BOOST_AUTO_TEST_CASE( testBlobVecStruct )
 	DB::Blob vec(buf);
 	BOOST_REQUIRE_EQUAL(vec.data, &buf[0]);
 	BOOST_REQUIRE_EQUAL(vec.len, 20 * 16);
+}
+
+BOOST_AUTO_TEST_CASE( testBlobCompare )
+{
+	std::vector<S> buf1(20, {4, 8});
+	DB::Blob vec1(buf1);
+
+	std::vector<S> buf2(buf1);
+	DB::Blob vec2(buf2);
+
+	std::vector<S> buf3(buf2);
+	buf3.pop_back();
+	DB::Blob vec3(buf3);
+
+	BOOST_REQUIRE_EQUAL(vec1, vec2);
+	BOOST_REQUIRE(!(vec1 == vec3));
+	BOOST_REQUIRE(!(vec2 == vec3));
 }
 
 // These just compile time support, actual data extraction should be tested by the implementing connector.

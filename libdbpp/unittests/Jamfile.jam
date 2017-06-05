@@ -85,6 +85,7 @@ run
 	<define>ROOT=\"$(me)\"
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//dbppcore
+	<library>..//dbpptestcore
 	<library>..//adhocutil
 	<library>dbpp-local-postgresql
 	<library>boost_utf
