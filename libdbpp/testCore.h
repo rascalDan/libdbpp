@@ -25,6 +25,10 @@ class DLL_PUBLIC TestCore {
 };
 /// @endcond
 
+DLL_PUBLIC
+std::ostream &
+operator<<(std::ostream & s, const Blob b);
+
 }
 
 #endif
