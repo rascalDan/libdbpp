@@ -8,7 +8,7 @@
 #include <visibility.h>
 #include <factory.h>
 #include <type_traits>
-#include "types.h"
+#include "dbTypes.h"
 #include "error.h"
 
 namespace DB {

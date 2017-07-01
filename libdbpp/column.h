@@ -7,7 +7,7 @@
 #include <boost/optional.hpp>
 #include <visibility.h>
 #include <exception.h>
-#include "types.h"
+#include "dbTypes.h"
 #include "error.h"
 
 namespace DB {
