@@ -113,7 +113,7 @@ DB::Connection::executeScript(std::istream & f, const boost::filesystem::path & 
 	if (!f.good()) {
 		throw SqlParseException("Script stream not in good state.", 0);
 	}
-	DB::SqlParse p(f, s, this);
+	DB::SqlExecuteScript p(f, s, this);
 	while (p.yylex()) ;
 }
 

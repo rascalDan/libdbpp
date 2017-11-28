@@ -143,9 +143,8 @@ namespace DB {
     return SqlParseExceptionMsg::get(reason, line);
   }
 
-  SqlParse::SqlParse(std::istream & f, const boost::filesystem::path & s, Connection * c) :
+  SqlParse::SqlParse(std::istream & f, const boost::filesystem::path & s) :
     yyFlexLexer(&f, NULL),
-    conn(c),
     scriptDir(s)
   {
   }
@@ -156,13 +155,19 @@ namespace DB {
     throw std::runtime_error(msg);
   }
 
-  void
-  SqlParse::Comment(const std::string &) const
+  SqlExecuteScript::SqlExecuteScript(std::istream & f, const boost::filesystem::path & s, DB::Connection * c) :
+    SqlParse(f, s),
+    conn(c)
   {
   }
 
   void
-  SqlParse::Statement(const std::string & text) const
+  SqlExecuteScript::Comment(const std::string &) const
+  {
+  }
+
+  void
+  SqlExecuteScript::Statement(const std::string & text) const
   {
     conn->execute(text);
   }
