@@ -10,6 +10,19 @@ namespace fs = boost::filesystem;
 
 void emptyHandler(int) { }
 
+void createFailHandler()
+{
+	try {
+		if (auto eptr = std::current_exception()) {
+			std::rethrow_exception(eptr);
+		}
+	}
+	catch (const std::exception & e) {
+		std::cerr << "Failed to create mock database\n" << e.what() << std::endl;
+	}
+	exit(1);
+}
+
 int
 main(int argc, char ** argv)
 {
@@ -39,9 +52,11 @@ main(int argc, char ** argv)
 	}
 	po::notify(vm);
 
+	std::set_terminate(createFailHandler);
 	std::cout << "Creating database...";
 	auto mock = DB::MockDatabaseFactory::createNew(connector, master, database, scripts);
 	std::cout << " done." << std::endl;
+	std::set_terminate(nullptr);
 
 	if (!drop) {
 		std::cout << "Done. ctrl+c to tear down and exit." << std::endl;
