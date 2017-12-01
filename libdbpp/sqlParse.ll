@@ -147,6 +147,15 @@ namespace DB {
     yyFlexLexer(&f, NULL),
     scriptDir(s)
   {
+    if (!f.good()) {
+      throw SqlParseException("Script stream not in good state.", 0);
+    }
+  }
+
+  void
+  SqlParse::Execute()
+  {
+    while (yylex()) ;
   }
 
   void

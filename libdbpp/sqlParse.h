@@ -30,7 +30,8 @@ namespace DB {
 	class DLL_PUBLIC SqlParse : public yyFlexLexer {
 		public:
 			SqlParse(std::istream &, const boost::filesystem::path &);
-			int yylex() override;
+
+			void Execute();
 
 			virtual void Comment(const std::string &) const = 0;
 			virtual void Statement(const std::string &) const = 0;
@@ -39,6 +40,7 @@ namespace DB {
 			void LexerError(const char *) override;
 
 		private:
+			int yylex() override;
 			const boost::filesystem::path scriptDir;
 			std::string comment;
 			std::string statement;

@@ -110,11 +110,8 @@ DB::Connection::inTx() const
 void
 DB::Connection::executeScript(std::istream & f, const boost::filesystem::path & s)
 {
-	if (!f.good()) {
-		throw SqlParseException("Script stream not in good state.", 0);
-	}
 	DB::SqlExecuteScript p(f, s, this);
-	while (p.yylex()) ;
+	p.Execute();
 }
 
 void
