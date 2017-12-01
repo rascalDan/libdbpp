@@ -29,66 +29,6 @@ BOOST_AUTO_TEST_CASE( resolve )
 	BOOST_REQUIRE_THROW(DB::ConnectionFactory::createNew("otherdb", "doesn't matter"), AdHoc::LoadLibraryException);
 }
 
-BOOST_AUTO_TEST_CASE( parseBad )
-{
-	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
-	std::fstream s("/bad");
-	BOOST_REQUIRE_THROW(mock->executeScript(s, rootDir), DB::SqlParseException);
-	delete mock;
-}
-
-BOOST_AUTO_TEST_CASE( parse )
-{
-	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
-	std::fstream s((rootDir / "parseTest.sql").string());
-	mock->executeScript(s, rootDir);
-	MockDb * mockdb = dynamic_cast<MockDb *>(mock);
-	BOOST_REQUIRE(mockdb);
-	BOOST_REQUIRE_EQUAL(3, mockdb->executed.size());
-	BOOST_REQUIRE_EQUAL("INSERT INTO name(t, i) VALUES('string', 3)", mockdb->executed[1]);
-	delete mock;
-}
-
-BOOST_AUTO_TEST_CASE( parse2 )
-{
-	auto mock = DB::ConnectionPtr(DB::ConnectionFactory::createNew("MockDb", "doesn't matter"));
-	auto mockdb = boost::dynamic_pointer_cast<MockDb>(mock);
-	BOOST_REQUIRE(mockdb);
-	std::ifstream s;
-
-	s.open((rootDir / "dollarQuote.sql").string());
-	mock->executeScript(s, rootDir);
-	s.close();
-
-	s.open((rootDir / "scriptDir.sql").string());
-	mock->executeScript(s, rootDir);
-	s.close();
-
-	s.open((rootDir / "stringParse.sql").string());
-	mock->executeScript(s, rootDir);
-	s.close();
-	BOOST_REQUIRE_EQUAL(4, mockdb->executed.size());
-	BOOST_REQUIRE_EQUAL("INSERT INTO name(t, i) VALUES('fancy string '' \\' \\r \\n', 7)", mockdb->executed[3]);
-
-	BOOST_REQUIRE_THROW({
-			s.open((rootDir / "unterminatedComment.sql").string());
-			mock->executeScript(s, rootDir);
-		}, DB::SqlParseException);
-	s.close();
-
-	BOOST_REQUIRE_THROW({
-			s.open((rootDir / "unterminatedDollarQuote.sql").string());
-			mock->executeScript(s, rootDir);
-		}, DB::SqlParseException);
-	s.close();
-
-	BOOST_REQUIRE_THROW({
-			s.open((rootDir / "unterminatedString.sql").string());
-			mock->executeScript(s, rootDir);
-		}, DB::SqlParseException);
-	s.close();
-}
-
 BOOST_AUTO_TEST_CASE( finish )
 {
 	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");

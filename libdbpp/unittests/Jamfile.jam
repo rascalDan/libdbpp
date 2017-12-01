@@ -17,6 +17,18 @@ run
 	<library>..//adhocutil
 	<library>boost_utf
 	<library>dbpp-local-postgresql
+	:
+	testConnection
+	;
+
+run
+	testParse.cpp ../sqlParse.ll
+	: : :
+	<define>ROOT=\"$(me)\"
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//dbppcore
+	<library>..//adhocutil
+	<library>boost_utf
 	<dependency>parseTest.sql
 	<dependency>unterminatedComment.sql
 	<dependency>unterminatedString.sql
@@ -25,7 +37,7 @@ run
 	<dependency>scriptDir.sql
 	<dependency>stringParse.sql
 	:
-	testConnection
+	testParse
 	;
 
 alias libpq : : : :
