@@ -29,6 +29,10 @@ run
 	<library>..//dbppcore
 	<library>..//adhocutil
 	<library>boost_utf
+	<dependency>commentsMixedIn.sql
+	<dependency>indentedStatement.sql
+	<dependency>indentedOneLineComment.sql
+	<dependency>indentedBlockComment.sql
 	<dependency>parseTest.sql
 	<dependency>unterminatedComment.sql
 	<dependency>unterminatedString.sql

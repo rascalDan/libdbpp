@@ -14,9 +14,9 @@
 
 space			[ \t\n\r\f]
 non_newline [^\r\n]
-mcomment_start "/*"
-mcomment_stop "*/"
-comment			("--"{non_newline}*)
+mcomment_start ("/*"{space}*)
+mcomment_stop ({space}*"*/")
+lcomment_start	({space}*"--"{space}*)
 other .
 term ;
 any ({other}|{space})
@@ -28,41 +28,54 @@ dolq_cont [A-Za-z\200-\377_0-9]
 dollarquote \$({dolq_start}{dolq_cont}*)?\$
 scriptdir "$SCRIPTDIR"
 
-%x COMMENT
+%x MCOMMENT
+%x LCOMMENT
 %x STATEMENT
 %x QUOTE
 %x DOLLARQUOTE
 
 %%
 
-{mcomment_start} {
-	comment += YYText();
-	yy_push_state(COMMENT);
+<STATEMENT>{mcomment_start} {
+	yy_push_state(MCOMMENT);
 }
 
-<COMMENT>{mcomment_stop} {
-	comment += YYText();
+{mcomment_start} {
+	yy_push_state(MCOMMENT);
+}
+
+<STATEMENT>{lcomment_start} {
+	yy_push_state(LCOMMENT);
+}
+
+{lcomment_start} {
+	yy_push_state(LCOMMENT);
+}
+
+<MCOMMENT>{mcomment_stop} {
 	Comment(comment);
 	comment.clear();
 	yy_pop_state();
 }
 
-<COMMENT>{any} {
+<MCOMMENT>{any} {
 	comment += YYText();
 }
 
-<COMMENT><<EOF>> {
+<MCOMMENT><<EOF>> {
 	throw SqlParseException("Unterminated comment", yylineno);
 }
 
-{comment} {
+<LCOMMENT>{non_newline}* {
 	Comment(YYText());
+  yy_pop_state();
 }
 
 <INITIAL>{term} {
 	// Random terminator
 }
 
+{space} { }
 {other} {
 	statement += YYText();
 	yy_push_state(STATEMENT);
@@ -124,8 +137,5 @@ scriptdir "$SCRIPTDIR"
 
 <STATEMENT>{any} {
 	statement += YYText();
-}
-
-<*>[ \t\r\n\f] {
 }
 
