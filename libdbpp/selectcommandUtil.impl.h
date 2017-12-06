@@ -2,20 +2,19 @@
 #define DB_SELECTCOMMANDUTIL_IMPL_H
 
 #include "selectcommand.h"
-#include <boost/function.hpp>
-#include <boost/utility/enable_if.hpp>
+#include <type_traits>
 
 /// @cond
 namespace DB {
 	template<typename Fields, typename Func, unsigned int field, typename ... Fn>
-	inline typename boost::disable_if_c<field < std::tuple_size<Fields>::value>::type
+	inline typename std::enable_if<field >= std::tuple_size<Fields>::value>::type
 	forEachField(DB::SelectCommand *, const Func & func, const Fn & ... args)
 	{
 		func(args...);
 	}
 
 	template<typename Fields, typename Func, unsigned int field, typename ... Fn, typename ... Args>
-	inline typename boost::enable_if_c<field < std::tuple_size<Fields>::value>::type
+	inline typename std::enable_if<field < std::tuple_size<Fields>::value>::type
 	forEachField(DB::SelectCommand * sel, const Func & func, const Args & ... args)
 	{
 		typename std::tuple_element<field, Fields>::type a;
