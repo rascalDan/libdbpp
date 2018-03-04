@@ -23,7 +23,6 @@ namespace DB {
 			/// Execute the command and return effected row count
 			virtual unsigned int	execute(bool allowNoChange = true) = 0;
 	};
-	typedef boost::shared_ptr<ModifyCommand> ModifyCommandPtr;
 }
 
 #endif

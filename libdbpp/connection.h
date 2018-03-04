@@ -1,6 +1,7 @@
 #ifndef DB_CONNECTION_H
 #define DB_CONNECTION_H
 
+#include "connection_fwd.h"
 #include <string>
 #include <set>
 #include <factory.h>
@@ -183,7 +184,6 @@ namespace DB {
 			Connection * conn;
 	};
 
-	typedef boost::shared_ptr<Connection> ConnectionPtr;
 	typedef AdHoc::Factory<Connection, std::string> ConnectionFactory;
 }
 

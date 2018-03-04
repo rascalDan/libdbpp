@@ -136,7 +136,6 @@ namespace DB {
 			/// Columns in the result set.
 			Columns * columns;
 	};
-	typedef boost::shared_ptr<SelectCommand> SelectCommandPtr;
 }
 
 #endif

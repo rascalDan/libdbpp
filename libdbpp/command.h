@@ -1,6 +1,7 @@
 #ifndef DB_COMMAND_H
 #define DB_COMMAND_H
 
+#include "command_fwd.h"
 #include <glibmm/ustring.h>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/shared_ptr.hpp>
@@ -23,8 +24,6 @@ namespace DB {
 		public:
 			ParameterOutOfRange();
 	};
-
-	typedef std::map<std::string, std::string> CommandOptionsMap;
 
 	/// Represents the basic options that can be passed when creating new commands.
 	class DLL_PUBLIC CommandOptions {
@@ -124,7 +123,6 @@ namespace DB {
 			/// Bind a (possibly null) c-string to parameter i.
 			void bindParamS(unsigned int, char * const);
 	};
-	typedef boost::shared_ptr<Command> CommandPtr;
 	typedef AdHoc::Factory<CommandOptions, std::size_t, const CommandOptionsMap &> CommandOptionsFactory;
 }
 
