@@ -4,6 +4,15 @@ CREATE TABLE name (
 		primary key(i)
 		);
 -- Single line comment
+--    
+  --  
+	 --
+--
+
+/* Comment */
+  /**/  
+  /*  */
+  /**/
 INSERT INTO name(t, i) VALUES('string', 3);
 /*
 	 Multi line

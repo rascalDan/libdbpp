@@ -56,6 +56,22 @@ BOOST_AUTO_TEST_CASE( parse )
 	p.Execute();
 	BOOST_REQUIRE_EQUAL(p.executed.size(), 3);
 	BOOST_REQUIRE_EQUAL(p.executed[1], "INSERT INTO name(t, i) VALUES('string', 3)");
+	auto cs = {
+		"Single line comment",
+		"",
+		"",
+		"",
+		"",
+		"Comment",
+		"",
+		"",
+		"",
+		"Multi line\n\t comment",
+		"! Stupid MySQL terminates",
+		"! comments with a ;",
+		"! Because reasons",
+	};
+	BOOST_CHECK_EQUAL_COLLECTIONS(p.comments.begin(), p.comments.end(), cs.begin(), cs.end());
 }
 
 BOOST_AUTO_TEST_CASE( parseDollarQuote )

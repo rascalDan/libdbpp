@@ -13,10 +13,11 @@
 %}
 
 space			[ \t\n\r\f]
+linespace	[ \t]
 non_newline [^\r\n]
 mcomment_start ("/*"{space}*)
 mcomment_stop ({space}*"*/")
-lcomment_start	({space}*"--"{space}*)
+lcomment_start	({space}*"--"{linespace}*)
 other .
 term ;
 any ({other}|{space})
@@ -68,6 +69,11 @@ scriptdir "$SCRIPTDIR"
 
 <LCOMMENT>{non_newline}* {
 	Comment(YYText());
+  yy_pop_state();
+}
+
+<LCOMMENT>[\r\n]+ {
+	Comment(comment);
   yy_pop_state();
 }
 
