@@ -2,7 +2,6 @@
 #include <selectcommand.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/test/test_tools.hpp>
-#include <boost/utility/enable_if.hpp>
 #include <compileTimeFormatter.h>
 
 namespace DB {
@@ -31,16 +30,14 @@ class Assert : public DB::HandleField {
 		void blob(const Blob & v) override { (*this)(v); }
 		void null() override { }
 
-		template <typename D, typename dummy = int>
-		void operator()(const D &,
-				typename boost::disable_if<std::is_convertible<D, T>, dummy>::type = 0) {
-			BOOST_ERROR("Unexpected column type " << typeid(D).name());
-		}
-
-		template <typename D, typename dummy = int>
-		void operator()(const D & v,
-				typename boost::enable_if<std::is_convertible<D, T>, dummy>::type = 0) {
-			BOOST_REQUIRE_EQUAL(expected, v);
+		template <typename D>
+		void operator()(const D & v) {
+			if constexpr (std::is_convertible<D, T>::value) {
+				BOOST_REQUIRE_EQUAL(expected, v);
+			}
+			else {
+				BOOST_ERROR("Unexpected column type " << typeid(D).name());
+			}
 		}
 
 		const T & expected;

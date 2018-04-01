@@ -1,5 +1,4 @@
 #include "column.h"
-#include <boost/utility/enable_if.hpp>
 #include <exception>
 #include <compileTimeFormatter.h>
 
@@ -43,16 +42,14 @@ class Extract : public DB::HandleField {
 		void blob(const Blob & v) override { (*this)(v); }
 		void null() override { }
 
-		template <typename D, typename dummy = int>
-		void operator()(const D &,
-				typename boost::disable_if<std::is_convertible<D, T>, dummy>::type = 0) {
-			throw InvalidConversion(typeid(D).name(), typeid(T).name());
-		}
-
-		template <typename D, typename dummy = int>
-		void operator()(const D & v,
-				typename boost::enable_if<std::is_convertible<D, T>, dummy>::type = 0) {
-			target = (T)v;
+		template <typename D>
+		void operator()(const D & v) {
+			if constexpr (std::is_convertible<D, T>::value) {
+				target = (T)v;
+			}
+			else {
+				throw InvalidConversion(typeid(D).name(), typeid(T).name());
+			}
 		}
 
 		T & target;

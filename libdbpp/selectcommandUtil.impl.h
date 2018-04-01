@@ -6,20 +6,19 @@
 
 /// @cond
 namespace DB {
-	template<typename Fields, typename Func, unsigned int field, typename ... Fn>
-	inline typename std::enable_if<field >= std::tuple_size<Fields>::value>::type
-	forEachField(DB::SelectCommand *, const Func & func, const Fn & ... args)
-	{
-		func(args...);
-	}
-
 	template<typename Fields, typename Func, unsigned int field, typename ... Fn, typename ... Args>
-	inline typename std::enable_if<field < std::tuple_size<Fields>::value>::type
+	inline void
 	forEachField(DB::SelectCommand * sel, const Func & func, const Args & ... args)
 	{
-		typename std::tuple_element<field, Fields>::type a;
-		(*sel)[field] >> a;
-		forEachField<Fields, Func, field + 1, Fn...>(sel, func, args..., a);
+		if constexpr (field >= std::tuple_size<Fields>::value) {
+			(void)sel;
+			func(args...);
+		}
+		else {
+			typename std::tuple_element<field, Fields>::type a;
+			(*sel)[field] >> a;
+			forEachField<Fields, Func, field + 1, Fn...>(sel, func, args..., a);
+		}
 	}
 
 	template<typename ... Fn, typename Func>
