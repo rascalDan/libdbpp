@@ -21,9 +21,9 @@ namespace DB {
 			/// Create a new connection.
 			ConnectionPtr createResource() const override;
 			/// Ping a connection.
-			void returnTestResource(const ConnectionCPtr &) const override;
+			void returnTestResource(Connection const *) const override;
 			/// Ping a connection.
-			void testResource(const ConnectionCPtr &) const override;
+			void testResource(Connection const *) const override;
 
 		private:
 			const ConnectionFactoryCPtr factory;
