@@ -9,8 +9,7 @@
 #include <boost/multi_index/ordered_index_fwd.hpp>
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/mem_fun.hpp>
-#include <boost/function/function_fwd.hpp>
-#include <boost/shared_ptr.hpp>
+#include <functional>
 #include <visibility.h>
 #include <exception.h>
 
@@ -117,7 +116,7 @@ namespace DB {
 			/// Get the index of a column by name.
 			unsigned int getOrdinal(const Glib::ustring &) const;
 			/// Push each row through a function accepting one value per column
-			template<typename ... Fn, typename Func = boost::function<void(Fn...)>>
+			template<typename ... Fn, typename Func = std::function<void(Fn...)>>
 			void forEachRow(const Func & func);
 			/// Support for a C++ row range for
 			template<typename ... Fn>

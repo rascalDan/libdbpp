@@ -5,7 +5,6 @@
 #include <factory.impl.h>
 #include <compileTimeFormatter.h>
 #include <sqlParse.h>
-#include <boost/shared_ptr.hpp>
 #include <system_error>
 
 DB::ConnectionError::ConnectionError() :
@@ -32,19 +31,6 @@ void
 DB::Connection::execute(const std::string & sql, const CommandOptions * opts)
 {
 	modify(sql, opts)->execute(true);
-}
-
-
-DB::SelectCommandPtr
-DB::Connection::select(const std::string & sql, const CommandOptions * opts)
-{
-	return DB::SelectCommandPtr(newSelectCommand(sql, opts));
-}
-
-DB::ModifyCommandPtr
-DB::Connection::modify(const std::string & sql, const CommandOptions * opts)
-{
-	return DB::ModifyCommandPtr(newModifyCommand(sql, opts));
 }
 
 void
@@ -181,7 +167,7 @@ DB::Connection::bulkUploadData(FILE * in) const
 }
 
 AdHocFormatter(PluginLibraryFormat, "libdbpp-%?.so");
-boost::optional<std::string>
+std::optional<std::string>
 DB::Connection::resolvePlugin(const std::type_info &, const std::string & name)
 {
 	return PluginLibraryFormat::get(name);
@@ -199,19 +185,21 @@ DB::TransactionRequired::message() const throw()
 	return "A transaction must be opened before performing this operation";
 }
 
-DB::TransactionScope::TransactionScope(DB::Connection * c) :
+DB::TransactionScope::TransactionScope(std::weak_ptr<DB::Connection> c) :
 	conn(c)
 {
-	conn->beginTx();
+	conn.lock()->beginTx();
 }
 
 DB::TransactionScope::~TransactionScope()
 {
+	if (conn.expired()) return;
+
 	if (std::uncaught_exception()) {
-		conn->rollbackTx();
+		conn.lock()->rollbackTx();
 	}
 	else {
-		conn->commitTx();
+		conn.lock()->commitTx();
 	}
 }
 

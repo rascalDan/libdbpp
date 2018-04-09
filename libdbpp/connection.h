@@ -8,7 +8,8 @@
 #include <exception.h>
 #include <visibility.h>
 #include <boost/filesystem/path.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
+#include <optional>
 #include "error.h"
 
 namespace AdHoc {
@@ -19,7 +20,9 @@ namespace DB {
 	class Command;
 	class CommandOptions;
 	class SelectCommand;
+	typedef std::shared_ptr<SelectCommand> SelectCommandPtr;
 	class ModifyCommand;
+	typedef std::shared_ptr<ModifyCommand> ModifyCommandPtr;
 	class TablePatch;
 
 	enum BulkDeleteStyle {
@@ -84,7 +87,7 @@ namespace DB {
 	};
 
 	/// Base class for connections to a database.
-	class DLL_PUBLIC Connection {
+	class DLL_PUBLIC Connection : public std::enable_shared_from_this<Connection> {
 		public:
 			virtual ~Connection();
 
@@ -118,13 +121,9 @@ namespace DB {
 			/// @param s the location of the script.
 			virtual void executeScript(std::istream & f, const boost::filesystem::path & s);
 			/// Create a new select command with the given SQL.
-			virtual SelectCommand * newSelectCommand(const std::string & sql, const CommandOptions * = nullptr) = 0;
-			/// Create a new select command with the given SQL [smart pointer].
-			virtual boost::shared_ptr<SelectCommand> select(const std::string & sql, const CommandOptions * = nullptr);
+			virtual SelectCommandPtr select(const std::string & sql, const CommandOptions * = nullptr) = 0;
 			/// Create a new modify command with the given SQL.
-			virtual ModifyCommand * newModifyCommand(const std::string & sql, const CommandOptions * = nullptr) = 0;
-			/// Create a new modify command with the given SQL [smart pointer].
-			virtual boost::shared_ptr<ModifyCommand> modify(const std::string & sql, const CommandOptions * = nullptr);
+			virtual ModifyCommandPtr modify(const std::string & sql, const CommandOptions * = nullptr) = 0;
 
 			/// Begin a bulk upload operation.
 			/// @param table the target table.
@@ -146,7 +145,7 @@ namespace DB {
 			PatchResult patchTable(TablePatch * tp);
 
 			/// AdHoc plugin resolver helper for database connectors.
-			static boost::optional<std::string> resolvePlugin(const std::type_info &, const std::string &);
+			static std::optional<std::string> resolvePlugin(const std::type_info &, const std::string &);
 
 		protected:
 			/// Create a new connection.
@@ -174,17 +173,18 @@ namespace DB {
 	class DLL_PUBLIC TransactionScope {
 		public:
 			/// Create a new helper and associated transaction on the given connection.
-			TransactionScope(DB::Connection *);
+			TransactionScope(std::weak_ptr<DB::Connection>);
 			~TransactionScope();
 
 		private:
 			TransactionScope(const TransactionScope &) = delete;
 			void operator=(const TransactionScope &) = delete;
 
-			Connection * conn;
+			std::weak_ptr<Connection> conn;
 	};
 
 	typedef AdHoc::Factory<Connection, std::string> ConnectionFactory;
+	typedef std::shared_ptr<const ConnectionFactory> ConnectionFactoryCPtr;
 }
 
 #endif

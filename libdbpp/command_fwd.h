@@ -3,17 +3,17 @@
 
 #include <string>
 #include <map>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 namespace DB {
 	typedef std::map<std::string, std::string> CommandOptionsMap;
 	class CommandOptions;
 	class Command;
-	typedef boost::shared_ptr<Command> CommandPtr;
+	typedef std::shared_ptr<Command> CommandPtr;
 	class ModifyCommand;
-	typedef boost::shared_ptr<ModifyCommand> ModifyCommandPtr;
+	typedef std::shared_ptr<ModifyCommand> ModifyCommandPtr;
 	class SelectCommand;
-	typedef boost::shared_ptr<SelectCommand> SelectCommandPtr;
+	typedef std::shared_ptr<SelectCommand> SelectCommandPtr;
 }
 
 

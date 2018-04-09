@@ -67,7 +67,7 @@ main(int argc, char ** argv)
 	}
 
 	std::cout << "Tearing down database..." << std::endl;
-	delete mock;
+	mock.reset();
 	std::cout << " done." << std::endl;
 	return 0;
 }

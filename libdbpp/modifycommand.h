@@ -4,7 +4,6 @@
 #include "command.h"
 #include "error.h"
 #include <visibility.h>
-#include <boost/shared_ptr.hpp>
 
 namespace DB {
 	/// Exception thrown when an update affected no rows when some were expected.

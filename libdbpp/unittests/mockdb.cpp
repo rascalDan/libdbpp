@@ -46,29 +46,29 @@ MockDb::execute(const std::string & sql, const DB::CommandOptions *)
 	executed.push_back(sql);
 }
 
-DB::SelectCommand *
-MockDb::newSelectCommand(const std::string &, const DB::CommandOptions *)
+DB::SelectCommandPtr
+MockDb::select(const std::string &, const DB::CommandOptions *)
 {
 	return nullptr;
 }
 
-DB::ModifyCommand *
-MockDb::newModifyCommand(const std::string &, const DB::CommandOptions *)
+DB::ModifyCommandPtr
+MockDb::modify(const std::string &, const DB::CommandOptions *)
 {
 	return nullptr;
 }
 
-MockMock::MockMock(const std::string &, const std::string & name, const std::vector<boost::filesystem::path> & ss) :
-	DB::MockDatabase(name)
+MockMock::MockMock(const std::string &, const std::string &, const std::vector<boost::filesystem::path> & ss) :
+	DB::MockDatabase()
 {
 	CreateNewDatabase();
 	PlaySchemaScripts(ss);
 }
 
-DB::Connection *
+DB::ConnectionPtr
 MockMock::openConnection() const
 {
-	return new MockDb("");
+	return std::make_shared<MockDb>("");
 }
 
 void

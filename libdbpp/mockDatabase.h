@@ -14,14 +14,13 @@ class DLL_PUBLIC MockDatabase : public AdHoc::AbstractPluginImplementation {
 	public:
 		/// Creates and registers a new database.
 		/// @param mockName the name the database will register as.
-		MockDatabase(const std::string & mockName);
-		virtual ~MockDatabase();
+		virtual ~MockDatabase() = default;
 
 		/// Open a connection to this database instance.
-		virtual DB::Connection * openConnection() const = 0;
+		virtual ConnectionPtr openConnection() const = 0;
 
 		/// Open a connection to a named mock database.
-		static Connection * openConnectionTo(const std::string &);
+		static ConnectionPtr openConnectionTo(const std::string &);
 
 	protected:
 		/// Implementation specific method to create a new database.
@@ -33,8 +32,6 @@ class DLL_PUBLIC MockDatabase : public AdHoc::AbstractPluginImplementation {
 		/// Implementation specific method to drop a database.
 		virtual void DropDatabase() const = 0;
 
-		/// The name of this mocked database.
-		const std::string mockName;
 		/// Internal counter of mocked databases (for unique name generation)
 		static unsigned int mocked;
 };
@@ -45,7 +42,7 @@ class DLL_PUBLIC MockServerDatabase : public MockDatabase {
 	public:
 		/// Create and register a new database.
 		/// @param masterdb connection to server with permissions to create a new database.
-		/// @param name the name of the mock to register as.
+		/// @param name the prefix to use when creating databases.
 		/// @param type the database type.
 		MockServerDatabase(const std::string & masterdb, const std::string & name, const std::string & type);
 		virtual ~MockServerDatabase();
@@ -58,9 +55,30 @@ class DLL_PUBLIC MockServerDatabase : public MockDatabase {
 		virtual void DropDatabase() const override;
 
 		/// Connection to the master database.
-		DB::Connection * master;
+		DB::ConnectionPtr master;
 		/// The name of the database that was created on the server.
 		const std::string testDbName;
+};
+
+template<typename T>
+class PluginMock {
+	public:
+		PluginMock(const std::string & m, const std::string & name, const std::vector<boost::filesystem::path> & s) :
+			mockName(name)
+		{
+			AdHoc::PluginManager::getDefault()->create<MockDatabase, T>(mockName, __FILE__, __LINE__, m, name, s);
+		}
+		~PluginMock()
+		{
+			AdHoc::PluginManager::getDefault()->remove<MockDatabase>(mockName);
+		}
+		const std::string & databaseName() const
+		{
+			return std::dynamic_pointer_cast<MockServerDatabase>(AdHoc::PluginManager::getDefault()->get<MockDatabase>(mockName)->implementation())->databaseName();
+		}
+
+		/// The name of this mocked database.
+		const std::string mockName;
 };
 
 typedef AdHoc::Factory<MockDatabase, const std::string &, const std::string &, const std::vector<boost::filesystem::path> &> MockDatabaseFactory;

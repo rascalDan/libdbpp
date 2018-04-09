@@ -10,10 +10,10 @@
 #include <buffer.h>
 #include <selectcommandUtil.impl.h>
 
-class Mock : public PQ::Mock {
+class Mock : public DB::PluginMock<PQ::Mock> {
 	public:
 		Mock() :
-			PQ::Mock("user=postgres dbname=postgres", "pqmock", { rootDir / "patch.sql" })
+			DB::PluginMock<PQ::Mock>("user=postgres dbname=postgres", "pqmock", { rootDir / "patch.sql" })
 		{
 		}
 };

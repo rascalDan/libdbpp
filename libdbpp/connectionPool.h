@@ -3,6 +3,7 @@
 
 #include <resourcePool.h>
 #include <visibility.h>
+#include <memory>
 #include "connection.h"
 
 namespace DB {
@@ -18,16 +19,17 @@ namespace DB {
 
 		protected:
 			/// Create a new connection.
-			Connection * createResource() const override;
+			ConnectionPtr createResource() const override;
 			/// Ping a connection.
-			void returnTestResource(const Connection *) const override;
+			void returnTestResource(const ConnectionCPtr &) const override;
 			/// Ping a connection.
-			void testResource(const Connection *) const override;
+			void testResource(const ConnectionCPtr &) const override;
 
 		private:
-			const ConnectionFactory * factory;
+			const ConnectionFactoryCPtr factory;
 			const std::string connectionString;
 	};
+	typedef std::shared_ptr<ConnectionPool> ConnectionPoolPtr;
 }
 
 #endif

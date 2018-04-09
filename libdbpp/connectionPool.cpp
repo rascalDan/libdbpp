@@ -12,20 +12,20 @@ namespace DB {
 	{
 	}
 
-	Connection *
+	ConnectionPtr
 	ConnectionPool::createResource() const
 	{
 		return factory->create(connectionString);
 	}
 
 	void
-	ConnectionPool::returnTestResource(const Connection * c) const
+	ConnectionPool::returnTestResource(const ConnectionCPtr & c) const
 	{
 		c->finish();
 	}
 
 	void
-	ConnectionPool::testResource(const Connection * c) const
+	ConnectionPool::testResource(const ConnectionCPtr & c) const
 	{
 		c->ping();
 	}

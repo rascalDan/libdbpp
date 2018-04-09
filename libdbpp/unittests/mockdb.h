@@ -16,8 +16,8 @@ class MockDb : public DB::Connection {
 		DB::BulkUpdateStyle bulkUpdateStyle() const override;
 
 		void execute(const std::string & sql, const DB::CommandOptions *) override;
-		DB::SelectCommand * newSelectCommand(const std::string &, const DB::CommandOptions *) override;
-		DB::ModifyCommand * newModifyCommand(const std::string &, const DB::CommandOptions *) override;
+		DB::SelectCommandPtr select(const std::string &, const DB::CommandOptions *) override;
+		DB::ModifyCommandPtr modify(const std::string &, const DB::CommandOptions *) override;
 
 		mutable std::vector<std::string> executed;
 };
@@ -25,7 +25,7 @@ class MockDb : public DB::Connection {
 class MockMock : public DB::MockDatabase {
 	public:
 		MockMock(const std::string &, const std::string &, const std::vector<boost::filesystem::path> &);
-		DB::Connection * openConnection() const override;
+		DB::ConnectionPtr openConnection() const override;
 		void CreateNewDatabase() const override;
 		void DropDatabase() const override;
 };

@@ -5,10 +5,10 @@
 #include <pq-mock.h>
 #include <buffer.h>
 
-class MockPool : public PQ::Mock, public DB::ConnectionPool {
+class MockPool : public DB::PluginMock<PQ::Mock>, public DB::ConnectionPool {
 	public:
 		MockPool() :
-			PQ::Mock("user=postgres dbname=postgres", "pqmock", { }),
+			PluginMock<PQ::Mock>("user=postgres dbname=postgres", "pqmock", { }),
 			DB::ConnectionPool(4, 2, "postgresql", stringbf("user=postgres dbname=%s", databaseName()))
 		{
 		}

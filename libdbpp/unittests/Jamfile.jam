@@ -6,7 +6,7 @@ lib pq ;
 lib boost_date_time ;
 lib boost_system ;
 lib boost_utf : : <name>boost_unit_test_framework ;
-lib IceUtil ;
+lib Ice++11 ;
 
 run
 	testConnection.cpp mockdb.cpp
@@ -105,7 +105,7 @@ run
 	<library>..//adhocutil
 	<library>dbpp-local-postgresql
 	<library>boost_utf
-	<library>IceUtil
+	<library>Ice++11
 	<dependency>util.sql
 	:
 	testUtils

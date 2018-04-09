@@ -7,7 +7,7 @@
 #include <connection.h>
 #include <modifycommand.h>
 #include <selectcommand.h>
-#include <boost/function.hpp>
+#include <functional>
 
 namespace DB {
 	class SqlWriter;
@@ -20,7 +20,7 @@ namespace DB {
 			typedef std::set<ColumnName> ColumnNames;
 			typedef ColumnNames PrimaryKey;
 			typedef PrimaryKey::const_iterator PKI;
-			typedef boost::function<void(DB::SelectCommandPtr)> AuditFunction;
+			typedef std::function<void(DB::SelectCommandPtr)> AuditFunction;
 
 		public:
 			/// Default constructor

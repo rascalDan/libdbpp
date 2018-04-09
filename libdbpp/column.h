@@ -3,8 +3,8 @@
 
 #include <glibmm/ustring.h>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/optional.hpp>
+#include <memory>
+#include <optional>
 #include <visibility.h>
 #include <exception.h>
 #include "dbTypes.h"
@@ -61,13 +61,13 @@ namespace DB {
 			void operator>>(Blob &) const;
 			/// STL like wrapper for optional types.
 			template <typename T>
-			void operator>>(boost::optional<T> & v) const {
+			void operator>>(std::optional<T> & v) const {
 				if (!isNull()) {
 					v = T();
-					operator>>(v.get());
+					operator>>(*v);
 				}
 				else {
-					v = boost::none;
+					v = {};
 				}
 			}
 
@@ -76,7 +76,7 @@ namespace DB {
 			/// This column's name.
 			const std::string		name;
 	};
-	typedef boost::shared_ptr<Column> ColumnPtr;
+	typedef std::shared_ptr<Column> ColumnPtr;
 }
 
 #endif

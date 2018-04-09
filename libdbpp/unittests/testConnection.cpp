@@ -16,9 +16,8 @@ BOOST_AUTO_TEST_CASE( create )
 	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
 	BOOST_REQUIRE(mock);
 	// MockDb is fake, just returns nullptr, but the call should otherwise succeed.
-	BOOST_REQUIRE(!mock->newModifyCommand(""));
-	BOOST_REQUIRE(!mock->newSelectCommand(""));
-	delete mock;
+	BOOST_REQUIRE(!mock->modify(""));
+	BOOST_REQUIRE(!mock->select(""));
 }
 
 BOOST_AUTO_TEST_CASE( resolve )
@@ -42,7 +41,6 @@ BOOST_AUTO_TEST_CASE( finish )
 	BOOST_REQUIRE_THROW(mock->finish(), DB::TransactionStillOpen);
 	mock->commitTx();
 	mock->finish();
-	delete mock;
 }
 
 BOOST_AUTO_TEST_CASE( tx )
@@ -62,7 +60,6 @@ BOOST_AUTO_TEST_CASE( tx )
 	BOOST_REQUIRE_EQUAL(true, mock->inTx());
 	mock->rollbackTx(); // 0
 	BOOST_REQUIRE_EQUAL(false, mock->inTx());
-	delete mock;
 }
 
 BOOST_AUTO_TEST_CASE( txscope )
@@ -88,7 +85,7 @@ BOOST_AUTO_TEST_CASE( txscope )
 BOOST_AUTO_TEST_CASE( savepoints )
 {
 	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
-	MockDb * mockdb = dynamic_cast<MockDb *>(mock);
+	auto mockdb = std::dynamic_pointer_cast<MockDb>(mock);
 	BOOST_REQUIRE(mockdb);
 	mock->savepoint("sp");
 	BOOST_REQUIRE_EQUAL("SAVEPOINT sp", *mockdb->executed.rbegin());
@@ -100,7 +97,6 @@ BOOST_AUTO_TEST_CASE( savepoints )
 	BOOST_REQUIRE_EQUAL("SAVEPOINT sp2", *mockdb->executed.rbegin());
 	mock->rollbackToSavepoint("sp1");
 	BOOST_REQUIRE_EQUAL("ROLLBACK TO SAVEPOINT sp1", *mockdb->executed.rbegin());
-	delete mock;
 }
 
 BOOST_AUTO_TEST_CASE( commandOptions )
@@ -118,7 +114,7 @@ BOOST_AUTO_TEST_CASE( commandOptionsPq1 )
 		{"page-size", "5"}
 	});
 	BOOST_REQUIRE(optsBase);
-	auto optsPq = dynamic_cast<PQ::CommandOptions *>(optsBase);
+	auto optsPq = std::dynamic_pointer_cast<PQ::CommandOptions>(optsBase);
 	BOOST_REQUIRE(optsPq);
 	BOOST_REQUIRE(optsBase->hash);
 	BOOST_REQUIRE_EQUAL(12345, *optsBase->hash);
@@ -132,7 +128,7 @@ BOOST_AUTO_TEST_CASE( commandOptionsPq2 )
 		{"page-size", "50"}
 	});
 	BOOST_REQUIRE(optsBase);
-	auto optsPq = dynamic_cast<PQ::CommandOptions *>(optsBase);
+	auto optsPq = std::dynamic_pointer_cast<PQ::CommandOptions>(optsBase);
 	BOOST_REQUIRE(optsPq);
 	BOOST_REQUIRE(optsBase->hash);
 	BOOST_REQUIRE_EQUAL(123456, *optsBase->hash);

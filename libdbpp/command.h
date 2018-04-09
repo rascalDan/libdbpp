@@ -4,7 +4,7 @@
 #include "command_fwd.h"
 #include <glibmm/ustring.h>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/lexical_cast.hpp>
 #include <visibility.h>
 #include <factory.h>
@@ -34,7 +34,7 @@ namespace DB {
 			virtual ~CommandOptions() = default;
 
 			/// An (optional) hash of the SQL statement.
-			boost::optional<std::size_t> hash;
+			std::optional<std::size_t> hash;
 
 		protected:
 			/// Helper function to extract values from a CommandOptionsMap

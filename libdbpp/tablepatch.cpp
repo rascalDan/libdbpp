@@ -27,7 +27,7 @@ DB::Connection::patchTable(TablePatch * tp)
 	if (!inTx()) {
 		throw TransactionRequired();
 	}
-	TransactionScope tx(this);
+	TransactionScope tx(shared_from_this());
 	bool ownedExpr = false;
 	if (!tp->srcExpr && !tp->src.empty()) {
 		tp->srcExpr = new DB::StaticSqlWriter(tp->src);
@@ -61,7 +61,7 @@ push(boost::format & f, typename Container::const_iterator & i, const Value & v,
 
 template<typename Separator, typename Container, typename ... Ps>
 static inline unsigned int
-appendIf(AdHoc::Buffer & buf, const Container & c, const boost::function<bool(const typename Container::const_iterator)> & sel, const Separator & sep, const std::string & fmts, const Ps & ... ps)
+appendIf(AdHoc::Buffer & buf, const Container & c, const std::function<bool(const typename Container::const_iterator)> & sel, const Separator & sep, const std::string & fmts, const Ps & ... ps)
 {
 	auto fmt = AdHoc::Buffer::getFormat(fmts);
 	unsigned int x = 0;
@@ -70,8 +70,8 @@ appendIf(AdHoc::Buffer & buf, const Container & c, const boost::function<bool(co
 			if (x > 0) {
 				buf.appendbf("%s", sep);
 			}
-			push<Container>(*fmt, i, ps...);
-			buf.append(fmt->str());
+			push<Container>(fmt, i, ps...);
+			buf.append(fmt.str());
 			x += 1;
 		}
 	}
@@ -189,7 +189,7 @@ DB::Connection::patchDeletes(TablePatch * tp)
 				break;
 			}
 	}
-	auto del = ModifyCommandPtr(newModifyCommand(toDelSql));
+	auto del = modify(toDelSql);
 	unsigned int offset = 0;
 	tp->srcExpr->bindParams(del.get(), offset);
 	if (tp->insteadOfDelete) {
@@ -271,7 +271,7 @@ DB::Connection::patchUpdates(TablePatch * tp)
 				// -----------------------------------------------------------------
 				// Execute the bulk update command ---------------------------------
 				// -----------------------------------------------------------------
-				auto upd = ModifyCommandPtr(newModifyCommand(updSql));
+				auto upd = modify(updSql);
 				unsigned int offset = 0;
 				tp->srcExpr->bindParams(upd.get(), offset);
 				if (tp->where) {
@@ -299,7 +299,7 @@ DB::Connection::patchUpdates(TablePatch * tp)
 				// -----------------------------------------------------------------
 				// Execute the bulk update command ---------------------------------
 				// -----------------------------------------------------------------
-				auto upd = ModifyCommandPtr(newModifyCommand(updSql));
+				auto upd = modify(updSql);
 				unsigned int offset = 0;
 				tp->where->bindParams(upd.get(), offset);
 				if (tp->where) {
@@ -357,7 +357,7 @@ DB::Connection::patchInserts(TablePatch * tp)
 	append(toInsSql, tp->cols, ", ", "%s", selfCols);
 	toInsSql.append(")\n");
 	patchInsertsSelect(toInsSql, tp);
-	auto ins = ModifyCommandPtr(newModifyCommand(toInsSql));
+	auto ins = modify(toInsSql);
 	unsigned int offset = 0;
 	tp->srcExpr->bindParams(ins.get(), offset);
 	if (tp->order) {
