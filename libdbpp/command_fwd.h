@@ -8,6 +8,8 @@
 namespace DB {
 	typedef std::map<std::string, std::string> CommandOptionsMap;
 	class CommandOptions;
+	typedef std::shared_ptr<CommandOptions> CommandOptionsPtr;
+	typedef std::shared_ptr<const CommandOptions> CommandOptionsCPtr;
 	class Command;
 	typedef std::shared_ptr<Command> CommandPtr;
 	class ModifyCommand;

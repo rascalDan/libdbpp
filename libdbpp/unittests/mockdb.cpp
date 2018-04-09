@@ -38,7 +38,7 @@ MockDb::bulkUpdateStyle() const
 }
 
 void
-MockDb::execute(const std::string & sql, const DB::CommandOptions *)
+MockDb::execute(const std::string & sql, const DB::CommandOptionsCPtr &)
 {
 	if (sql.substr(0, 3) == "Not") {
 		throw DB::Error();
@@ -47,13 +47,13 @@ MockDb::execute(const std::string & sql, const DB::CommandOptions *)
 }
 
 DB::SelectCommandPtr
-MockDb::select(const std::string &, const DB::CommandOptions *)
+MockDb::select(const std::string &, const DB::CommandOptionsCPtr &)
 {
 	return nullptr;
 }
 
 DB::ModifyCommandPtr
-MockDb::modify(const std::string &, const DB::CommandOptions *)
+MockDb::modify(const std::string &, const DB::CommandOptionsCPtr &)
 {
 	return nullptr;
 }

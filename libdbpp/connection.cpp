@@ -28,7 +28,7 @@ DB::Connection::~Connection()
 }
 
 void
-DB::Connection::execute(const std::string & sql, const CommandOptions * opts)
+DB::Connection::execute(const std::string & sql, const CommandOptionsCPtr & opts)
 {
 	modify(sql, opts)->execute(true);
 }

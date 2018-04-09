@@ -19,6 +19,8 @@ namespace AdHoc {
 namespace DB {
 	class Command;
 	class CommandOptions;
+	typedef std::shared_ptr<CommandOptions> CommandOptionsPtr;
+	typedef std::shared_ptr<const CommandOptions> CommandOptionsCPtr;
 	class SelectCommand;
 	typedef std::shared_ptr<SelectCommand> SelectCommandPtr;
 	class ModifyCommand;
@@ -115,15 +117,15 @@ namespace DB {
 			/// @endcond
 
 			/// Straight up execute a statement (no access to result set)
-			virtual void execute(const std::string & sql, const CommandOptions * = nullptr);
+			virtual void execute(const std::string & sql, const CommandOptionsCPtr & = nullptr);
 			/// Execute a script from a stream.
 			/// @param f the script.
 			/// @param s the location of the script.
 			virtual void executeScript(std::istream & f, const boost::filesystem::path & s);
 			/// Create a new select command with the given SQL.
-			virtual SelectCommandPtr select(const std::string & sql, const CommandOptions * = nullptr) = 0;
+			virtual SelectCommandPtr select(const std::string & sql, const CommandOptionsCPtr & = nullptr) = 0;
 			/// Create a new modify command with the given SQL.
-			virtual ModifyCommandPtr modify(const std::string & sql, const CommandOptions * = nullptr) = 0;
+			virtual ModifyCommandPtr modify(const std::string & sql, const CommandOptionsCPtr & = nullptr) = 0;
 
 			/// Begin a bulk upload operation.
 			/// @param table the target table.
