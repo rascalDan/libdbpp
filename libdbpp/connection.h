@@ -175,14 +175,14 @@ namespace DB {
 	class DLL_PUBLIC TransactionScope {
 		public:
 			/// Create a new helper and associated transaction on the given connection.
-			TransactionScope(std::weak_ptr<DB::Connection>);
+			TransactionScope(Connection &);
 			~TransactionScope();
 
 		private:
 			TransactionScope(const TransactionScope &) = delete;
 			void operator=(const TransactionScope &) = delete;
 
-			std::weak_ptr<Connection> conn;
+			Connection & conn;
 	};
 
 	typedef AdHoc::Factory<Connection, std::string> ConnectionFactory;

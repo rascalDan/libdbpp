@@ -27,7 +27,7 @@ DB::Connection::patchTable(TablePatch * tp)
 	if (!inTx()) {
 		throw TransactionRequired();
 	}
-	TransactionScope tx(shared_from_this());
+	TransactionScope tx(*this);
 	bool ownedExpr = false;
 	if (!tp->srcExpr && !tp->src.empty()) {
 		tp->srcExpr = new DB::StaticSqlWriter(tp->src);

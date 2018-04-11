@@ -185,21 +185,19 @@ DB::TransactionRequired::message() const throw()
 	return "A transaction must be opened before performing this operation";
 }
 
-DB::TransactionScope::TransactionScope(std::weak_ptr<DB::Connection> c) :
+DB::TransactionScope::TransactionScope(DB::Connection & c) :
 	conn(c)
 {
-	conn.lock()->beginTx();
+	conn.beginTx();
 }
 
 DB::TransactionScope::~TransactionScope()
 {
-	if (conn.expired()) return;
-
 	if (std::uncaught_exception()) {
-		conn.lock()->rollbackTx();
+		conn.rollbackTx();
 	}
 	else {
-		conn.lock()->commitTx();
+		conn.commitTx();
 	}
 }
 

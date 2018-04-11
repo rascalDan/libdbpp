@@ -68,12 +68,12 @@ BOOST_AUTO_TEST_CASE( txscope )
 	BOOST_REQUIRE(mock);
 	BOOST_REQUIRE_EQUAL(false, mock->inTx());
 	{
-		DB::TransactionScope tx(mock);
+		DB::TransactionScope tx(*mock);
 		BOOST_REQUIRE_EQUAL(true, mock->inTx());
 	}
 	BOOST_REQUIRE_EQUAL(false, mock->inTx());
 	try {
-		DB::TransactionScope tx(mock);
+		DB::TransactionScope tx(*mock);
 		BOOST_REQUIRE_EQUAL(true, mock->inTx());
 		throw std::exception();
 	}
