@@ -5,8 +5,13 @@ template class AdHoc::ResourcePool<DB::Connection>;
 template class AdHoc::ResourceHandle<DB::Connection>;
 
 namespace DB {
+	BasicConnectionPool::BasicConnectionPool(unsigned int m, unsigned int k) :
+		ResourcePool<Connection>(m, k)
+	{
+	}
+
 	ConnectionPool::ConnectionPool(unsigned int m, unsigned int k, const std::string & t, const std::string & cs) :
-		ResourcePool<Connection>(m, k),
+		BasicConnectionPool(m, k),
 		factory(ConnectionFactory::get(t)),
 		connectionString(cs)
 	{
@@ -19,13 +24,13 @@ namespace DB {
 	}
 
 	void
-	ConnectionPool::returnTestResource(Connection const * c) const
+	BasicConnectionPool::returnTestResource(Connection const * c) const
 	{
 		c->finish();
 	}
 
 	void
-	ConnectionPool::testResource(Connection const * c) const
+	BasicConnectionPool::testResource(Connection const * c) const
 	{
 		c->ping();
 	}

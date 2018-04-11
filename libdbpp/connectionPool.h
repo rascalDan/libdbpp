@@ -8,7 +8,21 @@
 
 namespace DB {
 	/// Specialisation of AdHoc::ResourcePool for database connections.
-	class DLL_PUBLIC ConnectionPool : public AdHoc::ResourcePool<Connection> {
+	class DLL_PUBLIC BasicConnectionPool : public AdHoc::ResourcePool<Connection> {
+		public:
+			/// Create a new connection pool.
+			/// @param max Maximum number of concurrent database connections.
+			/// @param keep Number of connections to keep open after use.
+			BasicConnectionPool(unsigned int max, unsigned int keep);
+
+		protected:
+			/// Ping a connection.
+			void returnTestResource(Connection const *) const override;
+			/// Ping a connection.
+			void testResource(Connection const *) const override;
+	};
+
+	class DLL_PUBLIC ConnectionPool : public BasicConnectionPool {
 		public:
 			/// Create a new connection pool.
 			/// @param max Maximum number of concurrent database connections.
@@ -20,16 +34,13 @@ namespace DB {
 		protected:
 			/// Create a new connection.
 			ConnectionPtr createResource() const override;
-			/// Ping a connection.
-			void returnTestResource(Connection const *) const override;
-			/// Ping a connection.
-			void testResource(Connection const *) const override;
 
 		private:
 			const ConnectionFactoryCPtr factory;
 			const std::string connectionString;
 	};
-	typedef std::shared_ptr<ConnectionPool> ConnectionPoolPtr;
+
+	typedef std::shared_ptr<BasicConnectionPool> ConnectionPoolPtr;
 }
 
 #endif
