@@ -13,7 +13,7 @@
 class Mock : public DB::PluginMock<PQ::Mock> {
 	public:
 		Mock() :
-			DB::PluginMock<PQ::Mock>("user=postgres dbname=postgres", "pqmock", { rootDir / "patch.sql" })
+			DB::PluginMock<PQ::Mock>("pqmock", { rootDir / "patch.sql" }, "user=postgres dbname=postgres")
 		{
 		}
 };

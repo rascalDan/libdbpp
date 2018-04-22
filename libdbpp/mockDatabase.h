@@ -63,10 +63,11 @@ class DLL_PUBLIC MockServerDatabase : public MockDatabase {
 template<typename T>
 class PluginMock {
 	public:
-		PluginMock(const std::string & m, const std::string & name, const std::vector<boost::filesystem::path> & s) :
+		template<typename ... Args>
+		PluginMock(const std::string & name, const std::initializer_list<boost::filesystem::path> & s, const Args & ... args) :
 			mockName(name)
 		{
-			AdHoc::PluginManager::getDefault()->create<MockDatabase, T>(mockName, __FILE__, __LINE__, m, name, s);
+			AdHoc::PluginManager::getDefault()->create<MockDatabase, T>(mockName, __FILE__, __LINE__, args..., name, s);
 		}
 		~PluginMock()
 		{

@@ -8,7 +8,7 @@
 class MockPool : public DB::PluginMock<PQ::Mock>, public DB::ConnectionPool {
 	public:
 		MockPool() :
-			PluginMock<PQ::Mock>("user=postgres dbname=postgres", "pqmock", { }),
+			PluginMock<PQ::Mock>("pqmock", { }, "user=postgres dbname=postgres"),
 			DB::ConnectionPool(4, 2, "postgresql", stringbf("user=postgres dbname=%s", databaseName()))
 		{
 		}
