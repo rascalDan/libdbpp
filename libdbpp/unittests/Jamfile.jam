@@ -51,7 +51,7 @@ alias libpq : : : :
 	;
 
 lib dbpp-local-postgresql :
-	[ glob pq/libpqpp/*.cpp ] :
+	[ glob libdbpp-postgresql/libpqpp/*.cpp ] :
 	<library>../..//glibmm
 	<library>libpq
 	<library>..//adhocutil
@@ -59,7 +59,7 @@ lib dbpp-local-postgresql :
 	<library>boost_date_time
 	<library>boost_system
 	: :
-	<include>pq/libpqpp
+	<include>libdbpp-postgresql/libpqpp
 	<cflags>"-I`pg_config --includedir`"
 	<library>../..//glibmm
 	<library>..//dbppcore
