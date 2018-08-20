@@ -22,7 +22,8 @@ BOOST_AUTO_TEST_CASE( mockFactory )
 	BOOST_REQUIRE(m);
 	auto c = m->openConnection();
 	BOOST_REQUIRE(c);
-	BOOST_REQUIRE_EQUAL(typeid(MockDb), typeid(*c));
+	auto & cr = *c;
+	BOOST_REQUIRE_EQUAL(typeid(MockDb), typeid(cr));
 }
 
 BOOST_AUTO_TEST_CASE( missingMock )
