@@ -193,7 +193,7 @@ DB::TransactionScope::TransactionScope(DB::Connection & c) :
 
 DB::TransactionScope::~TransactionScope()
 {
-	if (std::uncaught_exception()) {
+	if (std::uncaught_exceptions()) {
 		conn.rollbackTx();
 	}
 	else {
