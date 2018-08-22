@@ -4,11 +4,6 @@
 #include "command.h"
 #include "column.h"
 #include "error.h"
-#include <boost/multi_index_container_fwd.hpp>
-#include <boost/multi_index/indexed_by.hpp>
-#include <boost/multi_index/ordered_index_fwd.hpp>
-#include <boost/multi_index/member.hpp>
-#include <boost/multi_index/mem_fun.hpp>
 #include <functional>
 #include <visibility.h>
 #include <exception.h>
@@ -135,11 +130,7 @@ namespace DB {
 			/// Helper function so clients need not know about boost::multi_index_container.
 			ColumnPtr insertColumn(ColumnPtr);
 
-			/// Friendly typedef cos boost::multi_index_container definitions are massive.
-			typedef boost::multi_index_container<ColumnPtr, boost::multi_index::indexed_by<
-				boost::multi_index::ordered_unique<boost::multi_index::member<DB::Column, const unsigned int, &DB::Column::colNo>>,
-				boost::multi_index::ordered_unique<boost::multi_index::member<DB::Column, const std::string, &DB::Column::name>>
-								>> Columns;
+			class Columns;
 
 			/// Columns in the result set.
 			Columns * columns;

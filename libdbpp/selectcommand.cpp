@@ -2,6 +2,9 @@
 #include "error.h"
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/ordered_index.hpp>
+#include <boost/multi_index/indexed_by.hpp>
+#include <boost/multi_index/member.hpp>
+#include <boost/multi_index/mem_fun.hpp>
 #include <compileTimeFormatter.h>
 
 namespace DB {
@@ -22,6 +25,12 @@ namespace DB {
 	{
 		return ColumnDoesNotExistMsg::get(colName);
 	}
+
+	typedef boost::multi_index_container<ColumnPtr, boost::multi_index::indexed_by<
+		boost::multi_index::ordered_unique<boost::multi_index::member<DB::Column, const unsigned int, &DB::Column::colNo>>,
+		boost::multi_index::ordered_unique<boost::multi_index::member<DB::Column, const std::string, &DB::Column::name>>
+						>> ColumnsBase;
+	class SelectCommand::Columns : public ColumnsBase { };
 };
 
 DB::SelectCommand::SelectCommand(const std::string & sql) :
