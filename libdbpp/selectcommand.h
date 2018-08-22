@@ -13,6 +13,12 @@
 #include <visibility.h>
 #include <exception.h>
 
+#ifndef BOOST_TEST_MODULE
+#define DEPRECATE __attribute__((deprecated))
+#else
+#define DEPRECATE
+#endif
+
 namespace DB {
 	class Column;
 	class SelectCommand;
@@ -38,7 +44,10 @@ namespace DB {
 
 			/// Get value of column C in current row.
 			template<unsigned int C>
-			typename std::tuple_element<C, std::tuple<Fn...>>::type value() const;
+			typename std::tuple_element<C, std::tuple<Fn...>>::type value() const DEPRECATE ;
+
+			template<unsigned int C>
+			typename std::tuple_element<C, std::tuple<Fn...>>::type get() const;
 	};
 
 	template<typename ... Fn>
@@ -134,6 +143,15 @@ namespace DB {
 
 			/// Columns in the result set.
 			Columns * columns;
+	};
+}
+
+namespace std {
+	template<typename ... Fn> struct tuple_size<DB::Row<Fn...>> {
+		static constexpr auto value =  sizeof...(Fn);
+	};
+	template<size_t C, typename ... Fn> struct tuple_element<C, DB::Row<Fn...>> {
+		typedef typename std::tuple_element<C, std::tuple<Fn...>>::type type;
 	};
 }
 

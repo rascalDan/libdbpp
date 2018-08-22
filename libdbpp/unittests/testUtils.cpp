@@ -65,9 +65,27 @@ BOOST_AUTO_TEST_CASE( stdforOverRows )
 		count += 1;
 		BOOST_REQUIRE_EQUAL("a", row[0].name);
 		BOOST_REQUIRE_EQUAL(1, row["c"].colNo);
+		// Test old function
 		int64_t a = row.value<0>();
 		totalOfa += a;
-		totalOfc += row.value<1>();
+		totalOfc += row.get<1>();
+	}
+	BOOST_REQUIRE_EQUAL(count, 2);
+	BOOST_REQUIRE_EQUAL(totalOfa, 3);
+	BOOST_REQUIRE_EQUAL(totalOfc, "Some textSome text");
+}
+
+BOOST_AUTO_TEST_CASE( stdforOverRowsStructuredBinding )
+{
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
+	unsigned int count = 0;
+	int64_t totalOfa = 0;
+	std::string totalOfc;
+	auto sel = db->select("SELECT a, c FROM forEachRow ORDER BY a DESC");
+	for (const auto [ a, c ] : sel->as<int64_t, std::string>()) {
+		count += 1;
+		totalOfa += a;
+		totalOfc += c;
 	}
 	BOOST_REQUIRE_EQUAL(count, 2);
 	BOOST_REQUIRE_EQUAL(totalOfa, 3);
@@ -262,7 +280,7 @@ BOOST_AUTO_TEST_CASE( bindIntPtr )
 
 BOOST_AUTO_TEST_CASE( testBlobRaw )
 {
-	DB::Blob ptr(this, 1);	
+	DB::Blob ptr(this, 1);
 	BOOST_REQUIRE_EQUAL(ptr.data, this);
 	BOOST_REQUIRE_EQUAL(ptr.len, 1);
 }

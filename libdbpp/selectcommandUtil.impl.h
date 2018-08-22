@@ -93,6 +93,13 @@ namespace DB {
 	template<unsigned int C>
 	inline typename std::tuple_element<C, std::tuple<Fn...>>::type Row<Fn...>::value() const
 	{
+		return get<C>();
+	}
+
+	template<typename ... Fn>
+	template<unsigned int C>
+	inline typename std::tuple_element<C, std::tuple<Fn...>>::type Row<Fn...>::get() const
+	{
 		typename std::tuple_element<C, std::tuple<Fn...>>::type a;
 		sel->operator[](C) >> a;
 		return a;
