@@ -45,30 +45,59 @@ namespace DB {
 			/// Apply a field handler (any sub-class of HandleField)
 			virtual void apply(HandleField &) const = 0;
 
+			template<typename T>
+			class Extract : public DB::HandleField {
+				public:
+					template <typename> struct is_optional {
+						static constexpr bool value = false;
+					};
+					template <typename X> struct is_optional<std::optional<X>> {
+						static constexpr bool value = true;
+					};
+
+					Extract(T & t) : target(t) { }
+
+					void floatingpoint(double v) override { (*this)(v); }
+					void integer(int64_t v) override { (*this)(v); }
+					void boolean(bool v) override { (*this)(v); }
+					void string(const char * v, size_t len) override { (*this)(std::string_view(v, len)); }
+					void timestamp(const boost::posix_time::ptime & v) override { (*this)(v); }
+					void interval(const boost::posix_time::time_duration & v) override { (*this)(v); }
+					void blob(const Blob & v) override { (*this)(v); }
+					void null() override
+					{
+						if constexpr (is_optional<T>::value) {
+							target.reset();
+						}
+						else {
+							throw UnexpectedNullValue(typeid(T).name());
+						}
+					}
+
+					template <typename D>
+					inline
+					void operator()(const D & v)
+					{
+						if constexpr (std::is_assignable<D, T>::value) {
+							target = v;
+						}
+						else if constexpr (std::is_convertible<D, T>::value) {
+							target = (T)v;
+						}
+						else {
+							throw InvalidConversion(typeid(D).name(), typeid(T).name());
+						}
+					}
+
+					T & target;
+			};
+
 			/// STL like string extractor.
-			void operator>>(std::string &) const;
-			/// STL like boolean extractor.
-			void operator>>(bool &) const;
-			/// STL like integer extractor.
-			void operator>>(int64_t &) const;
-			/// STL like numeric extractor.
-			void operator>>(double &) const;
-			/// STL like duration extractor.
-			void operator>>(boost::posix_time::time_duration &) const;
-			/// STL like date time extractor.
-			void operator>>(boost::posix_time::ptime &) const;
-			/// STL like BLOB extractor.
-			void operator>>(Blob &) const;
-			/// STL like wrapper for optional types.
-			template <typename T>
-			void operator>>(std::optional<T> & v) const {
-				if (!isNull()) {
-					v = T();
-					operator>>(*v);
-				}
-				else {
-					v = {};
-				}
+			template<typename T>
+			void operator>>(T & v) const
+			{
+				Extract<T> e(v);
+				apply(e);
 			}
 
 			/// This column's ordinal.

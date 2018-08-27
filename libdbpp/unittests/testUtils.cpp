@@ -82,7 +82,7 @@ BOOST_AUTO_TEST_CASE( stdforOverRowsStructuredBinding )
 	int64_t totalOfa = 0;
 	std::string totalOfc;
 	auto sel = db->select("SELECT a, c FROM forEachRow ORDER BY a DESC");
-	for (const auto [ a, c ] : sel->as<int64_t, std::string>()) {
+	for (const auto [ a, c ] : sel->as<int64_t, std::string_view>()) {
 		count += 1;
 		totalOfa += a;
 		totalOfc += c;
@@ -170,9 +170,11 @@ BOOST_AUTO_TEST_CASE( bulkLoadFile )
 		});
 }
 
-BOOST_AUTO_TEST_CASE( nullBind )
+typedef boost::mpl::list<std::string, std::string_view, Glib::ustring> StringTypes;
+BOOST_AUTO_TEST_CASE_TEMPLATE( nullBind, Str, StringTypes )
 {
 	auto db = DB::MockDatabase::openConnectionTo("pqmock");
+	db->execute("DELETE FROM forEachRow");
 	auto ins = db->modify("INSERT INTO forEachRow VALUES(?, ?, ?, ?, ?, ?)");
 	ins->bindParamI(0, std::optional<int>());
 	ins->bindParamF(1, std::optional<double>());
@@ -183,9 +185,12 @@ BOOST_AUTO_TEST_CASE( nullBind )
 	ins->execute();
 	auto sel = db->select("SELECT a, b, c, d, e, f FROM forEachRow WHERE a IS NULL AND b IS NULL AND c IS NULL AND d IS NULL AND e IS NULL AND f IS NULL");
 	unsigned int count = 0;
-	for (const auto & row : sel->as<>()) {
-		(void)row;
+	for (const auto & row : sel->as<int, std::optional<double>, Str>()) {
 		count += 1;
+		BOOST_CHECK_THROW(row.template get<0>(), DB::UnexpectedNullValue);
+		auto nd = row.template get<1>();
+		BOOST_CHECK(!nd.has_value());
+		BOOST_CHECK_THROW(row.template get<2>(), DB::UnexpectedNullValue);
 	}
 	BOOST_REQUIRE_EQUAL(1, count);
 }
