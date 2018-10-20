@@ -92,6 +92,25 @@ BOOST_AUTO_TEST_CASE( stdforOverRowsStructuredBinding )
 	BOOST_REQUIRE_EQUAL(totalOfc, "Some textSome text");
 }
 
+BOOST_AUTO_TEST_CASE( stdforOverRowsStructuredBindingOptional )
+{
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
+	unsigned int count = 0;
+	int64_t totalOfa = 0;
+	std::string totalOfc;
+	auto sel = db->select("SELECT a, c FROM forEachRow ORDER BY a DESC");
+	for (const auto [ a, c ] : sel->as<std::optional<int64_t>, std::optional<std::string>>()) {
+		count += 1;
+		BOOST_REQUIRE(a);
+		totalOfa += *a;
+		BOOST_REQUIRE(c);
+		totalOfc += *c;
+	}
+	BOOST_REQUIRE_EQUAL(count, 2);
+	BOOST_REQUIRE_EQUAL(totalOfa, 3);
+	BOOST_REQUIRE_EQUAL(totalOfc, "Some textSome text");
+}
+
 BOOST_AUTO_TEST_CASE( execute )
 {
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));

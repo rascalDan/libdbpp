@@ -48,11 +48,13 @@ namespace DB {
 			template<typename T>
 			class Extract : public DB::HandleField {
 				public:
-					template <typename> struct is_optional {
+					template <typename X> struct is_optional {
 						static constexpr bool value = false;
+						static constexpr bool is_arithmetic = std::is_arithmetic<X>::value;
 					};
 					template <typename X> struct is_optional<std::optional<X>> {
 						static constexpr bool value = true;
+						static constexpr bool is_arithmetic = std::is_arithmetic<X>::value;
 					};
 
 					Extract(T & t) : target(t) { }
@@ -78,15 +80,18 @@ namespace DB {
 					inline
 					void operator()(const D & v)
 					{
-						if constexpr (std::is_assignable<D, T>::value) {
-							target = v;
+
+						if constexpr (is_optional<T>::is_arithmetic == std::is_arithmetic<D>::value) {
+							if constexpr (std::is_assignable<T, D>::value) {
+								target = v;
+								return;
+							}
+							if constexpr (std::is_convertible<T, D>::value) {
+								target = (T)v;
+								return;
+							}
 						}
-						else if constexpr (std::is_convertible<D, T>::value) {
-							target = (T)v;
-						}
-						else {
-							throw InvalidConversion(typeid(D).name(), typeid(T).name());
-						}
+						throw InvalidConversion(typeid(D).name(), typeid(T).name());
 					}
 
 					T & target;

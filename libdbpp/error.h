@@ -37,7 +37,7 @@ namespace DB {
 	};
 
 	class DLL_PUBLIC UnexpectedNullValue : public AdHoc::Exception<Error> {
-		public:	
+		public:
 			UnexpectedNullValue(const char * const from);
 
 		private:
