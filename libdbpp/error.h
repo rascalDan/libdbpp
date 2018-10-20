@@ -32,8 +32,8 @@ namespace DB {
 
 		private:
 			std::string message() const throw() override;
-			const char * from;
-			const char * to;
+			const std::string from;
+			const std::string to;
 	};
 
 	class DLL_PUBLIC UnexpectedNullValue : public AdHoc::Exception<Error> {
