@@ -28,6 +28,7 @@ namespace DB {
 			{
 			}
 
+			/// Byte-wise equality operation.
 			bool operator==(const DB::Blob b) const;
 
 			/// The beginning of the binary data.

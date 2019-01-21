@@ -5,9 +5,7 @@ DB::ModifyCommand::ModifyCommand(const std::string & s) :
 {
 }
 
-DB::ModifyCommand::~ModifyCommand()
-{
-}
+DB::ModifyCommand::~ModifyCommand() = default;
 
 DB::NoRowsAffected::NoRowsAffected()
 {

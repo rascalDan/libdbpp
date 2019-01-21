@@ -45,9 +45,10 @@ namespace DB {
 			/// Apply a field handler (any sub-class of HandleField)
 			virtual void apply(HandleField &) const = 0;
 
+			/// Column handler dealing with trivial (sensible) type conversions
 			template<typename T>
 			class Extract : public DB::HandleField {
-				public:
+				private:
 					template <typename X> struct is_optional {
 						static constexpr bool value = false;
 						static constexpr bool is_arithmetic = std::is_arithmetic<X>::value;
@@ -57,6 +58,8 @@ namespace DB {
 						static constexpr bool is_arithmetic = std::is_arithmetic<X>::value;
 					};
 
+				public:
+					/// Create an extrator given a target variable.
 					Extract(T & t) : target(t) { }
 
 					void floatingpoint(double v) override { (*this)(v); }
@@ -76,6 +79,7 @@ namespace DB {
 						}
 					}
 
+					/// Default call operation to [convert and] assign field value to target.
 					template <typename D>
 					inline
 					void operator()(const D & v)
@@ -94,10 +98,11 @@ namespace DB {
 						throw InvalidConversion(typeid(D).name(), typeid(T).name());
 					}
 
+				private:
 					T & target;
 			};
 
-			/// STL like string extractor.
+			/// STL like extractor.
 			template<typename T>
 			void operator>>(T & v) const
 			{

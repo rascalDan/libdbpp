@@ -23,9 +23,7 @@ DB::Connection::Connection() :
 {
 }
 
-DB::Connection::~Connection()
-{
-}
+DB::Connection::~Connection() = default;
 
 void
 DB::Connection::execute(const std::string & sql, const CommandOptionsCPtr & opts)

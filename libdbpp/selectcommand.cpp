@@ -35,14 +35,11 @@ namespace DB {
 
 DB::SelectCommand::SelectCommand(const std::string & sql) :
 	DB::Command(sql),
-	columns(new Columns)
+	columns(std::make_unique<Columns>())
 {
 }
 
-DB::SelectCommand::~SelectCommand()
-{
-	delete columns;
-}
+DB::SelectCommand::~SelectCommand() = default;
 
 const DB::Column&
 DB::SelectCommand::operator[](unsigned int n) const

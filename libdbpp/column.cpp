@@ -11,9 +11,7 @@ Column::Column(const Glib::ustring & n, unsigned int i) :
 {
 }
 
-Column::~Column()
-{
-}
+Column::~Column() = default;
 
 static
 std::string

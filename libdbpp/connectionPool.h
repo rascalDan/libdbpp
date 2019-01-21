@@ -22,6 +22,7 @@ namespace DB {
 			void testResource(Connection const *) const override;
 	};
 
+	/// Standard specialisation of AdHoc::ResourcePool for database connections given a type and connection string.
 	class DLL_PUBLIC ConnectionPool : public BasicConnectionPool {
 		public:
 			/// Create a new connection pool.

@@ -13,7 +13,6 @@ namespace DB {
 class DLL_PUBLIC MockDatabase : public AdHoc::AbstractPluginImplementation {
 	public:
 		/// Creates and registers a new database.
-		/// @param mockName the name the database will register as.
 		virtual ~MockDatabase() = default;
 
 		/// Open a connection to this database instance.
@@ -60,9 +59,14 @@ class DLL_PUBLIC MockServerDatabase : public MockDatabase {
 		const std::string testDbName;
 };
 
+/// Helper class for creating instances of mock databases
 template<typename T>
 class PluginMock {
 	public:
+		/// Create and register a new mock database.
+		/// @param name the name of the mock database to register.
+		/// @param s the collection of scripts to populate the mock database.
+		/// @param args arguments to the mock database constructor.
 		template<typename ... Args>
 		PluginMock(const std::string & name, const std::initializer_list<boost::filesystem::path> & s, const Args & ... args) :
 			mockName(name)
@@ -73,6 +77,7 @@ class PluginMock {
 		{
 			AdHoc::PluginManager::getDefault()->remove<MockDatabase>(mockName);
 		}
+		/// Get the name of the mock database.
 		const std::string & databaseName() const
 		{
 			return std::dynamic_pointer_cast<MockServerDatabase>(AdHoc::PluginManager::getDefault()->get<MockDatabase>(mockName)->implementation())->databaseName();

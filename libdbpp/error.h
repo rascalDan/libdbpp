@@ -36,8 +36,10 @@ namespace DB {
 			const std::string to;
 	};
 
+	/// Exception thrown when a null value occurs when reading into a non-optional value.
 	class DLL_PUBLIC UnexpectedNullValue : public AdHoc::Exception<Error> {
 		public:
+			/// Create a new UnexpectedNullValue given the source type name.
 			UnexpectedNullValue(const char * const from);
 
 		private:

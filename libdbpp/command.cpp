@@ -11,9 +11,7 @@ DB::Command::Command(const std::string & s) :
 {
 }
 
-DB::Command::~Command()
-{
-}
+DB::Command::~Command() = default;
 
 DB::ParameterTypeNotSupported::ParameterTypeNotSupported()
 {

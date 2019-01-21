@@ -133,17 +133,19 @@ namespace DB {
 			class Columns;
 
 			/// Columns in the result set.
-			Columns * columns;
+			std::unique_ptr<Columns> columns;
 	};
 }
 
 namespace std {
+	/// @cond
 	template<typename ... Fn> struct tuple_size<DB::Row<Fn...>> {
 		static constexpr auto value =  sizeof...(Fn);
 	};
 	template<size_t C, typename ... Fn> struct tuple_element<C, DB::Row<Fn...>> {
 		typedef typename std::tuple_element<C, std::tuple<Fn...>>::type type;
 	};
+	/// @endcond
 }
 
 #endif
