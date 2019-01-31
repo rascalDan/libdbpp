@@ -46,7 +46,7 @@ void
 MockDatabase::PlaySchemaScript(DB::Connection * conn, const std::filesystem::path & s) const
 {
 	std::ifstream f;
-	f.open(s.string());
+	f.open(s);
 	if (!f.good()) {
 		throw std::fstream::failure("Failed to open mock script: " + s.string());
 	}

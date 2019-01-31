@@ -103,7 +103,7 @@ scriptdir "$SCRIPTDIR"
 }
 
 <QUOTE>{scriptdir} {
-	statement += scriptDir.string();
+	statement += scriptDir;
 }
 
 <QUOTE>{quote_apos} {

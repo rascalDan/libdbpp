@@ -15,7 +15,7 @@ BOOST_TEST_SPECIALIZED_COLLECTION_COMPARE(SQLs);
 class RecordingParser : std::fstream, public DB::SqlParse {
 	public:
 		RecordingParser(const std::filesystem::path & p) :
-			std::fstream(p.string()),
+			std::fstream(p),
 			DB::SqlParse(*this, p.parent_path())
 		{
 		}

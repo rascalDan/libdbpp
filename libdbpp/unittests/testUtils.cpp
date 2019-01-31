@@ -166,7 +166,7 @@ BOOST_AUTO_TEST_CASE( extract )
 
 BOOST_AUTO_TEST_CASE( bulkLoadStream )
 {
-	std::ifstream in((rootDir / "source.dat").string());
+	std::ifstream in(rootDir / "source.dat");
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
 	db->beginBulkUpload("bulk1", "");
 	BOOST_REQUIRE_EQUAL(56, db->bulkUploadData(in));
