@@ -58,7 +58,7 @@ MockDb::modify(const std::string &, const DB::CommandOptionsCPtr &)
 	return nullptr;
 }
 
-MockMock::MockMock(const std::string &, const std::string &, const std::vector<boost::filesystem::path> & ss) :
+MockMock::MockMock(const std::string &, const std::string &, const std::vector<std::filesystem::path> & ss) :
 	DB::MockDatabase()
 {
 	CreateNewDatabase();

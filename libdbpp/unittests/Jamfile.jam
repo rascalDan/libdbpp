@@ -125,3 +125,17 @@ run
 	testMock
 	;
 
+run
+	libdbpp-postgresql/libpqpp/unittests/testpq.cpp
+	: :
+	libdbpp-postgresql/libpqpp/unittests/pqschema.sql
+	:
+	<define>ROOT=\"$(me)/libdbpp-postgresql/libpqpp/unittests\"
+	<define>BOOST_TEST_DYN_LINK
+	<library>dbpp-local-postgresql
+	<library>..//dbpptestcore
+	<library>..//adhocutil
+	<library>boost_utf
+	<library>..//stdc++fs
+	<library>boost_system
+	;

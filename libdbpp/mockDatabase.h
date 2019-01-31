@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include "connection.h"
 #include <visibility.h>
 
@@ -25,9 +25,9 @@ class DLL_PUBLIC MockDatabase : public AdHoc::AbstractPluginImplementation {
 		/// Implementation specific method to create a new database.
 		virtual void CreateNewDatabase() const = 0;
 		/// Execute ordered collection of scripts to setup mock database. e.g. schema.sql, sampleData.sql
-		virtual void PlaySchemaScripts(const std::vector<boost::filesystem::path> & ss) const;
+		virtual void PlaySchemaScripts(const std::vector<std::filesystem::path> & ss) const;
 		/// Execute a single setup script.
-		virtual void PlaySchemaScript(DB::Connection *, const boost::filesystem::path & s) const;
+		virtual void PlaySchemaScript(DB::Connection *, const std::filesystem::path & s) const;
 		/// Implementation specific method to drop a database.
 		virtual void DropDatabase() const = 0;
 
@@ -68,7 +68,7 @@ class PluginMock {
 		/// @param s the collection of scripts to populate the mock database.
 		/// @param args arguments to the mock database constructor.
 		template<typename ... Args>
-		PluginMock(const std::string & name, const std::initializer_list<boost::filesystem::path> & s, const Args & ... args) :
+		PluginMock(const std::string & name, const std::initializer_list<std::filesystem::path> & s, const Args & ... args) :
 			mockName(name)
 		{
 			AdHoc::PluginManager::getDefault()->create<MockDatabase, T>(mockName, __FILE__, __LINE__, args..., name, s);
@@ -87,7 +87,7 @@ class PluginMock {
 		const std::string mockName;
 };
 
-typedef AdHoc::Factory<MockDatabase, const std::string &, const std::string &, const std::vector<boost::filesystem::path> &> MockDatabaseFactory;
+typedef AdHoc::Factory<MockDatabase, const std::string &, const std::string &, const std::vector<std::filesystem::path> &> MockDatabaseFactory;
 }
 
 #endif

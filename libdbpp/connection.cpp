@@ -92,7 +92,7 @@ DB::Connection::inTx() const
 }
 
 void
-DB::Connection::executeScript(std::istream & f, const boost::filesystem::path & s)
+DB::Connection::executeScript(std::istream & f, const std::filesystem::path & s)
 {
 	DB::SqlExecuteScript p(f, s, this);
 	p.Execute();

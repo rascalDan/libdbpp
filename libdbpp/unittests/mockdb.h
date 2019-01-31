@@ -24,7 +24,7 @@ class MockDb : public DB::Connection {
 
 class MockMock : public DB::MockDatabase {
 	public:
-		MockMock(const std::string &, const std::string &, const std::vector<boost::filesystem::path> &);
+		MockMock(const std::string &, const std::string &, const std::vector<std::filesystem::path> &);
 		DB::ConnectionPtr openConnection() const override;
 		void CreateNewDatabase() const override;
 		void DropDatabase() const override;

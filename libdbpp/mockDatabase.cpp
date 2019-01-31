@@ -8,7 +8,7 @@
 #include <factory.impl.h>
 
 INSTANTIATEPLUGINOF(DB::MockDatabase);
-INSTANTIATEFACTORY(DB::MockDatabase, const std::string &, const std::string &, const std::vector<boost::filesystem::path> &);
+INSTANTIATEFACTORY(DB::MockDatabase, const std::string &, const std::string &, const std::vector<std::filesystem::path> &);
 PLUGINRESOLVER(DB::MockDatabaseFactory, DB::Connection::resolvePlugin);
 
 namespace DB {
@@ -23,7 +23,7 @@ MockDatabase::openConnectionTo(const std::string & mockName)
 }
 
 void
-MockDatabase::PlaySchemaScripts(const std::vector<boost::filesystem::path> & ss) const
+MockDatabase::PlaySchemaScripts(const std::vector<std::filesystem::path> & ss) const
 {
 	auto conn = ConnectionPtr(openConnection());
 	try {
@@ -43,7 +43,7 @@ MockDatabase::PlaySchemaScripts(const std::vector<boost::filesystem::path> & ss)
 }
 
 void
-MockDatabase::PlaySchemaScript(DB::Connection * conn, const boost::filesystem::path & s) const
+MockDatabase::PlaySchemaScript(DB::Connection * conn, const std::filesystem::path & s) const
 {
 	std::ifstream f;
 	f.open(s.string());

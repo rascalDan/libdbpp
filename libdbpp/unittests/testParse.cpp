@@ -14,7 +14,7 @@ BOOST_TEST_SPECIALIZED_COLLECTION_COMPARE(SQLs);
 
 class RecordingParser : std::fstream, public DB::SqlParse {
 	public:
-		RecordingParser(const boost::filesystem::path & p) :
+		RecordingParser(const std::filesystem::path & p) :
 			std::fstream(p.string()),
 			DB::SqlParse(*this, p.parent_path())
 		{
@@ -35,7 +35,7 @@ class RecordingParser : std::fstream, public DB::SqlParse {
 };
 
 template<typename E = DB::SqlParseException>
-void assertFail(const boost::filesystem::path & p)
+void assertFail(const std::filesystem::path & p)
 {
 	BOOST_TEST_CONTEXT(p) {
 		BOOST_REQUIRE_THROW({

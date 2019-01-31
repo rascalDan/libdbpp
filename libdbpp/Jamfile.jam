@@ -2,7 +2,7 @@ import package ;
 import lex ;
 
 lib boost_date_time : : <name>boost_date_time ;
-lib boost_filesystem ;
+lib stdc++fs
 lib boost_system ;
 lib pthread ;
 lib boost_program_options ;
@@ -15,14 +15,14 @@ lib dbppcore :
 	<library>adhocutil
 	<library>boost_system
 	<library>pthread
-	<library>boost_filesystem
+	<library>stdc++fs
 	<include>.
 	: :
 	<include>.
 	<library>..//glibmm
 	<library>boost_date_time
 	<library>boost_system
-	<library>boost_filesystem
+	<library>stdc++fs
 	;
 
 lib dbpptestcore :
@@ -39,7 +39,7 @@ exe createmockdb :
 	createMockDb.cpp
 	: :
 	<library>dbppcore
-	<library>boost_filesystem
+	<library>stdc++fs
 	<library>boost_system
 	<library>boost_program_options
 	;

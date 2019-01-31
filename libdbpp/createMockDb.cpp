@@ -1,12 +1,11 @@
 #include <iostream>
 #include <boost/program_options.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/convenience.hpp>
+#include <filesystem>
 #include <signal.h>
 #include "mockDatabase.h"
 
 namespace po = boost::program_options;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 void emptyHandler(int) { }
 

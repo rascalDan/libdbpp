@@ -7,7 +7,7 @@
 #include <factory.h>
 #include <exception.h>
 #include <visibility.h>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <memory>
 #include <optional>
 #include "error.h"
@@ -121,7 +121,7 @@ namespace DB {
 			/// Execute a script from a stream.
 			/// @param f the script.
 			/// @param s the location of the script.
-			virtual void executeScript(std::istream & f, const boost::filesystem::path & s);
+			virtual void executeScript(std::istream & f, const std::filesystem::path & s);
 			/// Create a new select command with the given SQL.
 			virtual SelectCommandPtr select(const std::string & sql, const CommandOptionsCPtr & = nullptr) = 0;
 			/// Create a new modify command with the given SQL.

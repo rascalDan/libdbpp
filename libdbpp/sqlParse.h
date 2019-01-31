@@ -5,7 +5,7 @@
 #include <string>
 #include <exception.h>
 #include "connection.h"
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #ifndef yyFlexLexer
 #define yyFlexLexer sqlBaseFlexLexer
 #include <FlexLexer.h>
@@ -29,7 +29,7 @@ namespace DB {
 	/// @cond
 	class DLL_PUBLIC SqlParse : public yyFlexLexer {
 		public:
-			SqlParse(std::istream &, const boost::filesystem::path &);
+			SqlParse(std::istream &, const std::filesystem::path &);
 
 			void Execute();
 
@@ -41,14 +41,14 @@ namespace DB {
 
 		private:
 			int yylex() override;
-			const boost::filesystem::path scriptDir;
+			const std::filesystem::path scriptDir;
 			std::string comment;
 			std::string statement;
 	};
 
 	class DLL_PUBLIC SqlExecuteScript : public SqlParse {
 		public:
-			SqlExecuteScript(std::istream &, const boost::filesystem::path &, Connection *);
+			SqlExecuteScript(std::istream &, const std::filesystem::path &, Connection *);
 
 			void Comment(const std::string &) const override;
 			void Statement(const std::string &) const override;
