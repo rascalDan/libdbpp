@@ -15,7 +15,7 @@ class DLL_PUBLIC TestCore {
 
 		int64_t testInt;
 		double testDouble;
-		std::string testString;
+		std::string_view testString;
 		bool testBool;
 		boost::posix_time::ptime testDateTime;
 		boost::posix_time::time_duration testInterval;

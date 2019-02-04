@@ -24,7 +24,7 @@ class Assert : public DB::HandleField {
 		void floatingpoint(double v) override { (*this)(v); }
 		void integer(int64_t v) override { (*this)(v); }
 		void boolean(bool v) override { (*this)(v); }
-		void string(const char * v, size_t len) override { (*this)(std::string(v, len)); }
+		void string(const std::string_view v) override { (*this)(v); }
 		void timestamp(const boost::posix_time::ptime & v) override { (*this)(v); }
 		void interval(const boost::posix_time::time_duration & v) override { (*this)(v); }
 		void blob(const Blob & v) override { (*this)(v); }
@@ -72,7 +72,7 @@ template void TestCore::assertScalarValueHelper<bool>(SelectCommand &, const boo
 template void TestCore::assertScalarValueHelper<int64_t>(SelectCommand &, const int64_t &) const;
 template void TestCore::assertScalarValueHelper<int>(SelectCommand &, const int &) const;
 template void TestCore::assertScalarValueHelper<double>(SelectCommand &, const double &) const;
-template void TestCore::assertScalarValueHelper<std::string>(SelectCommand &, const std::string &) const;
+template void TestCore::assertScalarValueHelper<std::string_view>(SelectCommand &, const std::string_view &) const;
 template void TestCore::assertScalarValueHelper<boost::posix_time::ptime>(SelectCommand &, const boost::posix_time::ptime &) const;
 template void TestCore::assertScalarValueHelper<boost::posix_time::time_duration>(SelectCommand &, const boost::posix_time::time_duration &) const;
 template void TestCore::assertScalarValueHelper<DB::Blob>(SelectCommand &, const DB::Blob &) const;
@@ -81,7 +81,7 @@ template void TestCore::assertColumnValueHelper<bool>(SelectCommand &, unsigned 
 template void TestCore::assertColumnValueHelper<int>(SelectCommand &, unsigned int, const int &) const;
 template void TestCore::assertColumnValueHelper<int64_t>(SelectCommand &, unsigned int, const int64_t &) const;
 template void TestCore::assertColumnValueHelper<double>(SelectCommand &, unsigned int, const double &) const;
-template void TestCore::assertColumnValueHelper<std::string>(SelectCommand &, unsigned int, const std::string &) const;
+template void TestCore::assertColumnValueHelper<std::string_view>(SelectCommand &, unsigned int, const std::string_view &) const;
 template void TestCore::assertColumnValueHelper<boost::posix_time::ptime>(SelectCommand &, unsigned int, const boost::posix_time::ptime &) const;
 template void TestCore::assertColumnValueHelper<boost::posix_time::time_duration>(SelectCommand &, unsigned int, const boost::posix_time::time_duration &) const;
 template void TestCore::assertColumnValueHelper<DB::Blob>(SelectCommand &, unsigned int, const DB::Blob &) const;

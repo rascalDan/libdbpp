@@ -17,7 +17,7 @@ namespace DB {
 			/// The field is null.
 			virtual void null() = 0;
 			/// The field contains text data.
-			virtual void string(const char *, size_t len) = 0;
+			virtual void string(std::string_view) = 0;
 			/// The field is an integer.
 			virtual void integer(int64_t) = 0;
 			/// The field is a boolean/bit.
@@ -65,7 +65,7 @@ namespace DB {
 					void floatingpoint(double v) override { (*this)(v); }
 					void integer(int64_t v) override { (*this)(v); }
 					void boolean(bool v) override { (*this)(v); }
-					void string(const char * v, size_t len) override { (*this)(std::string_view(v, len)); }
+					void string(const std::string_view v) override { (*this)(v); }
 					void timestamp(const boost::posix_time::ptime & v) override { (*this)(v); }
 					void interval(const boost::posix_time::time_duration & v) override { (*this)(v); }
 					void blob(const Blob & v) override { (*this)(v); }
