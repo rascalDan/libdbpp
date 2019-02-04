@@ -6,7 +6,7 @@
 #include <memory>
 
 namespace DB {
-	typedef std::map<std::string, std::string> CommandOptionsMap;
+	typedef std::map<std::string, std::string, std::less<>> CommandOptionsMap;
 	class CommandOptions;
 	typedef std::shared_ptr<CommandOptions> CommandOptionsPtr;
 	typedef std::shared_ptr<const CommandOptions> CommandOptionsCPtr;
