@@ -17,7 +17,6 @@ namespace DB {
 		public:
 			/// Creates a new command from the given SQL.
 			ModifyCommand(const std::string & sql);
-			~ModifyCommand();
 
 			/// Execute the command and return effected row count
 			virtual unsigned int	execute(bool allowNoChange = true) = 0;
