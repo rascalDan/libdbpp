@@ -73,10 +73,10 @@ DB::SelectCommand::columnCount() const
 	return columns->size();
 }
 
-DB::ColumnPtr
+const DB::ColumnPtr &
 DB::SelectCommand::insertColumn(ColumnPtr col)
 {
-	return *columns->insert(col).first;
+	return *columns->insert(std::move(col)).first;
 }
 
 DB::RowBase::RowBase(SelectCommand * s) :

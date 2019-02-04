@@ -115,7 +115,7 @@ namespace DB {
 			/// This column's name.
 			const std::string		name;
 	};
-	typedef std::shared_ptr<Column> ColumnPtr;
+	typedef std::unique_ptr<Column> ColumnPtr;
 }
 
 #endif

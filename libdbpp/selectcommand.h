@@ -128,7 +128,7 @@ namespace DB {
 
 		protected:
 			/// Helper function so clients need not know about boost::multi_index_container.
-			ColumnPtr insertColumn(ColumnPtr);
+			const ColumnPtr & insertColumn(ColumnPtr);
 
 			class Columns;
 
