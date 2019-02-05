@@ -53,9 +53,8 @@ DB::SelectCommand::operator[](unsigned int n) const
 const DB::Column&
 DB::SelectCommand::operator[](const Glib::ustring & n) const
 {
-	typedef Columns::nth_index<1>::type CbyName;
-	CbyName::iterator i = columns->get<1>().find(n.collate_key());
-	if (i != columns->get<1>().end()) {
+	if (auto i = columns->get<1>().find(n.collate_key());
+			i != columns->get<1>().end()) {
 		return **i;
 	}
 	throw ColumnDoesNotExist(n);
