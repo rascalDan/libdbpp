@@ -41,9 +41,13 @@ namespace DB {
 			template<typename X>
 			static X get(const CommandOptionsMap & map, const std::string & key, const X & def)
 			{
-				auto i = map.find(key);
-				if (i != map.end()) {
-					return boost::lexical_cast<X>(i->second);
+				if (auto i = map.find(key); i != map.end()) {
+					if constexpr (std::is_convertible<CommandOptionsMap::mapped_type, X>::value) {
+						return i->second;
+					}
+					else {
+						return boost::lexical_cast<X>(i->second);
+					}
 				}
 				return def;
 			}
