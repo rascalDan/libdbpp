@@ -38,8 +38,8 @@ namespace DB {
 
 		protected:
 			/// Helper function to extract values from a CommandOptionsMap
-			template<typename X>
-			static X get(const CommandOptionsMap & map, const std::string & key, const X & def)
+			template<typename X, typename Y>
+			static X get(const CommandOptionsMap & map, const Y & key, const X & def)
 			{
 				if (auto i = map.find(key); i != map.end()) {
 					if constexpr (std::is_convertible<CommandOptionsMap::mapped_type, X>::value) {
