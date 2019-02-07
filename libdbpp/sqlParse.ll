@@ -10,6 +10,7 @@
 %{
 #include "sqlParse.h"
 #pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
 %}
 
 space			[ \t\n\r\f]
