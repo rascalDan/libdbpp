@@ -3,6 +3,7 @@ import testing ;
 path-constant me : . ;
 
 lib pq ;
+lib mysqlclient : : : : <include>/usr/include/mysql ;
 lib boost_date_time ;
 lib boost_system ;
 lib boost_utf : : <name>boost_unit_test_framework ;
@@ -61,6 +62,20 @@ lib dbpp-local-postgresql :
 	: :
 	<include>libdbpp-postgresql/libpqpp
 	<cflags>"-I`pg_config --includedir`"
+	<library>../..//glibmm
+	<library>..//dbppcore
+	;
+
+lib dbpp-local-mysql :
+	[ glob libdbpp-mysql/libmysqlpp/*.cpp ] :
+	<library>../..//glibmm
+	<library>mysqlclient
+	<library>..//adhocutil
+	<library>..//dbppcore
+	<library>boost_date_time
+	<library>boost_system
+	: :
+	<include>libdbpp-mysql/libmysqlpp
 	<library>../..//glibmm
 	<library>..//dbppcore
 	;
@@ -133,6 +148,21 @@ run
 	<define>ROOT=\"$(me)/libdbpp-postgresql/libpqpp/unittests\"
 	<define>BOOST_TEST_DYN_LINK
 	<library>dbpp-local-postgresql
+	<library>..//dbpptestcore
+	<library>..//adhocutil
+	<library>boost_utf
+	<library>..//stdc++fs
+	<library>boost_system
+	;
+
+run
+	libdbpp-mysql/libmysqlpp/unittests/testmysql.cpp
+	: :
+	libdbpp-mysql/libmysqlpp/unittests/mysqlschema.sql
+	:
+	<define>ROOT=\"$(me)/libdbpp-mysql/libmysqlpp/unittests\"
+	<define>BOOST_TEST_DYN_LINK
+	<library>dbpp-local-mysql
 	<library>..//dbpptestcore
 	<library>..//adhocutil
 	<library>boost_utf

@@ -1,3 +1,6 @@
 [submodule "libdbpp/unittests/pq"]
 	path = libdbpp/unittests/libdbpp-postgresql
 	url = http://git.randomdan.homeip.net/git/libdbpp-postgresql
+[submodule "libdbpp/unittests/libdbpp-mysql"]
+	path = libdbpp/unittests/libdbpp-mysql
+	url = ssh://git.randomdan.homeip.net/var/git/libdbpp-mysql
