@@ -3,7 +3,6 @@ import lex ;
 
 lib boost_date_time : : <name>boost_date_time ;
 lib stdc++fs
-lib boost_system ;
 lib pthread ;
 lib boost_program_options ;
 lib adhocutil : : : : <include>/usr/include/adhocutil ;
@@ -13,7 +12,6 @@ lib dbppcore :
 	[ glob *.cpp *.ll : test*.cpp createMockDb.cpp ] :
 	<library>..//glibmm
 	<library>adhocutil
-	<library>boost_system
 	<library>pthread
 	<library>stdc++fs
 	<include>.
@@ -21,7 +19,6 @@ lib dbppcore :
 	<include>.
 	<library>..//glibmm
 	<library>boost_date_time
-	<library>boost_system
 	<library>stdc++fs
 	;
 
@@ -40,7 +37,6 @@ exe createmockdb :
 	: :
 	<library>dbppcore
 	<library>stdc++fs
-	<library>boost_system
 	<library>boost_program_options
 	;
 
