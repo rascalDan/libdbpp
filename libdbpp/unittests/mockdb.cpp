@@ -61,7 +61,7 @@ MockDb::modify(const std::string &, const DB::CommandOptionsCPtr &)
 MockMock::MockMock(const std::string &, const std::string &, const std::vector<std::filesystem::path> & ss) :
 	DB::MockDatabase()
 {
-	CreateNewDatabase();
+	MockMock::CreateNewDatabase();
 	PlaySchemaScripts(ss);
 }
 

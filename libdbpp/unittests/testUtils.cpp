@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE( forEachRowNulls )
 	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	auto sel = db->select("SELECT a, b, c, d, e, f FROM forEachRow ORDER BY a DESC LIMIT 1");
 	sel->forEachRow<int64_t, std::optional<double>, std::string, std::optional<boost::posix_time::ptime>, std::optional<boost::posix_time::time_duration>, bool>(
-			[](auto a, auto b, auto c, auto d, auto e, auto f) {
+			[](auto && a, auto b, auto c, auto d, auto && e, auto f) {
 				BOOST_REQUIRE_EQUAL(2, a);
 				BOOST_REQUIRE(b);
 				BOOST_REQUIRE_CLOSE(4.3, *b, 0.001);
@@ -378,7 +378,15 @@ testExtractT(DB::SelectCommandPtr sel) {
 	T test;
 	(void)test;
 	for (const auto & row : sel->as<T>()) { testExtractT(row); }
-	for (const auto & row : sel->as<std::optional<T>>()) { testExtractT(row); }
+#ifdef __clang__
+	// Clang cannot compile this for reasons largely todo with ambiguousness in the spec
+	// Fixed when we move to std::chrono
+	if constexpr (!std::is_same<T, boost::posix_time::time_duration>::value) {
+#else
+	if constexpr (true) {
+#endif
+		for (const auto & row : sel->as<std::optional<T>>()) { testExtractT(row); }
+	}
 }
 
 BOOST_AUTO_TEST_CASE( testExtractTypes )
