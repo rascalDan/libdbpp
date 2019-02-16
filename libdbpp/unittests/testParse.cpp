@@ -9,7 +9,7 @@
 #include <error.h>
 #include <sqlParse.h>
 
-typedef std::vector<std::string> SQLs;
+using SQLs = std::vector<std::string>;
 BOOST_TEST_SPECIALIZED_COLLECTION_COMPARE(SQLs);
 
 class RecordingParser : std::fstream, public DB::SqlParse {
@@ -20,12 +20,12 @@ class RecordingParser : std::fstream, public DB::SqlParse {
 		{
 		}
 
-    void Comment(const std::string & c) const
+    void Comment(const std::string & c) const override
 		{
 			comments.push_back(c);
 		}
 
-    void Statement(const std::string & s) const
+    void Statement(const std::string & s) const override
 		{
 			executed.push_back(s);
 		}

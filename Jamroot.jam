@@ -19,6 +19,7 @@ project
 			<toolset>tidy:<checkxx>bugprone-*
 			<toolset>tidy:<checkxx>clang-*
 			<toolset>tidy:<checkxx>misc-*
+			<toolset>tidy:<checkxx>modernize-*
 	;
 
 build-project libdbpp ;

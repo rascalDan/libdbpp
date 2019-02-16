@@ -25,7 +25,7 @@ namespace DB {
 		public:
 			/// Construct with the SQL to write.
 			/// @param sql The SQL to write.
-			StaticSqlWriter(const std::string & sql);
+			StaticSqlWriter(std::string sql);
 			/// Append the SQL to the buffer.
 			/// @param buffer The buffer
 			void writeSql(AdHoc::Buffer & buffer);

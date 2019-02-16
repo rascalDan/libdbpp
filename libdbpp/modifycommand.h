@@ -8,8 +8,6 @@
 namespace DB {
 	/// Exception thrown when an update affected no rows when some were expected.
 	class DLL_PUBLIC NoRowsAffected : public Error {
-		public:
-			NoRowsAffected();
 	};
 
 	/// Presents a command not expected to return any data.

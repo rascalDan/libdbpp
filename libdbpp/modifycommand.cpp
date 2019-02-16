@@ -5,7 +5,3 @@ DB::ModifyCommand::ModifyCommand(const std::string & s) :
 {
 }
 
-DB::NoRowsAffected::NoRowsAffected()
-{
-}
-

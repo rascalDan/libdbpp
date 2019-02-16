@@ -30,7 +30,7 @@ namespace DB {
 			/// @param keep Number of connections to keep open after use.
 			/// @param type Database connection factory name.
 			/// @param connectionString Connection string to pass to the connection factory.
-			ConnectionPool(unsigned int max, unsigned int keep, const std::string & type, const std::string & connectionString);
+			ConnectionPool(unsigned int max, unsigned int keep, const std::string & type, std::string connectionString);
 
 		protected:
 			/// Create a new connection.

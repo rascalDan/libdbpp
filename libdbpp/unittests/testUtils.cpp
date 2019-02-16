@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE( forEachRow )
 				BOOST_REQUIRE_EQUAL(1, a);
 				BOOST_REQUIRE_CLOSE(4.3, b, 0.001);
 				BOOST_REQUIRE_EQUAL("Some text", c);
-				BOOST_REQUIRE_EQUAL(boost::posix_time::ptime_from_tm({ 17, 39, 13, 7, 10, 115, 0, 0, 0, 0, 0}), d);
+				BOOST_REQUIRE_EQUAL(boost::posix_time::ptime_from_tm({ 17, 39, 13, 7, 10, 115, 0, 0, 0, 0, nullptr}), d);
 				BOOST_REQUIRE_EQUAL(boost::posix_time::time_duration(4, 3, 2), e);
 				BOOST_REQUIRE_EQUAL(true, f);
 			});
@@ -189,7 +189,7 @@ BOOST_AUTO_TEST_CASE( bulkLoadFile )
 		});
 }
 
-typedef boost::mpl::list<std::string, std::string_view, Glib::ustring> StringTypes;
+using StringTypes = boost::mpl::list<std::string, std::string_view, Glib::ustring>;
 BOOST_AUTO_TEST_CASE_TEMPLATE( nullBind, Str, StringTypes )
 {
 	auto db = DB::MockDatabase::openConnectionTo("pqmock");
@@ -239,7 +239,7 @@ BOOST_AUTO_TEST_CASE( charStarBindNull )
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
 	db->modify("DELETE FROM forEachRow")->execute();
 	auto ins = db->modify("INSERT INTO forEachRow(a, c) VALUES(?, ?)");
-	char * cs = NULL;
+	char * cs = nullptr;
 	char * cs2 = strdup("a thing");
 	ins->bindParamS(0, cs);
 	ins->bindParamS(1, cs2);
@@ -276,7 +276,7 @@ BOOST_AUTO_TEST_CASE( bindIntPtr )
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
 	db->modify("DELETE FROM forEachRow")->execute();
 	auto ins = db->modify("INSERT INTO forEachRow(a, b) VALUES(?, ?)");
-	int * is = NULL;
+	int * is = nullptr;
 	int * is2 = new int(53);
 	ins->bindParamI(0, is);
 	ins->bindParamI(1, is2);

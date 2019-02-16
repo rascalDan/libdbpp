@@ -1,7 +1,7 @@
 #include <iostream>
 #include <boost/program_options.hpp>
 #include <filesystem>
-#include <signal.h>
+#include <csignal>
 #include "mockDatabase.h"
 
 namespace po = boost::program_options;

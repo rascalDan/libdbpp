@@ -67,25 +67,25 @@ namespace DB {
 	/// Exception thrown when finishing a connection that still has a transaction open.
 	class DLL_PUBLIC TransactionStillOpen : public AdHoc::StdException {
 		private:
-			std::string message() const throw() override;
+			std::string message() const noexcept override;
 	};
 
 	/// Exception thrown when attempting to open a transaction when one is already open.
 	class DLL_PUBLIC TransactionAlreadyOpen : public AdHoc::StdException {
 		private:
-			std::string message() const throw() override;
+			std::string message() const noexcept override;
 	};
 
 	/// Exception thrown when attempting to perform a table patch with invalid settings.
 	class DLL_PUBLIC PatchCheckFailure : public AdHoc::StdException {
 		private:
-			std::string message() const throw() override;
+			std::string message() const noexcept override;
 	};
 
 	/// Exception thrown when attempting to perform an action that requires a transaction when one is not open.
 	class DLL_PUBLIC TransactionRequired : public AdHoc::StdException {
 		private:
-			std::string message() const throw() override;
+			std::string message() const noexcept override;
 	};
 
 	/// Base class for connections to a database.

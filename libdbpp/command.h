@@ -15,14 +15,10 @@
 namespace DB {
 	/// Exception thrown when binding a parameter of type the connector doesn't support.
 	class DLL_PUBLIC ParameterTypeNotSupported : public Error {
-		public:
-			ParameterTypeNotSupported();
 	};
 
 	/// Exception thrown when binding a parameter out of range of those defined in the command.
 	class DLL_PUBLIC ParameterOutOfRange : public Error {
-		public:
-			ParameterOutOfRange();
 	};
 
 	/// Represents the basic options that can be passed when creating new commands.
@@ -59,7 +55,7 @@ namespace DB {
 	class DLL_PUBLIC Command {
 		public:
 			/// Creates a new command from the given SQL.
-			Command(const std::string & sql);
+			Command(std::string sql);
 			virtual ~Command() = 0;
 
 			/// Bind an integer to parameter i.

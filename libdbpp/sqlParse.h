@@ -21,7 +21,7 @@ namespace DB {
 			SqlParseException(const char * what, unsigned int line);
 
 		private:
-			std::string message() const throw() override;
+			std::string message() const noexcept override;
 			const char * reason;
 			const unsigned int line;
 	};
@@ -29,7 +29,7 @@ namespace DB {
 	/// @cond
 	class DLL_PUBLIC SqlParse : public yyFlexLexer {
 		public:
-			SqlParse(std::istream &, const std::filesystem::path &);
+			SqlParse(std::istream &, std::filesystem::path);
 
 			void Execute();
 

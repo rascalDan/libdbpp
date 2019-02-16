@@ -7,14 +7,14 @@ namespace DB {
 
 	AdHocFormatter(SqlParseExceptionMsg, "Error parsing SQL script: %? at line %?");
   std::string
-  SqlParseException::message() const throw()
+  SqlParseException::message() const noexcept
   {
     return SqlParseExceptionMsg::get(reason, line);
   }
 
-  SqlParse::SqlParse(std::istream & f, const std::filesystem::path & s) :
-    yyFlexLexer(&f, NULL),
-    scriptDir(s)
+  SqlParse::SqlParse(std::istream & f, std::filesystem::path s) :
+    yyFlexLexer(&f, nullptr),
+    scriptDir(std::move(s))
   {
     if (!f.good()) {
       throw SqlParseException("Script stream not in good state.", 0);

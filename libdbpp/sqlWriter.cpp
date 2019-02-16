@@ -5,8 +5,8 @@ DB::SqlWriter::bindParams(DB::Command *, unsigned int &)
 {
 }
 
-DB::StaticSqlWriter::StaticSqlWriter(const std::string & s) :
-	sql(s)
+DB::StaticSqlWriter::StaticSqlWriter(std::string s) :
+	sql(std::move(s))
 {
 }
 

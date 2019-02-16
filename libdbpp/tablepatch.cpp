@@ -65,7 +65,7 @@ appendIf(AdHoc::Buffer & buf, const Container & c, const std::function<bool(cons
 {
 	auto fmt = AdHoc::Buffer::getFormat(fmts);
 	unsigned int x = 0;
-	for (typename Container::const_iterator i = c.begin(); i != c.end(); ++i) {
+	for (auto i = c.begin(); i != c.end(); ++i) {
 		if (sel(i)) {
 			if (x > 0) {
 				buf.appendbf("%s", sep);
@@ -366,7 +366,7 @@ DB::Connection::patchInserts(TablePatch * tp)
 }
 
 std::string
-DB::PatchCheckFailure::message() const throw()
+DB::PatchCheckFailure::message() const noexcept
 {
 	return "Santiy checks failed: check table names and keys";
 }

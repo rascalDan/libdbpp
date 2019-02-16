@@ -10,10 +10,10 @@ namespace DB {
 	{
 	}
 
-	ConnectionPool::ConnectionPool(unsigned int m, unsigned int k, const std::string & t, const std::string & cs) :
+	ConnectionPool::ConnectionPool(unsigned int m, unsigned int k, const std::string & t, std::string cs) :
 		BasicConnectionPool(m, k),
 		factory(ConnectionFactory::get(t)),
-		connectionString(cs)
+		connectionString(std::move(cs))
 	{
 	}
 

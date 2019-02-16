@@ -8,12 +8,12 @@
 #include <system_error>
 
 DB::ConnectionError::ConnectionError() :
-	FailureTime(time(NULL))
+	FailureTime(time(nullptr))
 {
 }
 
 std::string
-DB::TransactionStillOpen::message() const throw()
+DB::TransactionStillOpen::message() const noexcept
 {
 	return "A transaction is still open.";
 }
@@ -178,7 +178,7 @@ DB::Connection::insertId()
 }
 
 std::string
-DB::TransactionRequired::message() const throw()
+DB::TransactionRequired::message() const noexcept
 {
 	return "A transaction must be opened before performing this operation";
 }

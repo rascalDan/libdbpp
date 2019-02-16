@@ -44,7 +44,7 @@ class DLL_PUBLIC MockServerDatabase : public MockDatabase {
 		/// @param name the prefix to use when creating databases.
 		/// @param type the database type.
 		MockServerDatabase(const std::string & masterdb, const std::string & name, const std::string & type);
-		virtual ~MockServerDatabase();
+		virtual ~MockServerDatabase() = default;
 
 		/// Get the database instance name on the server.
 		const std::string & databaseName() const;

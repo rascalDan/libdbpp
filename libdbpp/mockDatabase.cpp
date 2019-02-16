@@ -61,10 +61,6 @@ MockServerDatabase::MockServerDatabase(const std::string & masterdb, const std::
 {
 }
 
-MockServerDatabase::~MockServerDatabase()
-{
-}
-
 const std::string &
 MockServerDatabase::databaseName() const
 {

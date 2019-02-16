@@ -12,24 +12,24 @@ namespace DB {
 
 	AdHocFormatter(ColumnIndexOutOfRangeMsg, "Column (%?) index out of range");
 	std::string
-	ColumnIndexOutOfRange::message() const throw()
+	ColumnIndexOutOfRange::message() const noexcept
 	{
 		return ColumnIndexOutOfRangeMsg::get(colNo);
 	}
 
-	ColumnDoesNotExist::ColumnDoesNotExist(const Glib::ustring & n) : colName(n) { }
+	ColumnDoesNotExist::ColumnDoesNotExist(Glib::ustring n) : colName(std::move(n)) { }
 
 	AdHocFormatter(ColumnDoesNotExistMsg, "Column (%?) does not exist");
 	std::string
-	ColumnDoesNotExist::message() const throw()
+	ColumnDoesNotExist::message() const noexcept
 	{
 		return ColumnDoesNotExistMsg::get(colName);
 	}
 
-	typedef boost::multi_index_container<ColumnPtr, boost::multi_index::indexed_by<
+	using ColumnsBase = boost::multi_index_container<ColumnPtr, boost::multi_index::indexed_by<
 		boost::multi_index::ordered_unique<boost::multi_index::member<DB::Column, const unsigned int, &DB::Column::colNo>>,
 		boost::multi_index::ordered_unique<boost::multi_index::member<DB::Column, const std::string, &DB::Column::name>>
-						>> ColumnsBase;
+						>>;
 	class SelectCommand::Columns : public ColumnsBase { };
 };
 

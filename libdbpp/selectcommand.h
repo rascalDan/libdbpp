@@ -83,7 +83,7 @@ namespace DB {
 			const unsigned int colNo;
 
 		private:
-			std::string message() const throw() override;
+			std::string message() const noexcept override;
 	};
 
 	/// Exception thrown when the requested column does not exist in the result set.
@@ -91,13 +91,13 @@ namespace DB {
 		public:
 			/// New ColumnDoesNotExist exception
 			/// @param n Name requested
-			ColumnDoesNotExist(const Glib::ustring & n);
+			ColumnDoesNotExist(Glib::ustring n);
 
 			/// Name requested
 			const Glib::ustring colName;
 
 		private:
-			std::string message() const throw() override;
+			std::string message() const noexcept override;
 	};
 
 	/// Represents a command expected to return data to the client.

@@ -12,14 +12,10 @@ namespace DB {
 
 	/// Exception thrown when attempting to bulk upload with a connector that doesn't support it.
 	class DLL_PUBLIC BulkUploadNotSupported : public Error {
-		public:
-			BulkUploadNotSupported();
 	};
 
 	/// Exception thrown when a query returns an unsupported column type.
 	class DLL_PUBLIC ColumnTypeNotSupported : public Error {
-		public:
-			ColumnTypeNotSupported();
 	};
 
 	/// Exception thrown on an attempt to convert betweem incompatible types.
@@ -31,7 +27,7 @@ namespace DB {
 			InvalidConversion(const char * const from, const char * const to);
 
 		private:
-			std::string message() const throw() override;
+			std::string message() const noexcept override;
 			const std::string from;
 			const std::string to;
 	};
@@ -43,7 +39,7 @@ namespace DB {
 			UnexpectedNullValue(const char * const from);
 
 		private:
-			std::string message() const throw() override;
+			std::string message() const noexcept override;
 			const char * to;
 	};
 }
