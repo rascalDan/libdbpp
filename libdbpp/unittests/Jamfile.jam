@@ -6,7 +6,7 @@ lib pq ;
 lib mysqlclient : : : : <include>/usr/include/mysql ;
 lib boost_date_time ;
 lib boost_system ;
-lib boost_utf : : <name>boost_unit_test_framework ;
+lib boost_utf : : <name>boost_unit_test_framework : : <toolset>tidy:<xcheckxx>hicpp-* ;
 lib Ice++11 ;
 
 run

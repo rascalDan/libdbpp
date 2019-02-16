@@ -293,7 +293,7 @@ BOOST_AUTO_TEST_CASE( bindIntPtr )
 	ins->execute();
 	delete is2;
 	auto sel = db->select("SELECT a, b FROM forEachRow");
-	unsigned int total = 0;
+	double total = 0;
 	for (const auto & row : sel->as<std::optional<int64_t>, std::optional<double>>()) {
 		BOOST_REQUIRE(row[0].isNull());
 		BOOST_REQUIRE(!row[1].isNull());
@@ -381,6 +381,7 @@ testExtractT(DB::SelectCommandPtr sel) {
 #ifdef __clang__
 	// Clang cannot compile this for reasons largely todo with ambiguousness in the spec
 	// Fixed when we move to std::chrono
+	// NOLINTNEXTLINE(bugprone-suspicious-semicolon)
 	if constexpr (!std::is_same<T, boost::posix_time::time_duration>::value) {
 #else
 	if constexpr (true) {

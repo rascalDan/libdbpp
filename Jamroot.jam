@@ -15,6 +15,10 @@ project
       <variant>debug:<cxxflags>"-W -Wall -Werror -Wextra"
       <variant>coverage:<cxxflags>"--coverage"
       <variant>coverage:<linkflags>"--coverage"
+			<toolset>tidy:<checkxx>boost-*
+			<toolset>tidy:<checkxx>bugprone-*
+			<toolset>tidy:<checkxx>clang-*
+			<toolset>tidy:<checkxx>misc-*
 	;
 
 build-project libdbpp ;

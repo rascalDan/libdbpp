@@ -189,10 +189,17 @@ DB::TransactionScope::TransactionScope(DB::Connection & c) :
 	conn.beginTx();
 }
 
+// It is acceptable for a commit to fail
+// NOLINTNEXTLINE(bugprone-exception-escape)
 DB::TransactionScope::~TransactionScope()
 {
 	if (std::uncaught_exceptions()) {
-		conn.rollbackTx();
+		try {
+			conn.rollbackTx();
+		}
+		catch (...) {
+			// Nothing we can do here
+		}
 	}
 	else {
 		conn.commitTx();

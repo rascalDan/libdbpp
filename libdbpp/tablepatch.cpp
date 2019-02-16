@@ -92,8 +92,7 @@ self(const typename Container::const_iterator & i)
 	return *i;
 }
 #define selfCols self<decltype(DB::TablePatch::cols)>
-#define isKey(tp) [tp](auto i){ return AdHoc::containerContains(tp->pk, *i); }
-#define isNotKey(tp) [tp](auto i){ return !AdHoc::containerContains(tp->pk, *i); }
+#define isNotKey(tp) [tp](auto i){ return !AdHoc::containerContains((tp)->pk, *i); }
 
 static
 void
