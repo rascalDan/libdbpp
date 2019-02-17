@@ -19,7 +19,7 @@ TestCore::TestCore() :
 template<typename T>
 class Assert : public DB::HandleField {
 	public:
-		Assert(const T & e) : expected(e) { }
+		explicit Assert(const T & e) : expected(e) { }
 
 		void floatingpoint(double v) override { (*this)(v); }
 		void integer(int64_t v) override { (*this)(v); }
@@ -32,10 +32,12 @@ class Assert : public DB::HandleField {
 
 		template <typename D>
 		void operator()(const D & v) {
+			// NOLINTNEXTLINE(hicpp-braces-around-statements)
 			if constexpr (std::is_convertible<D, T>::value) {
 				BOOST_REQUIRE_EQUAL(expected, v);
 			}
 			else {
+				// NOLINTNEXTLINE(hicpp-vararg)
 				BOOST_ERROR("Unexpected column type " << typeid(D).name());
 			}
 		}

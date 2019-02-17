@@ -20,6 +20,7 @@ project
 			<toolset>tidy:<checkxx>clang-*
 			<toolset>tidy:<checkxx>misc-*
 			<toolset>tidy:<checkxx>modernize-*
+			<toolset>tidy:<checkxx>hicpp-*
 	;
 
 build-project libdbpp ;

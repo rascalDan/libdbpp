@@ -24,7 +24,7 @@ namespace DB {
   void
   SqlParse::Execute()
   {
-    while (yylex()) ;
+    while (yylex()) {}
   }
 
   void

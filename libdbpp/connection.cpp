@@ -137,11 +137,13 @@ DB::Connection::bulkUploadData(const char *, size_t) const
 size_t
 DB::Connection::bulkUploadData(std::istream & in) const
 {
-	if (!in.good()) throw std::runtime_error("Input stream is not good");
-	char buf[BUFSIZ];
+	if (!in.good()) {
+		throw std::runtime_error("Input stream is not good");
+	}
+	std::array<char, BUFSIZ> buf {};
 	size_t total = 0;
-	for (std::streamsize r; (r = in.readsome(buf, sizeof(buf))) > 0; ) {
-		bulkUploadData(buf, r);
+	for (std::streamsize r; (r = in.readsome(buf.data(), buf.size())) > 0; ) {
+		bulkUploadData(buf.data(), r);
 		total += r;
 	}
 	return total;
@@ -150,11 +152,13 @@ DB::Connection::bulkUploadData(std::istream & in) const
 size_t
 DB::Connection::bulkUploadData(FILE * in) const
 {
-	if (!in) throw std::runtime_error("Input file handle is null");
-	char buf[BUFSIZ];
+	if (!in) {
+		throw std::runtime_error("Input file handle is null");
+	}
+	std::array<char, BUFSIZ> buf {};
 	size_t total = 0, r;
-	while ((r = fread(buf, 1, sizeof(buf), in)) > 0) {
-		bulkUploadData(buf, r);
+	while ((r = fread(buf.data(), 1, buf.size(), in)) > 0) {
+		bulkUploadData(buf.data(), r);
 		total += r;
 	}
 	if ((int)r < 0) {

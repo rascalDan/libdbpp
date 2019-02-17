@@ -328,7 +328,7 @@ patchInsertsSelect(AdHoc::Buffer & toInsSql, DB::TablePatch * tp)
 	toInsSql.append(" WHERE ");
 	append(toInsSql, tp->pk, " AND ", " a.%s IS NULL", selfCols);
 	if (tp->order) {
-		toInsSql.appendf(" ORDER BY ");
+		toInsSql.append(" ORDER BY ");
 		tp->order->writeSql(toInsSql);
 	}
 }

@@ -27,20 +27,24 @@ DB::CommandOptions::isSet(const CommandOptionsMap & map, const std::string & key
 void
 DB::Command::bindParamS(unsigned int i, const char * const o)
 {
-	if (o)
+	if (o) {
 		bindParamS(i, std::string_view(o));
-	else
+	}
+	else {
 		bindNull(i);
+	}
 }
 
 
 void
 DB::Command::bindParamS(unsigned int i, char * const o)
 {
-	if (o)
+	if (o) {
 		bindParamS(i, std::string_view(o));
-	else
+	}
+	else {
 		bindNull(i);
+	}
 }
 
 void
