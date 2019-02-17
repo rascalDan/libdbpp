@@ -27,7 +27,7 @@ MockDatabase::PlaySchemaScripts(const std::vector<std::filesystem::path> & ss) c
 {
 	auto conn = ConnectionPtr(openConnection());
 	try {
-		for (auto s : ss) {
+		for (const auto & s : ss) {
 			conn->beginTx();
 			PlaySchemaScript(conn.get(), s);
 			conn->commitTx();

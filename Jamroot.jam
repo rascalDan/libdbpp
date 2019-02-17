@@ -21,6 +21,7 @@ project
 			<toolset>tidy:<checkxx>misc-*
 			<toolset>tidy:<checkxx>modernize-*
 			<toolset>tidy:<checkxx>hicpp-*
+			<toolset>tidy:<checkxx>performance-*
 	;
 
 build-project libdbpp ;

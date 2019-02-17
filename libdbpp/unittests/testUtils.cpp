@@ -352,6 +352,7 @@ BOOST_AUTO_TEST_CASE( testBlobCompare )
 	std::vector<S> buf1(20, {4, 8});
 	DB::Blob vec1(buf1);
 
+	// NOLINTNEXTLINE(performance-unnecessary-copy-initialization)
 	std::vector<S> buf2(buf1);
 	DB::Blob vec2(buf2);
 
@@ -373,7 +374,7 @@ testExtractT(DB::Row<T> row) {
 
 template<typename T>
 void
-testExtractT(DB::SelectCommandPtr sel) {
+testExtractT(const DB::SelectCommandPtr & sel) {
 	// test default construct
 	T test;
 	(void)test;
