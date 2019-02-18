@@ -395,13 +395,15 @@ BOOST_AUTO_TEST_CASE( testExtractTypes )
 {
 	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	auto sel = db->select("SELECT 1 FROM forEachRow LIMIT 0");
-	// testExtractT<int8_t>(sel);
-	// testExtractT<int16_t>(sel);
-	// testExtractT<int32_t>(sel);
+	testExtractT<int8_t>(sel);
+	testExtractT<int16_t>(sel);
+	testExtractT<int32_t>(sel);
 	testExtractT<int64_t>(sel);
 	testExtractT<bool>(sel);
 	testExtractT<std::string>(sel);
-	// testExtractT<float>(sel);
+	testExtractT<std::string_view>(sel);
+	testExtractT<Glib::ustring>(sel);
+	testExtractT<float>(sel);
 	testExtractT<double>(sel);
 	testExtractT<boost::posix_time::ptime>(sel);
 	testExtractT<boost::posix_time::time_duration>(sel);
