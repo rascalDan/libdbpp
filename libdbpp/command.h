@@ -103,6 +103,61 @@ namespace DB {
 			/// The SQL statement.
 			const std::string sql;
 
+			/// Bind a parameter by type based on C++ traits to parameter i.
+			template<typename O>
+			inline auto bindParam(unsigned int i, const O & o)
+			{
+				if constexpr (std::is_null_pointer<O>::value) {
+					bindNull(i);
+				}
+				else if constexpr (std::is_same<O, std::nullopt_t>::value) {
+					bindNull(i);
+				}
+				else if constexpr (std::is_same<O, bool>::value) {
+					bindParamB(i, o);
+				}
+				else if constexpr (std::is_floating_point<O>::value) {
+					bindParamF(i, o);
+				}
+				else if constexpr (std::is_same<O, boost::posix_time::time_duration>::value) {
+					bindParamT(i, o);
+				}
+				else if constexpr (std::is_same<O, boost::posix_time::ptime>::value) {
+					bindParamT(i, o);
+				}
+				else if constexpr (std::is_same<O, Blob>::value) {
+					bindParamBLOB(i, o);
+				}
+				else if constexpr (std::is_integral<O>::value && !std::is_pointer<O>::value) {
+					bindParamI(i, o);
+				}
+				else if constexpr (std::is_convertible<O, std::string_view>::value && std::is_pointer<O>::value) {
+					if (o) {
+						bindParamS(i, o);
+					}
+					else {
+						bindNull(i);
+					}
+				}
+				else if constexpr (std::is_same<O, Glib::ustring>::value) {
+					bindParamS(i, o);
+				}
+				else if constexpr (std::is_convertible<O, std::string_view>::value) {
+					bindParamS(i, o);
+				}
+				else if constexpr (std::is_constructible<bool, const O &>::value) {
+					if (o) {
+						bindParam(i, *o);
+					}
+					else {
+						bindNull(i);
+					}
+				}
+				else {
+					static_assert(!&o, "No suitable trait");
+				}
+			}
+
 #define OPTWRAPPER(func) \
 			template<typename O> \
 			inline auto \

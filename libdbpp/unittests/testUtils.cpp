@@ -302,6 +302,54 @@ BOOST_AUTO_TEST_CASE( bindIntPtr )
 	BOOST_REQUIRE_EQUAL(159, total);
 }
 
+BOOST_FIXTURE_TEST_CASE( traits_bind, DB::TestCore )
+{
+	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto cmd = db->select("select x is null, format('%s', x) from (select ? x) d");
+	auto check = [cmd](int line, const auto & v, bool isNull, const auto & strval) {
+		BOOST_TEST_CONTEXT("line " << line) {
+			cmd->bindParam(0, v);
+			for (const auto & [null, str] : cmd->as<bool, std::string_view>()) {
+				BOOST_CHECK_EQUAL(null, isNull);
+				BOOST_CHECK_EQUAL(str, strval);
+			}
+		}
+	};
+	check(__LINE__, std::nullopt, true, "");
+	check(__LINE__, nullptr, true, "");
+	check(__LINE__, testInt, false, "43");
+	check(__LINE__, std::make_unique<short>(testInt), false, "43");
+	check(__LINE__, std::unique_ptr<short>(), true, "");
+	check(__LINE__, (unsigned int)testInt, false, "43");
+	check(__LINE__, &testInt, false, "43");
+	check(__LINE__, testDouble, false, "3.14");
+	check(__LINE__, std::make_shared<float>(testDouble), false, "3.14");
+	check(__LINE__, std::shared_ptr<float>(), true, "");
+	check(__LINE__, (float)testDouble, false, "3.14");
+	check(__LINE__, &testDouble, false, "3.14");
+	check(__LINE__, testString, false, testString);
+	check(__LINE__, &testString, false, testString);
+	check(__LINE__, "str", false, "str");
+	check(__LINE__, "", false, "");
+	const char * const nullstr = nullptr;
+	check(__LINE__, nullstr, true, "");
+	const char * const str = "str";
+	check(__LINE__, str, false, "str");
+	check(__LINE__, std::string(), false, "");
+	check(__LINE__, std::string_view(), false, "");
+	check(__LINE__, Glib::ustring(), false, "");
+	check(__LINE__, Glib::ustring("foo"), false, "foo");
+	check(__LINE__, testDateTime, false, "2015-05-02T01:36:33");
+	check(__LINE__, testInterval, false, "01:02:03");
+	check(__LINE__, &testInterval, false, "01:02:03");
+	decltype(testInterval) * nullInterval = nullptr;
+	check(__LINE__, nullInterval, true, "");
+	check(__LINE__, true, false, "1");
+	check(__LINE__, false, false, "0");
+	check(__LINE__, std::optional<int>(4), false, "4");
+	check(__LINE__, std::optional<int>(), true, "");
+}
+
 BOOST_AUTO_TEST_CASE( testBlobRaw )
 {
 	DB::Blob ptr(this, 1);
