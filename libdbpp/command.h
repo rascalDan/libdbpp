@@ -105,7 +105,7 @@ namespace DB {
 
 			/// Bind a parameter by type based on C++ traits to parameter i.
 			template<typename O>
-			inline auto bindParam(unsigned int i, const O & o)
+			inline void bindParam(unsigned int i, const O & o)
 			{
 				if constexpr (std::is_null_pointer<O>::value) {
 					bindNull(i);
