@@ -11,6 +11,9 @@
 #include "sqlParse.h"
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#ifdef __clang__
+#pragma GCC diagnostic ignored "-Wnull-conversion"
+#endif
 %}
 
 space			[ \t\n\r\f]
