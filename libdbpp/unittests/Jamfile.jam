@@ -7,6 +7,7 @@ lib pq : : : :
 	<linkflags>"-L`pg_config --libdir`"
 ;
 lib mysqlclient : : : : <include>/usr/include/mysql ;
+lib libsqlite : : <name>sqlite3 ;
 lib boost_date_time ;
 lib boost_system ;
 lib boost_utf : : <name>boost_unit_test_framework : : <toolset>tidy:<xcheckxx>hicpp-* ;
@@ -73,6 +74,20 @@ lib dbpp-local-mysql :
 	<library>boost_system
 	: :
 	<include>libdbpp-mysql/libmysqlpp
+	<library>../..//glibmm
+	<library>..//dbppcore
+	;
+
+lib dbpp-local-sqlite :
+	[ glob libdbpp-sqlite/libsqlitepp/*.cpp ] :
+	<library>../..//glibmm
+	<library>libsqlite
+	<library>..//adhocutil
+	<library>..//dbppcore
+	<library>boost_date_time
+	<library>boost_system
+	: :
+	<include>libdbpp-sqlite/libsqlitepp
 	<library>../..//glibmm
 	<library>..//dbppcore
 	;
@@ -161,6 +176,21 @@ run
 	<define>ROOT=\"$(me)/libdbpp-mysql/libmysqlpp/unittests\"
 	<define>BOOST_TEST_DYN_LINK
 	<library>dbpp-local-mysql
+	<library>..//dbpptestcore
+	<library>..//adhocutil
+	<library>boost_utf
+	<library>..//stdc++fs
+	<library>boost_system
+	;
+
+run
+	libdbpp-sqlite/libsqlitepp/unittests/testsqlite.cpp
+	: :
+	libdbpp-sqlite/libsqlitepp/unittests/sqliteschema.sql
+	:
+	<define>ROOT=\"$(me)/libdbpp-sqlite/libsqlitepp/unittests\"
+	<define>BOOST_TEST_DYN_LINK
+	<library>dbpp-local-sqlite
 	<library>..//dbpptestcore
 	<library>..//adhocutil
 	<library>boost_utf

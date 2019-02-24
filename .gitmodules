@@ -4,3 +4,6 @@
 [submodule "libdbpp/unittests/libdbpp-mysql"]
 	path = libdbpp/unittests/libdbpp-mysql
 	url = ssh://git.randomdan.homeip.net/var/git/libdbpp-mysql
+[submodule "libdbpp/unittests/libdbpp-sqlite"]
+	path = libdbpp/unittests/libdbpp-sqlite
+	url = ssh://git.randomdan.homeip.net/var/git/libdbpp-sqlite
