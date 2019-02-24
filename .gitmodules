@@ -7,3 +7,6 @@
 [submodule "libdbpp/unittests/libdbpp-sqlite"]
 	path = libdbpp/unittests/libdbpp-sqlite
 	url = ssh://git.randomdan.homeip.net/var/git/libdbpp-sqlite
+[submodule "libdbpp/unittests/libdbpp-odbc"]
+	path = libdbpp/unittests/libdbpp-odbc
+	url = ssh://git.randomdan.homeip.net/var/git/libdbpp-odbc
