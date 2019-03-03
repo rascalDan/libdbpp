@@ -240,12 +240,12 @@ BOOST_AUTO_TEST_CASE( charStarBindNull )
 	db->modify("DELETE FROM forEachRow")->execute();
 	auto ins = db->modify("INSERT INTO forEachRow(a, c) VALUES(?, ?)");
 	char * cs = nullptr;
-	char * cs2 = strdup("a thing");
+	std::string cs2("a thing");
 	ins->bindParamS(0, cs);
-	ins->bindParamS(1, cs2);
+	ins->bindParamS(1, cs2.c_str());
 	ins->execute();
 	const char * ccs = cs;
-	const char * ccs2 = cs2;
+	const char * ccs2 = cs2.c_str();
 	ins->bindParamS(0, ccs);
 	ins->bindParamS(1, ccs2);
 	ins->execute();
@@ -254,7 +254,6 @@ BOOST_AUTO_TEST_CASE( charStarBindNull )
 	ins->bindParamS(0, ccsc);
 	ins->bindParamS(1, ccsc2);
 	ins->execute();
-	free(cs2);
 	auto sel = db->select("SELECT a, c FROM forEachRow");
 	for (const auto & row : sel->as<std::optional<int64_t>, std::optional<std::string>>()) {
 		BOOST_REQUIRE(row[0].isNull());
@@ -430,7 +429,7 @@ testExtractT(const DB::SelectCommandPtr & sel) {
 #ifdef __clang__
 	// Clang cannot compile this for reasons largely todo with ambiguousness in the spec
 	// Fixed when we move to std::chrono
-	// NOLINTNEXTLINE(bugprone-suspicious-semicolon)
+	// NOLINTNEXTLINE(bugprone-suspicious-semicolon,hicpp-braces-around-statements)
 	if constexpr (!std::is_same<T, boost::posix_time::time_duration>::value) {
 #else
 	if constexpr (true) {

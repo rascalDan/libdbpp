@@ -11,7 +11,9 @@ lib libsqlite : : <name>sqlite3 ;
 lib odbc ;
 lib boost_date_time ;
 lib boost_system ;
-lib boost_utf : : <name>boost_unit_test_framework : : <toolset>tidy:<xcheckxx>hicpp-* ;
+lib boost_utf : : <name>boost_unit_test_framework : :
+	<toolset>tidy:<xcheckxx>hicpp-vararg
+	;
 lib Ice++11 ;
 
 run
