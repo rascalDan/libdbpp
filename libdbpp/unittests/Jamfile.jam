@@ -30,7 +30,7 @@ run
 	;
 
 run
-	testParse.cpp ../sqlParse.ll
+	testParse.cpp ..//sqlParse
 	: : :
 	<define>ROOT=\"$(me)\"
 	<define>BOOST_TEST_DYN_LINK

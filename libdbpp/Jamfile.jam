@@ -8,8 +8,10 @@ lib boost_program_options ;
 lib adhocutil : : : : <include>/usr/include/adhocutil ;
 lib boost_utf : : <name>boost_unit_test_framework ;
 
+obj sqlParse : sqlParse.ll : <include>. <use>adhocutil <toolset>tidy:<checker>none ;
 lib dbppcore :
-	[ glob *.cpp *.ll : test*.cpp createMockDb.cpp ] :
+	sqlParse
+	[ glob *.cpp : test*.cpp createMockDb.cpp ] :
 	<library>..//glibmm
 	<library>adhocutil
 	<library>pthread
