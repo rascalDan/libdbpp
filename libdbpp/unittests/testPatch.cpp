@@ -128,17 +128,17 @@ BOOST_AUTO_TEST_CASE( testOrder )
 	tp.cols = {"a", "b", "c", "d"};
 	tp.pk = {"a", "b"};
 	tp.order = &order;
-	tp.beforeDelete = [](DB::SelectCommandPtr i) {
+	tp.beforeDelete = [](const DB::SelectCommandPtr & i) {
 			i->forEachRow<int64_t, int64_t, std::string, std::string>([](auto a, auto b, auto c, auto d) {
 						fprintf(stderr, "<< %ld %ld %s %s\n", a, b, c.c_str(), d.c_str());
 					});
 			};
-	tp.beforeUpdate = [](DB::SelectCommandPtr i) {
+	tp.beforeUpdate = [](const DB::SelectCommandPtr & i) {
 			i->forEachRow<int64_t, int64_t, std::string, std::string, std::string, std::string>([](auto a, auto b, auto c1, auto d1, auto c2, auto d2) {
 						fprintf(stderr, "== %ld %ld %s->%s %s->%s\n", a, b, c1.c_str(), c2.c_str(), d1.c_str(), d2.c_str());
 					});
 			};
-	tp.beforeInsert = [](DB::SelectCommandPtr i) {
+	tp.beforeInsert = [](const DB::SelectCommandPtr & i) {
 			i->forEachRow<int64_t, int64_t, std::string, std::string>([](auto a, auto b, auto c, auto d) {
 						fprintf(stderr, ">> %ld %ld %s %s\n", a, b, c.c_str(), d.c_str());
 					});

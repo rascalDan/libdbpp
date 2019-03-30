@@ -42,6 +42,7 @@ class Assert : public DB::HandleField {
 			}
 		}
 
+	private:
 		const T & expected;
 };
 

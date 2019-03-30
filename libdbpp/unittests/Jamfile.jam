@@ -13,6 +13,7 @@ lib boost_date_time ;
 lib boost_system ;
 lib boost_utf : : <name>boost_unit_test_framework : :
 	<toolset>tidy:<xcheckxx>hicpp-vararg
+	<toolset>tidy:<xcheckxx>misc-non-private-member-variables-in-classes
 	;
 lib Ice++11 ;
 
@@ -75,6 +76,7 @@ lib dbpp-local-mysql :
 	<library>..//dbppcore
 	<library>boost_date_time
 	<library>boost_system
+	<toolset>tidy:<xcheckxx>misc-non-private-member-variables-in-classes
 	: :
 	<include>libdbpp-mysql/libmysqlpp
 	<library>../..//glibmm

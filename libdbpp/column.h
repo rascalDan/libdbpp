@@ -41,7 +41,7 @@ namespace DB {
 			virtual ~Column() = 0;
 
 			/// Test if the current value is null.
-			virtual bool isNull() const = 0;
+			[[nodiscard]] virtual bool isNull() const = 0;
 			/// Apply a field handler (any sub-class of HandleField)
 			virtual void apply(HandleField &) const = 0;
 
