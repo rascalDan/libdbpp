@@ -2,13 +2,6 @@ import testing ;
 
 path-constant me : . ;
 
-lib pq : : : :
-	<cflags>"-I`pg_config --includedir`"
-	<linkflags>"-L`pg_config --libdir`"
-;
-lib mysqlclient : : : : <include>/usr/include/mysql ;
-lib libsqlite : : <name>sqlite3 ;
-lib odbc ;
 lib boost_date_time ;
 lib boost_system ;
 lib boost_utf : : <name>boost_unit_test_framework : :
@@ -56,7 +49,7 @@ run
 lib dbpp-local-postgresql :
 	[ glob libdbpp-postgresql/libpqpp/*.cpp ] :
 	<library>../..//glibmm
-	<library>pq
+	<library>../..//pq
 	<library>..//adhocutil
 	<library>..//dbppcore
 	<library>boost_date_time
@@ -71,7 +64,7 @@ lib dbpp-local-postgresql :
 lib dbpp-local-mysql :
 	[ glob libdbpp-mysql/libmysqlpp/*.cpp ] :
 	<library>../..//glibmm
-	<library>mysqlclient
+	<library>../..//mysqlclient
 	<library>..//adhocutil
 	<library>..//dbppcore
 	<library>boost_date_time
@@ -86,7 +79,7 @@ lib dbpp-local-mysql :
 lib dbpp-local-sqlite :
 	[ glob libdbpp-sqlite/libsqlitepp/*.cpp ] :
 	<library>../..//glibmm
-	<library>libsqlite
+	<library>../..//sqlite3
 	<library>..//adhocutil
 	<library>..//dbppcore
 	<library>boost_date_time
@@ -100,7 +93,7 @@ lib dbpp-local-sqlite :
 lib dbpp-local-odbc :
 	[ glob libdbpp-odbc/libodbcpp/*.cpp ] :
 	<library>../..//glibmm
-	<library>odbc
+	<library>../..//odbc
 	<library>..//adhocutil
 	<library>..//dbppcore
 	<library>boost_date_time
@@ -183,7 +176,7 @@ run
 	<library>..//dbpptestcore
 	<library>..//adhocutil
 	<library>boost_utf
-	<library>pq
+	<library>../..//pq
 	<library>..//stdc++fs
 	<library>boost_system
 	;
