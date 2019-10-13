@@ -8,20 +8,23 @@ variant coverage : debug ;
 
 project
   : requirements
-      <cxxflags>"-std=c++17 -fvisibility=hidden -fvisibility-inlines-hidden"
+			<cxxstd>17
+			<visibility>hidden
       <linkflags>"-Wl,-z,defs,--warn-once,--gc-sections"
 			<variant>release:<cxxflags>"-flto"
 			<toolset>gcc:<variant>release:<cxxflags>"-flto=2"
 			<variant>release:<linkflags>"-flto"
 			<toolset>gcc:<variant>release:<linkflags>"-flto=2"
-      <variant>debug:<cxxflags>"-W -Wall -Werror -Wextra"
-      <variant>coverage:<cxxflags>"--coverage"
-      <variant>coverage:<linkflags>"--coverage"
+			<variant>debug:<warnings>extra
+			<variant>debug:<warnings-as-errors>on
+			<variant>coverage:<coverage>on
 			<toolset>tidy:<checkxx>boost-*
 			<toolset>tidy:<checkxx>bugprone-*
 			<toolset>tidy:<checkxx>clang-*
+			<toolset>tidy:<xcheckxx>clang-analyzer-optin.cplusplus.VirtualCall
 			<toolset>tidy:<checkxx>misc-*
 			<toolset>tidy:<checkxx>modernize-*
+			<toolset>tidy:<xcheckxx>modernize-use-trailing-return-type
 			<toolset>tidy:<checkxx>hicpp-*
 			<toolset>tidy:<checkxx>performance-*
 	;
@@ -32,5 +35,5 @@ pkg-config.import glibmm : : <name>glibmm-2.4 ;
 pkg-config.import pq : : <name>libpq ;
 pkg-config.import odbc ;
 pkg-config.import sqlite3 ;
-lib mysqlclient : : : : <include>/usr/include/mysql ;
+pkg-config.import mysqlclient ;
 
