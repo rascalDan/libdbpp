@@ -1,6 +1,9 @@
 import testing ;
 
+import feature : feature ;
+
 path-constant me : . ;
+feature local-dbppcore : no yes : propagated ;
 
 lib boost_date_time ;
 lib boost_system ;
@@ -46,64 +49,10 @@ run
 	testParse
 	;
 
-lib dbpp-local-postgresql :
-	[ glob libdbpp-postgresql/libpqpp/*.cpp ] :
-	<library>../..//glibmm
-	<library>../..//pq
-	<library>..//adhocutil
-	<library>..//dbppcore
-	<library>boost_date_time
-	<library>boost_system
-	: :
-	<include>libdbpp-postgresql/libpqpp
-	<cflags>"-I`pg_config --includedir`"
-	<library>../..//glibmm
-	<library>..//dbppcore
-	;
-
-lib dbpp-local-mysql :
-	[ glob libdbpp-mysql/libmysqlpp/*.cpp ] :
-	<library>../..//glibmm
-	<library>../..//mysqlclient
-	<library>..//adhocutil
-	<library>..//dbppcore
-	<library>boost_date_time
-	<library>boost_system
-	<toolset>tidy:<xcheckxx>misc-non-private-member-variables-in-classes
-	: :
-	<include>libdbpp-mysql/libmysqlpp
-	<library>../..//glibmm
-	<library>..//dbppcore
-	;
-
-lib dbpp-local-sqlite :
-	[ glob libdbpp-sqlite/libsqlitepp/*.cpp ] :
-	<library>../..//glibmm
-	<library>../..//sqlite3
-	<library>..//adhocutil
-	<library>..//dbppcore
-	<library>boost_date_time
-	<library>boost_system
-	: :
-	<include>libdbpp-sqlite/libsqlitepp
-	<library>../..//glibmm
-	<library>..//dbppcore
-	;
-
-lib dbpp-local-odbc :
-	[ glob libdbpp-odbc/libodbcpp/*.cpp ] :
-	<library>../..//glibmm
-	<library>../..//odbc
-	<library>..//adhocutil
-	<library>..//dbppcore
-	<library>boost_date_time
-	<library>boost_system
-	<toolset>tidy:<xcheckxx>hicpp-signed-bitwise
-	: :
-	<include>libdbpp-odbc/libodbcpp
-	<library>../..//glibmm
-	<library>..//dbppcore
-	;
+alias dbpp-local-mysql : libmysqlpp//dbpp-mysql : <local-dbppcore>yes ;
+alias dbpp-local-odbc : libodbcpp//dbpp-odbc : <local-dbppcore>yes ;
+alias dbpp-local-postgresql : libpqpp//dbpp-postgresql : <local-dbppcore>yes ;
+alias dbpp-local-sqlite : libsqlitepp//dbpp-sqlite : <local-dbppcore>yes ;
 
 run
 	testPatch.cpp
@@ -165,64 +114,8 @@ run
 	testMock
 	;
 
-run
-	libdbpp-postgresql/libpqpp/unittests/testpq.cpp
-	: :
-	libdbpp-postgresql/libpqpp/unittests/pqschema.sql
-	:
-	<define>ROOT=\"$(me)/libdbpp-postgresql/libpqpp/unittests\"
-	<define>BOOST_TEST_DYN_LINK
-	<library>dbpp-local-postgresql
-	<library>..//dbpptestcore
-	<library>..//adhocutil
-	<library>boost_utf
-	<library>../..//pq
-	<library>..//stdc++fs
-	<library>boost_system
-	;
-
-run
-	libdbpp-mysql/libmysqlpp/unittests/testmysql.cpp
-	: :
-	libdbpp-mysql/libmysqlpp/unittests/mysqlschema.sql
-	:
-	<define>ROOT=\"$(me)/libdbpp-mysql/libmysqlpp/unittests\"
-	<define>BOOST_TEST_DYN_LINK
-	<library>dbpp-local-mysql
-	<library>..//dbpptestcore
-	<library>..//adhocutil
-	<library>boost_utf
-	<library>..//stdc++fs
-	<library>boost_system
-	;
-
-run
-	libdbpp-sqlite/libsqlitepp/unittests/testsqlite.cpp
-	: :
-	libdbpp-sqlite/libsqlitepp/unittests/sqliteschema.sql
-	:
-	<define>ROOT=\"$(me)/libdbpp-sqlite/libsqlitepp/unittests\"
-	<define>BOOST_TEST_DYN_LINK
-	<library>dbpp-local-sqlite
-	<library>..//dbpptestcore
-	<library>..//adhocutil
-	<library>boost_utf
-	<library>..//stdc++fs
-	<library>boost_system
-	;
-
-run
-	libdbpp-odbc/libodbcpp/unittests/testodbc.cpp
-	: :
-	libdbpp-odbc/libodbcpp/unittests/odbcschema.sql
-	:
-	<define>ROOT=\"$(me)/libdbpp-odbc/libodbcpp/unittests\"
-	<define>BOOST_TEST_DYN_LINK
-	<library>dbpp-local-odbc
-	<library>..//dbpptestcore
-	<library>..//adhocutil
-	<library>boost_utf
-	<library>..//stdc++fs
-	<library>boost_system
-	;
+alias testmysql : libmysqlpp/unittests//testmysql : <local-dbppcore>yes ;
+alias testodbc : libodbcpp/unittests//testodbc : <local-dbppcore>yes ;
+alias testpq : libpqpp/unittests//testpq : <local-dbppcore>yes ;
+alias testsqlite : libsqlitepp/unittests//testsqlite : <local-dbppcore>yes ;
 
