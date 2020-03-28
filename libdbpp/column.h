@@ -9,6 +9,7 @@
 #include <exception.h>
 #include "dbTypes.h"
 #include "error.h"
+#include <c++11Helpers.h>
 
 namespace DB {
 	/// Abstract class for something that can handle field data. See Column::apply.
@@ -39,6 +40,8 @@ namespace DB {
 			/// Creates a new column with the given name and ordinal.
 			Column(const Glib::ustring &, unsigned int);
 			virtual ~Column() = 0;
+			/// Standard special members
+			SPECIAL_MEMBERS_MOVE_RO(Column);
 
 			/// Test if the current value is null.
 			[[nodiscard]] virtual bool isNull() const = 0;
@@ -60,7 +63,7 @@ namespace DB {
 
 				public:
 					/// Create an extrator given a target variable.
-					Extract(T & t) : target(t) { }
+					explicit Extract(T & t) : target(t) { }
 
 					void floatingpoint(double v) override { (*this)(v); }
 					void integer(int64_t v) override { (*this)(v); }
@@ -84,7 +87,6 @@ namespace DB {
 					inline
 					void operator()(const D & v)
 					{
-
 						if constexpr (is_optional<T>::is_arithmetic == std::is_arithmetic<D>::value) {
 							if constexpr (std::is_assignable<T, D>::value) {
 								target = v;
@@ -115,7 +117,7 @@ namespace DB {
 			/// This column's name.
 			const std::string		name;
 	};
-	typedef std::unique_ptr<Column> ColumnPtr;
+	using ColumnPtr = std::unique_ptr<Column>;
 }
 
 #endif

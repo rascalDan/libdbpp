@@ -21,7 +21,7 @@ namespace DB {
 	/// @cond
 	class DLL_PUBLIC RowBase {
 		public:
-			RowBase(SelectCommand *);
+			explicit RowBase(SelectCommand *);
 
 			/// Get a column reference by index.
 			const Column & operator[](unsigned int col) const;
@@ -35,20 +35,23 @@ namespace DB {
 	template<typename ... Fn>
 	class Row : public RowBase {
 		public:
-			Row(SelectCommand *);
+			explicit Row(SelectCommand *);
+
+			template<unsigned int C>
+			using FieldType = typename std::tuple_element<C, std::tuple<Fn...>>::type;
 
 			/// Get value of column C in current row.
 			template<unsigned int C>
-			typename std::tuple_element<C, std::tuple<Fn...>>::type value() const DEPRECATE ;
+			[[nodiscard]] FieldType<C> value() const DEPRECATE ;
 
 			template<unsigned int C>
-			typename std::tuple_element<C, std::tuple<Fn...>>::type get() const;
+			[[nodiscard]] FieldType<C> get() const;
 	};
 
 	template<typename ... Fn>
 	class RowRangeIterator {
 		public:
-			RowRangeIterator(SelectCommand *);
+			explicit RowRangeIterator(SelectCommand *);
 
 			bool operator!=(const RowRangeIterator &) const;
 			void operator++();
@@ -62,7 +65,7 @@ namespace DB {
 	template<typename ... Fn>
 	class RowRange {
 		public:
-			RowRange(SelectCommand *);
+			explicit RowRange(SelectCommand *);
 
 			RowRangeIterator<Fn...> begin() const;
 			RowRangeIterator<Fn...> end() const;
@@ -77,7 +80,7 @@ namespace DB {
 		public:
 			/// New ColumnIndexOutOfRange exception
 			/// @param n Index requested
-			ColumnIndexOutOfRange(unsigned int n);
+			explicit ColumnIndexOutOfRange(unsigned int n);
 
 			/// Index requested
 			const unsigned int colNo;
@@ -91,7 +94,7 @@ namespace DB {
 		public:
 			/// New ColumnDoesNotExist exception
 			/// @param n Name requested
-			ColumnDoesNotExist(Glib::ustring n);
+			explicit ColumnDoesNotExist(Glib::ustring n);
 
 			/// Name requested
 			const Glib::ustring colName;
@@ -104,21 +107,24 @@ namespace DB {
 	class DLL_PUBLIC SelectCommand : public virtual Command {
 		public:
 			/// Creates a new command from the given SQL.
-			SelectCommand(const std::string & sql);
-			~SelectCommand();
+			explicit SelectCommand(const std::string & sql);
+			~SelectCommand() override;
+
+			/// Standard special members
+			SPECIAL_MEMBERS_MOVE_RO(SelectCommand);			
 
 			/// Fetch the next row from the result set. Returns false when no further rows are availabile.
 			virtual bool fetch() = 0;
 			/// Execute the statement, but don't fetch the first row.
 			virtual void execute() = 0;
 			/// Get a column reference by index.
-			const Column & operator[](unsigned int col) const;
+			[[nodiscard]] const Column & operator[](unsigned int col) const;
 			/// Get a column reference by name.
-			const Column & operator[](const Glib::ustring &) const;
+			[[nodiscard]] const Column & operator[](const Glib::ustring &) const;
 			/// Get the number of columns in the result set.
-			unsigned int columnCount() const;
+			[[nodiscard]] unsigned int columnCount() const;
 			/// Get the index of a column by name.
-			unsigned int getOrdinal(const Glib::ustring &) const;
+			[[nodiscard]] unsigned int getOrdinal(const Glib::ustring &) const;
 			/// Push each row through a function accepting one value per column
 			template<typename ... Fn, typename Func = std::function<void(Fn...)>>
 			void forEachRow(const Func & func);
@@ -143,7 +149,7 @@ namespace std {
 		static constexpr auto value =  sizeof...(Fn);
 	};
 	template<size_t C, typename ... Fn> struct tuple_element<C, DB::Row<Fn...>> {
-		typedef typename std::tuple_element<C, std::tuple<Fn...>>::type type;
+		using type =  typename std::tuple_element<C, std::tuple<Fn...>>::type;
 	};
 	/// @endcond
 }

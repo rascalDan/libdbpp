@@ -25,7 +25,9 @@ BOOST_AUTO_TEST_CASE( resolve )
 	auto libname = DB::Connection::resolvePlugin(typeid(DB::Connection), "postgresql");
 	BOOST_REQUIRE(libname);
 	BOOST_REQUIRE_EQUAL("libdbpp-postgresql.so", *libname);
-	BOOST_REQUIRE_THROW(DB::ConnectionFactory::createNew("otherdb", "doesn't matter"), AdHoc::LoadLibraryException);
+	BOOST_REQUIRE_THROW(
+			(void)DB::ConnectionFactory::createNew("otherdb", "doesn't matter"),
+			AdHoc::LoadLibraryException);
 }
 
 BOOST_AUTO_TEST_CASE( finish )

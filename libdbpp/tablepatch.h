@@ -15,21 +15,18 @@ namespace DB {
 	/// Table patch settings.
 	class DLL_PUBLIC TablePatch {
 		private:
-			typedef std::string TableName;
-			typedef std::string ColumnName;
-			typedef std::set<ColumnName> ColumnNames;
-			typedef ColumnNames PrimaryKey;
-			typedef PrimaryKey::const_iterator PKI;
-			typedef std::function<void(DB::SelectCommandPtr)> AuditFunction;
+			using TableName = std::string;
+			using ColumnName = std::string;
+			using ColumnNames = std::set<ColumnName>;
+			using PrimaryKey = ColumnNames;
+			using PKI = PrimaryKey::const_iterator;
+			using AuditFunction = std::function<void(DB::SelectCommandPtr)>;
 
 		public:
-			/// Default constructor
-			TablePatch();
-
 			/// Source table name.
 			TableName src;
 			/// Source expression.
-			SqlWriter * srcExpr;
+			SqlWriter * srcExpr { nullptr };
 			/// Destination table name.
 			TableName dest;
 			/// Columns comprising the [effective] primary key.
@@ -37,17 +34,17 @@ namespace DB {
 			/// Columns to be updated in the path.
 			ColumnNames cols;
 			/// An optional SQL writer to replace the default delete operation.
-			SqlWriter * insteadOfDelete;
+			SqlWriter * insteadOfDelete { nullptr };
 			/// An optional SQL writer to append a where clause.
-			SqlWriter * where;
+			SqlWriter * where { nullptr };
 			/// An optional SQL writer to append an order by clause.
-			SqlWriter * order;
+			SqlWriter * order { nullptr };
 			/// Enable deletion
-			bool doDeletes;
+			bool doDeletes { true };
 			/// Enable updates
-			bool doUpdates;
+			bool doUpdates { true };
 			/// Enable insertion
-			bool doInserts;
+			bool doInserts { true };
 			/// Before delete audit
 			AuditFunction beforeDelete;
 			/// Before update audit

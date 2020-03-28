@@ -10,7 +10,7 @@
 BOOST_AUTO_TEST_CASE( noFactory )
 {
 	BOOST_REQUIRE_THROW({
-		DB::MockDatabaseFactory::get("not-found");
+		(void)DB::MockDatabaseFactory::get("not-found");
 	}, AdHoc::LoadLibraryException);
 }
 
@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE( mockFactory )
 BOOST_AUTO_TEST_CASE( missingMock )
 {
 	BOOST_REQUIRE_THROW({
-		DB::MockDatabaseFactory::createNew("MockMock",
+		(void)DB::MockDatabaseFactory::createNew("MockMock",
 				"user=postgres dbname=postgres", typeid(this).name(), { rootDir / "missing.sql" });
 	}, std::fstream::failure);
 }
@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE( missingMock )
 BOOST_AUTO_TEST_CASE( failingMock )
 {
 	BOOST_REQUIRE_THROW({
-		DB::MockDatabaseFactory::createNew("MockMock",
+		(void)DB::MockDatabaseFactory::createNew("MockMock",
 				"user=postgres dbname=postgres", typeid(this).name(), { rootDir / "badMock.sql" });
 	}, DB::Error);
 }

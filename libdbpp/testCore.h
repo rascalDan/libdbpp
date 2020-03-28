@@ -13,10 +13,10 @@ class DLL_PUBLIC TestCore {
 	protected:
 		TestCore();
 
-		int64_t testInt;
-		double testDouble;
+		int64_t testInt { 43 };
+		double testDouble { 3.14 };
 		std::string_view testString;
-		bool testBool;
+		bool testBool { false };
 		boost::posix_time::ptime testDateTime;
 		boost::posix_time::time_duration testInterval;
 

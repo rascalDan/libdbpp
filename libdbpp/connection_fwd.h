@@ -5,8 +5,8 @@
 
 namespace DB {
 	class Connection;
-	typedef std::shared_ptr<Connection> ConnectionPtr;
-	typedef std::shared_ptr<const Connection> ConnectionCPtr;
+	using ConnectionPtr = std::shared_ptr<Connection>;
+	using ConnectionCPtr = std::shared_ptr<const Connection>;
 }
 
 #endif

@@ -1,7 +1,7 @@
 #ifndef DB_ERROR_H
 #define DB_ERROR_H
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <exception.h>
 #include <visibility.h>
 
@@ -36,7 +36,7 @@ namespace DB {
 	class DLL_PUBLIC UnexpectedNullValue : public AdHoc::Exception<Error> {
 		public:
 			/// Create a new UnexpectedNullValue given the source type name.
-			UnexpectedNullValue(const char * const from);
+			explicit UnexpectedNullValue(const char * const from);
 
 		private:
 			std::string message() const noexcept override;

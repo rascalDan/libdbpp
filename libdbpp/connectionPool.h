@@ -41,7 +41,7 @@ namespace DB {
 			const std::string connectionString;
 	};
 
-	typedef std::shared_ptr<BasicConnectionPool> ConnectionPoolPtr;
+	using ConnectionPoolPtr = std::shared_ptr<BasicConnectionPool>;
 }
 
 #endif

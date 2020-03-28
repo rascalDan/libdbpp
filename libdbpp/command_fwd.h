@@ -6,16 +6,16 @@
 #include <memory>
 
 namespace DB {
-	typedef std::map<std::string, std::string, std::less<>> CommandOptionsMap;
+	using CommandOptionsMap = std::map<std::string, std::string, std::less<>>;
 	class CommandOptions;
-	typedef std::shared_ptr<CommandOptions> CommandOptionsPtr;
-	typedef std::shared_ptr<const CommandOptions> CommandOptionsCPtr;
+	using CommandOptionsPtr = std::shared_ptr<CommandOptions>;
+	using CommandOptionsCPtr = std::shared_ptr<const CommandOptions>;
 	class Command;
-	typedef std::shared_ptr<Command> CommandPtr;
+	using CommandPtr = std::shared_ptr<Command>;
 	class ModifyCommand;
-	typedef std::shared_ptr<ModifyCommand> ModifyCommandPtr;
+	using ModifyCommandPtr = std::shared_ptr<ModifyCommand>;
 	class SelectCommand;
-	typedef std::shared_ptr<SelectCommand> SelectCommandPtr;
+	using SelectCommandPtr = std::shared_ptr<SelectCommand>;
 }
 
 

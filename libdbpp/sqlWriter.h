@@ -3,6 +3,7 @@
 
 #include <visibility.h>
 #include <buffer.h>
+#include <c++11Helpers.h>
 
 namespace DB {
 	class Command;
@@ -10,7 +11,10 @@ namespace DB {
 	/// Base class of dynamic SQL constructors.
 	class DLL_PUBLIC SqlWriter {
 		public:
+			SqlWriter() = default;
 			virtual ~SqlWriter() = default;
+			/// Standd special memeber
+			SPECIAL_MEMBERS_DEFAULT(SqlWriter);
 			/// Append your SQL to the buffer.
 			/// @param buffer The buffer
 			virtual void writeSql(AdHoc::Buffer & buffer) = 0;
@@ -25,10 +29,10 @@ namespace DB {
 		public:
 			/// Construct with the SQL to write.
 			/// @param sql The SQL to write.
-			StaticSqlWriter(std::string sql);
+			explicit StaticSqlWriter(std::string sql);
 			/// Append the SQL to the buffer.
 			/// @param buffer The buffer
-			void writeSql(AdHoc::Buffer & buffer);
+			void writeSql(AdHoc::Buffer & buffer) override;
 
 			/// The SQL to write.
 			std::string sql;

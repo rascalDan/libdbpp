@@ -25,6 +25,7 @@ project
 			<toolset>tidy:<checkxx>misc-*
 			<toolset>tidy:<checkxx>modernize-*
 			<toolset>tidy:<xcheckxx>modernize-use-trailing-return-type
+			<toolset>tidy:<xcheckxx>misc-non-private-member-variables-in-classes
 			<toolset>tidy:<checkxx>hicpp-*
 			<toolset>tidy:<checkxx>performance-*
 	;

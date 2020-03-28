@@ -122,8 +122,8 @@ BOOST_AUTO_TEST_CASE( columns )
 	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	auto sel = db->select("SELECT a, b, c, d, e FROM forEachRow ORDER BY a LIMIT 1");
 	sel->execute();
-	BOOST_REQUIRE_THROW((*sel)[5], DB::ColumnIndexOutOfRange);
-	BOOST_REQUIRE_THROW((*sel)[-1], DB::ColumnIndexOutOfRange);
+	BOOST_REQUIRE_THROW((void)(*sel)[5], DB::ColumnIndexOutOfRange);
+	BOOST_REQUIRE_THROW((void)(*sel)[-1], DB::ColumnIndexOutOfRange);
 	BOOST_REQUIRE_EQUAL(0, (*sel)[0].colNo);
 	BOOST_REQUIRE_EQUAL(4, (*sel)[4].colNo);
 	BOOST_REQUIRE_EQUAL("c", (*sel)[2].name);
@@ -131,9 +131,9 @@ BOOST_AUTO_TEST_CASE( columns )
 	BOOST_REQUIRE_EQUAL(4, (*sel)["e"].colNo);
 	BOOST_REQUIRE_EQUAL(5, sel->columnCount());
 	BOOST_REQUIRE_EQUAL(1, sel->getOrdinal("b"));
-	BOOST_REQUIRE_THROW((*sel)["f"], DB::ColumnDoesNotExist);
-	BOOST_REQUIRE_THROW((*sel)["aa"], DB::ColumnDoesNotExist);
-	BOOST_REQUIRE_THROW((*sel)[""], DB::ColumnDoesNotExist);
+	BOOST_REQUIRE_THROW((void)(*sel)["f"], DB::ColumnDoesNotExist);
+	BOOST_REQUIRE_THROW((void)(*sel)["aa"], DB::ColumnDoesNotExist);
+	BOOST_REQUIRE_THROW((void)(*sel)[""], DB::ColumnDoesNotExist);
 }
 
 BOOST_AUTO_TEST_CASE( extract )
@@ -206,10 +206,10 @@ BOOST_AUTO_TEST_CASE_TEMPLATE( nullBind, Str, StringTypes )
 	unsigned int count = 0;
 	for (const auto & row : sel->as<int, std::optional<double>, Str>()) {
 		count += 1;
-		BOOST_CHECK_THROW(row.template get<0>(), DB::UnexpectedNullValue);
+		BOOST_CHECK_THROW((void)row.template get<0>(), DB::UnexpectedNullValue);
 		auto nd = row.template get<1>();
 		BOOST_CHECK(!nd.has_value());
-		BOOST_CHECK_THROW(row.template get<2>(), DB::UnexpectedNullValue);
+		BOOST_CHECK_THROW((void)row.template get<2>(), DB::UnexpectedNullValue);
 	}
 	BOOST_REQUIRE_EQUAL(1, count);
 }
@@ -414,9 +414,9 @@ BOOST_AUTO_TEST_CASE( testBlobCompare )
 
 // These just compile time support, actual data extraction should be tested by the implementing connector.
 template<typename T>
-void
+auto
 testExtractT(DB::Row<T> row) {
-	row.template value<0>();
+	return row.template value<0>();
 }
 
 template<typename T>
@@ -429,7 +429,6 @@ testExtractT(const DB::SelectCommandPtr & sel) {
 #ifdef __clang__
 	// Clang cannot compile this for reasons largely todo with ambiguousness in the spec
 	// Fixed when we move to std::chrono
-	// NOLINTNEXTLINE(bugprone-suspicious-semicolon,hicpp-braces-around-statements)
 	if constexpr (!std::is_same<T, boost::posix_time::time_duration>::value) {
 #else
 	if constexpr (true) {

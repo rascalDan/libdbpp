@@ -18,13 +18,6 @@ DB::TransactionStillOpen::message() const noexcept
 	return "A transaction is still open.";
 }
 
-DB::Connection::Connection() :
-	txOpenDepth(0)
-{
-}
-
-DB::Connection::~Connection() = default;
-
 void
 DB::Connection::execute(const std::string & sql, const CommandOptionsCPtr & opts)
 {
@@ -188,25 +181,25 @@ DB::TransactionRequired::message() const noexcept
 }
 
 DB::TransactionScope::TransactionScope(DB::Connection & c) :
-	conn(c)
+	conn(&c)
 {
-	conn.beginTx();
+	conn->beginTx();
 }
 
 // It is acceptable for a commit to fail
 // NOLINTNEXTLINE(bugprone-exception-escape)
-DB::TransactionScope::~TransactionScope()
+DB::TransactionScope::~TransactionScope() noexcept
 {
-	if (std::uncaught_exceptions()) {
-		try {
-			conn.rollbackTx();
+	try {
+		if (std::uncaught_exceptions()) {
+			conn->rollbackTx();
 		}
-		catch (...) {
-			// Nothing we can do here
+		else {
+			conn->commitTx();
 		}
 	}
-	else {
-		conn.commitTx();
+	catch (...) {
+		// Nothing we can do here
 	}
 }
 

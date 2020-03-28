@@ -7,10 +7,7 @@
 namespace DB {
 
 TestCore::TestCore() :
-	testInt(43),
-	testDouble(3.14),
 	testString("Some C String"),
-	testBool(false),
 	testDateTime(boost::posix_time::from_time_t(1430530593)),
 	testInterval(boost::posix_time::time_duration(1, 2, 3))
 {
@@ -32,7 +29,6 @@ class Assert : public DB::HandleField {
 
 		template <typename D>
 		void operator()(const D & v) {
-			// NOLINTNEXTLINE(hicpp-braces-around-statements)
 			if constexpr (std::is_convertible<D, T>::value) {
 				BOOST_REQUIRE_EQUAL(expected, v);
 			}

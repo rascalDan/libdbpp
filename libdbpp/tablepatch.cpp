@@ -7,17 +7,6 @@
 #include <safeMapFind.h>
 #include <boost/algorithm/string/join.hpp>
 
-DB::TablePatch::TablePatch() :
-	srcExpr(nullptr),
-	insteadOfDelete(nullptr),
-	where(nullptr),
-	order(nullptr),
-	doDeletes(true),
-	doUpdates(true),
-	doInserts(true)
-{
-}
-
 DB::PatchResult
 DB::Connection::patchTable(TablePatch * tp)
 {

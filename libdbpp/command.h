@@ -11,6 +11,7 @@
 #include <type_traits>
 #include "dbTypes.h"
 #include "error.h"
+#include <c++11Helpers.h>
 
 namespace DB {
 	/// Exception thrown when binding a parameter of type the connector doesn't support.
@@ -26,8 +27,10 @@ namespace DB {
 		public:
 			CommandOptions() = default;
 			/// Constructor which populates the hash value only.
-			CommandOptions(std::size_t hash, const CommandOptionsMap & = CommandOptionsMap());
+			explicit CommandOptions(std::size_t hash, const CommandOptionsMap & = CommandOptionsMap());
 			virtual ~CommandOptions() = default;
+			/// Standard special members
+			SPECIAL_MEMBERS_DEFAULT(CommandOptions);
 
 			/// An (optional) hash of the SQL statement.
 			std::optional<std::size_t> hash;
@@ -55,8 +58,11 @@ namespace DB {
 	class DLL_PUBLIC Command {
 		public:
 			/// Creates a new command from the given SQL.
-			Command(std::string sql);
+			explicit Command(std::string sql);
 			virtual ~Command() = 0;
+
+			/// Standard special members
+			SPECIAL_MEMBERS_COPY_RO(Command);
 
 			/// Bind an integer to parameter i.
 			virtual void	bindParamI(unsigned int i, int val) = 0;
@@ -107,10 +113,8 @@ namespace DB {
 			template<typename O>
 			inline void bindParam(unsigned int i, const O & o)
 			{
-				if constexpr (std::is_null_pointer<O>::value) {
-					bindNull(i);
-				}
-				else if constexpr (std::is_same<O, std::nullopt_t>::value) {
+				if constexpr (std::is_null_pointer<O>::value ||
+						std::is_same<O, std::nullopt_t>::value) {
 					bindNull(i);
 				}
 				else if constexpr (std::is_same<O, bool>::value) {
@@ -119,10 +123,8 @@ namespace DB {
 				else if constexpr (std::is_floating_point<O>::value) {
 					bindParamF(i, o);
 				}
-				else if constexpr (std::is_same<O, boost::posix_time::time_duration>::value) {
-					bindParamT(i, o);
-				}
-				else if constexpr (std::is_same<O, boost::posix_time::ptime>::value) {
+				else if constexpr (std::is_same<O, boost::posix_time::time_duration>::value ||
+						std::is_same<O, boost::posix_time::ptime>::value) {
 					bindParamT(i, o);
 				}
 				else if constexpr (std::is_same<O, Blob>::value) {
@@ -131,7 +133,8 @@ namespace DB {
 				else if constexpr (std::is_integral<O>::value && !std::is_pointer<O>::value) {
 					bindParamI(i, o);
 				}
-				else if constexpr (std::is_convertible<O, std::string_view>::value && std::is_pointer<O>::value) {
+				else if constexpr (std::is_convertible<O, std::string_view>::value &&
+						std::is_pointer<O>::value) {
 					if (o) {
 						bindParamS(i, o);
 					}
@@ -139,10 +142,9 @@ namespace DB {
 						bindNull(i);
 					}
 				}
-				else if constexpr (std::is_same<O, Glib::ustring>::value) {
-					bindParamS(i, o);
-				}
-				else if constexpr (std::is_convertible<O, std::string_view>::value) {
+				else if constexpr (std::is_same<O, Glib::ustring>::value ||
+						std::is_convertible<O, std::string_view>::value) {
+					// NOLINTNEXTLINE(hicpp-no-array-decay)
 					bindParamS(i, o);
 				}
 				else if constexpr (std::is_constructible<bool, const O &>::value) {
@@ -162,8 +164,8 @@ namespace DB {
 			template<typename O> \
 			inline auto \
 			func(unsigned int i, const O & o) -> typename std::enable_if< \
-					std::is_constructible<bool, const O &>::value \
-					&& !std::is_void<decltype(*o)>::value \
+					std::is_constructible_v<bool, const O &> \
+					&& !std::is_void_v<decltype(*o)> \
 					>::type\
 			{ \
 				bool nn(o); \
@@ -175,6 +177,7 @@ namespace DB {
 			/// @cond
 			OPTWRAPPER(bindParamI);
 			OPTWRAPPER(bindParamF);
+			// NOLINTNEXTLINE(hicpp-no-array-decay)
 			OPTWRAPPER(bindParamS);
 			OPTWRAPPER(bindParamB);
 			OPTWRAPPER(bindParamT);
@@ -185,7 +188,7 @@ namespace DB {
 			/// Bind a (possibly null) c-string to parameter i.
 			void bindParamS(unsigned int, char * const);
 	};
-	typedef AdHoc::Factory<CommandOptions, std::size_t, const CommandOptionsMap &> CommandOptionsFactory;
+	using CommandOptionsFactory = AdHoc::Factory<CommandOptions, std::size_t, const CommandOptionsMap &>;
 }
 
 #endif

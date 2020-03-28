@@ -2,6 +2,7 @@
 #define DB_CONNECTION_H
 
 #include "connection_fwd.h"
+#include "command_fwd.h"
 #include <string>
 #include <set>
 #include <factory.h>
@@ -11,20 +12,13 @@
 #include <memory>
 #include <optional>
 #include "error.h"
+#include <c++11Helpers.h>
 
 namespace AdHoc {
 	class Buffer;
 }
 
 namespace DB {
-	class Command;
-	class CommandOptions;
-	typedef std::shared_ptr<CommandOptions> CommandOptionsPtr;
-	typedef std::shared_ptr<const CommandOptions> CommandOptionsCPtr;
-	class SelectCommand;
-	typedef std::shared_ptr<SelectCommand> SelectCommandPtr;
-	class ModifyCommand;
-	typedef std::shared_ptr<ModifyCommand> ModifyCommandPtr;
 	class TablePatch;
 
 	enum BulkDeleteStyle {
@@ -38,11 +32,11 @@ namespace DB {
 		BulkUpdateUsingJoin = 2,
 	};
 
-	typedef std::string TableName;
-	typedef std::string ColumnName;
-	typedef std::set<ColumnName> ColumnNames;
-	typedef ColumnNames PrimaryKey;
-	typedef PrimaryKey::const_iterator PKI;
+	using TableName = std::string;
+	using ColumnName = std::string;
+	using ColumnNames = std::set<ColumnName>;
+	using PrimaryKey = ColumnNames;
+	using PKI = PrimaryKey::const_iterator;
 
 	/// Result of a table patch operation.
 	struct PatchResult {
@@ -91,7 +85,9 @@ namespace DB {
 	/// Base class for connections to a database.
 	class DLL_PUBLIC Connection : public std::enable_shared_from_this<Connection> {
 		public:
-			virtual ~Connection();
+			virtual ~Connection() = default;
+			/// Standard special members
+			SPECIAL_MEMBERS_DEFAULT_MOVE_NO_COPY(Connection);
 
 			/// Perform final checks before closing.
 			void finish() const;
@@ -151,7 +147,7 @@ namespace DB {
 
 		protected:
 			/// Create a new connection.
-			Connection();
+			Connection() = default;
 
 			/// Internal begin transaction.
 			virtual void beginTxInt() = 0;
@@ -168,25 +164,24 @@ namespace DB {
 			virtual unsigned int patchInserts(TablePatch * tp);
 
 		private:
-			unsigned int txOpenDepth;
+			unsigned int txOpenDepth { 0 };
 	};
 
 	/// Helper class for beginning/committing/rolling back transactions in accordance with scope and exceptions.
 	class DLL_PUBLIC TransactionScope {
 		public:
 			/// Create a new helper and associated transaction on the given connection.
-			TransactionScope(Connection &);
-			~TransactionScope();
+			explicit TransactionScope(Connection &);
+			~TransactionScope() noexcept;
+			/// Standard special members
+			SPECIAL_MEMBERS_DEFAULT_MOVE_NO_COPY(TransactionScope);
 
 		private:
-			TransactionScope(const TransactionScope &) = delete;
-			void operator=(const TransactionScope &) = delete;
-
-			Connection & conn;
+			Connection * conn;
 	};
 
-	typedef AdHoc::Factory<Connection, std::string> ConnectionFactory;
-	typedef std::shared_ptr<const ConnectionFactory> ConnectionFactoryCPtr;
+	using ConnectionFactory = AdHoc::Factory<Connection, std::string>;
+	using ConnectionFactoryCPtr = std::shared_ptr<const ConnectionFactory>;
 }
 
 #endif
