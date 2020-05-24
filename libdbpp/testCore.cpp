@@ -3,13 +3,19 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/test/test_tools.hpp>
 #include <compileTimeFormatter.h>
+#include <fileUtils.h>
 
 namespace DB {
 
 TestCore::TestCore() :
 	testString("Some C String"),
 	testDateTime(boost::posix_time::from_time_t(1430530593)),
-	testInterval(boost::posix_time::time_duration(1, 2, 3))
+	testInterval(boost::posix_time::time_duration(1, 2, 3)),
+	testBlobData([](){
+		AdHoc::FileUtils::MemMap f("/proc/self/exe");
+		return std::vector<unsigned char>(f.sv<unsigned char>().begin(), f.sv<unsigned char>().end());
+	}()),
+	testBlob(testBlobData)
 {
 }
 

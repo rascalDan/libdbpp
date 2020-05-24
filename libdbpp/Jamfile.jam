@@ -29,6 +29,7 @@ lib dbpptestcore :
 	:
 	<define>BOOST_TEST_DYN_LINK
 	<library>dbppcore
+	<library>adhocutil
 	<library>boost_utf
 	: :
 	<include>.

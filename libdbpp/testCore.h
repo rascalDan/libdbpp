@@ -19,6 +19,8 @@ class DLL_PUBLIC TestCore {
 		bool testBool { false };
 		boost::posix_time::ptime testDateTime;
 		boost::posix_time::time_duration testInterval;
+		std::vector<unsigned char> testBlobData;
+		DB::Blob testBlob;
 
 		template<typename T> void assertScalarValueHelper(SelectCommand & sel, const T & t) const;
 		template<typename T> void assertColumnValueHelper(SelectCommand & sel, unsigned int col, const T & t) const;
