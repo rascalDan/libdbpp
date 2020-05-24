@@ -156,7 +156,7 @@ namespace DB {
 					}
 				}
 				else {
-					static_assert(!&o, "No suitable trait");
+					static_assert(std::is_void_v<O>, "No suitable trait");
 				}
 			}
 
