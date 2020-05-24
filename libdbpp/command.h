@@ -127,7 +127,7 @@ namespace DB {
 						std::is_same<O, boost::posix_time::ptime>::value) {
 					bindParamT(i, o);
 				}
-				else if constexpr (std::is_same<O, Blob>::value) {
+				else if constexpr (std::is_same<O, Blob>::value || std::is_convertible<O, Blob>::value) {
 					bindParamBLOB(i, o);
 				}
 				else if constexpr (std::is_integral<O>::value && !std::is_pointer<O>::value) {
