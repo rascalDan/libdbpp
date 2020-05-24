@@ -22,7 +22,8 @@ namespace DB {
 			}
 			/// Construct a reference using C++ vector pointer to a collection of objects.
 			template<typename T>
-			explicit Blob(const std::vector<T> & v) :
+			// NOLINTNEXTLINE(hicpp-explicit-conversions)
+			Blob(const std::vector<T> & v) :
 				data(&v.front()),
 				len(sizeof(T) * v.size())
 			{
