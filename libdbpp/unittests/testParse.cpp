@@ -1,92 +1,94 @@
 #define BOOST_TEST_MODULE DbConnection
 #include <boost/test/unit_test.hpp>
 
-#include <factory.h>
 #include <connection.h>
 #include <definedDirs.h>
-#include <fstream>
-#include <vector>
 #include <error.h>
+#include <factory.h>
+#include <fstream>
 #include <sqlParse.h>
+#include <vector>
 
 using SQLs = std::vector<std::string>;
 BOOST_TEST_SPECIALIZED_COLLECTION_COMPARE(SQLs);
 
 class RecordingParser : std::fstream, public DB::SqlParse {
-	public:
-		explicit RecordingParser(const std::filesystem::path & p) :
-			std::fstream(p),
-			DB::SqlParse(*this, p.parent_path())
-		{
-		}
+public:
+	explicit RecordingParser(const std::filesystem::path & p) :
+		std::fstream(p), DB::SqlParse(*this, p.parent_path()) { }
 
-    void Comment(const std::string & c) const override
-		{
-			comments.push_back(c);
-		}
+	void
+	Comment(const std::string & c) const override
+	{
+		comments.push_back(c);
+	}
 
-    void Statement(const std::string & s) const override
-		{
-			executed.push_back(s);
-		}
+	void
+	Statement(const std::string & s) const override
+	{
+		executed.push_back(s);
+	}
 
-		mutable SQLs comments;
-		mutable SQLs executed;
+	mutable SQLs comments;
+	mutable SQLs executed;
 };
 
 template<typename E = DB::SqlParseException>
-void assertFail(const std::filesystem::path & p)
+void
+assertFail(const std::filesystem::path & p)
 {
 	BOOST_TEST_CONTEXT(p) {
-		BOOST_REQUIRE_THROW({
-			RecordingParser s(p);
-			s.Execute();
-		}, E);
+		BOOST_REQUIRE_THROW(
+				{
+					RecordingParser s(p);
+					s.Execute();
+				},
+				E);
 	}
 }
 
-BOOST_AUTO_TEST_CASE( parseBad )
+BOOST_AUTO_TEST_CASE(parseBad)
 {
 	assertFail("/bad");
 }
 
-BOOST_AUTO_TEST_CASE( parse )
+BOOST_AUTO_TEST_CASE(parse)
 {
 	RecordingParser p(rootDir / "parseTest.sql");
 	p.Execute();
 	BOOST_REQUIRE_EQUAL(p.executed.size(), 3);
 	BOOST_REQUIRE_EQUAL(p.executed[1], "INSERT INTO name(t, i) VALUES('string', 3)");
 	auto cs = {
-		"Single line comment",
-		"",
-		"",
-		"",
-		"",
-		"Comment",
-		"",
-		"",
-		"",
-		"Multi line\n\t comment",
-		"! Stupid MySQL terminates",
-		"! comments with a ;",
-		"! Because reasons",
+			"Single line comment",
+			"",
+			"",
+			"",
+			"",
+			"Comment",
+			"",
+			"",
+			"",
+			"Multi line\n\t comment",
+			"! Stupid MySQL terminates",
+			"! comments with a ;",
+			"! Because reasons",
 	};
 	BOOST_CHECK_EQUAL_COLLECTIONS(p.comments.begin(), p.comments.end(), cs.begin(), cs.end());
 }
 
-BOOST_AUTO_TEST_CASE( parseDollarQuote )
+BOOST_AUTO_TEST_CASE(parseDollarQuote)
 {
 	RecordingParser p(rootDir / "dollarQuote.sql");
 	p.Execute();
 }
 
-BOOST_AUTO_TEST_CASE( parseScriptDir )
+BOOST_AUTO_TEST_CASE(parseScriptDir)
 {
 	RecordingParser p(rootDir / "scriptDir.sql");
 	p.Execute();
 }
 
-BOOST_AUTO_TEST_CASE( parseStringParse )
+BOOST_AUTO_TEST_CASE(parseStringParse)
 {
 	RecordingParser p(rootDir / "stringParse.sql");
 	p.Execute();
@@ -94,7 +96,7 @@ BOOST_AUTO_TEST_CASE( parseStringParse )
 	BOOST_REQUIRE_EQUAL("INSERT INTO name(t, i) VALUES('fancy string '' \\' \\r \\n', 7)", p.executed[1]);
 }
 
-BOOST_AUTO_TEST_CASE( indentedStatement )
+BOOST_AUTO_TEST_CASE(indentedStatement)
 {
 	RecordingParser p(rootDir / "indentedStatement.sql");
 	p.Execute();
@@ -103,7 +105,7 @@ BOOST_AUTO_TEST_CASE( indentedStatement )
 	BOOST_REQUIRE(p.comments.empty());
 }
 
-BOOST_AUTO_TEST_CASE( indentedOneLineComment )
+BOOST_AUTO_TEST_CASE(indentedOneLineComment)
 {
 	RecordingParser p(rootDir / "indentedOneLineComment.sql");
 	p.Execute();
@@ -112,7 +114,7 @@ BOOST_AUTO_TEST_CASE( indentedOneLineComment )
 	BOOST_REQUIRE(p.executed.empty());
 }
 
-BOOST_AUTO_TEST_CASE( indentedBlockComment )
+BOOST_AUTO_TEST_CASE(indentedBlockComment)
 {
 	RecordingParser p(rootDir / "indentedBlockComment.sql");
 	p.Execute();
@@ -121,7 +123,7 @@ BOOST_AUTO_TEST_CASE( indentedBlockComment )
 	BOOST_REQUIRE(p.executed.empty());
 }
 
-BOOST_AUTO_TEST_CASE( commentsMixedIn )
+BOOST_AUTO_TEST_CASE(commentsMixedIn)
 {
 	RecordingParser p(rootDir / "commentsMixedIn.sql");
 	p.Execute();
@@ -133,18 +135,17 @@ BOOST_AUTO_TEST_CASE( commentsMixedIn )
 	BOOST_REQUIRE_EQUAL("And a timestamp", p.comments[2]);
 }
 
-BOOST_AUTO_TEST_CASE( parseUnterminateComment )
+BOOST_AUTO_TEST_CASE(parseUnterminateComment)
 {
 	assertFail(rootDir / "unterminatedComment.sql");
 }
 
-BOOST_AUTO_TEST_CASE( parseUnterminateDollarQuote )
+BOOST_AUTO_TEST_CASE(parseUnterminateDollarQuote)
 {
 	assertFail(rootDir / "unterminatedDollarQuote.sql");
 }
 
-BOOST_AUTO_TEST_CASE( parseUnterminateString )
+BOOST_AUTO_TEST_CASE(parseUnterminateString)
 {
 	assertFail(rootDir / "unterminatedString.sql");
 }
-

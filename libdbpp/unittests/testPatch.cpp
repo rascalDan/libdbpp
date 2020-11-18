@@ -1,55 +1,56 @@
 #define BOOST_TEST_MODULE DbTablePatch
 #include <boost/test/unit_test.hpp>
 
+#include <buffer.h>
+#include <command.h>
 #include <connection.h>
 #include <definedDirs.h>
 #include <pq-mock.h>
-#include <command.h>
-#include <tablepatch.h>
-#include <sqlWriter.h>
-#include <buffer.h>
 #include <selectcommandUtil.impl.h>
+#include <sqlWriter.h>
+#include <tablepatch.h>
 
 class Mock : public DB::PluginMock<PQ::Mock> {
-	public:
-		Mock() :
-			DB::PluginMock<PQ::Mock>("pqmock", { rootDir / "patch.sql" }, "user=postgres dbname=postgres")
-		{
-		}
+public:
+	Mock() : DB::PluginMock<PQ::Mock>("pqmock", {rootDir / "patch.sql"}, "user=postgres dbname=postgres") { }
 };
 
 class OrderByA : public DB::StaticSqlWriter {
-	public:
-		OrderByA() : DB::StaticSqlWriter("a") { }
+public:
+	OrderByA() : DB::StaticSqlWriter("a") { }
 };
 
 class WhereAequals1 : public DB::SqlWriter {
-	public:
-		void writeSql(AdHoc::Buffer & b) override
-		{
-			b.append("a.a = ?");
-		}
-		void bindParams(DB::Command * cmd, unsigned int & o) override
-		{
-			cmd->bindParamI(o++, 1);
-		}
+public:
+	void
+	writeSql(AdHoc::Buffer & b) override
+	{
+		b.append("a.a = ?");
+	}
+	void
+	bindParams(DB::Command * cmd, unsigned int & o) override
+	{
+		cmd->bindParamI(o++, 1);
+	}
 };
 
 class MarkDeleted : public DB::SqlWriter {
-	public:
-		void writeSql(AdHoc::Buffer & b) override
-		{
-			b.append("deleted = ?");
-		}
-		void bindParams(DB::Command * cmd, unsigned int & o) override
-		{
-			cmd->bindParamB(o++, true);
-		}
+public:
+	void
+	writeSql(AdHoc::Buffer & b) override
+	{
+		b.append("deleted = ?");
+	}
+	void
+	bindParams(DB::Command * cmd, unsigned int & o) override
+	{
+		cmd->bindParamB(o++, true);
+	}
 };
 
 BOOST_FIXTURE_TEST_SUITE(mock, Mock);
 
-BOOST_AUTO_TEST_CASE( sanityFail )
+BOOST_AUTO_TEST_CASE(sanityFail)
 {
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
 	BOOST_REQUIRE(db);
@@ -60,7 +61,7 @@ BOOST_AUTO_TEST_CASE( sanityFail )
 	BOOST_REQUIRE_THROW(db->patchTable(&tp), DB::PatchCheckFailure);
 }
 
-BOOST_AUTO_TEST_CASE( noTx )
+BOOST_AUTO_TEST_CASE(noTx)
 {
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
 	BOOST_REQUIRE(db);
@@ -74,7 +75,7 @@ BOOST_AUTO_TEST_CASE( noTx )
 
 BOOST_AUTO_TEST_SUITE_END();
 
-BOOST_AUTO_TEST_CASE( testBasic )
+BOOST_AUTO_TEST_CASE(testBasic)
 {
 	Mock mock;
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
@@ -98,7 +99,7 @@ BOOST_AUTO_TEST_CASE( testBasic )
 	BOOST_REQUIRE_EQUAL(0, r2.updates);
 }
 
-BOOST_AUTO_TEST_CASE( allKeys )
+BOOST_AUTO_TEST_CASE(allKeys)
 {
 	Mock mock;
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
@@ -116,7 +117,7 @@ BOOST_AUTO_TEST_CASE( allKeys )
 	BOOST_REQUIRE_EQUAL(0, r.updates);
 }
 
-BOOST_AUTO_TEST_CASE( testOrder )
+BOOST_AUTO_TEST_CASE(testOrder)
 {
 	Mock mock;
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
@@ -129,20 +130,21 @@ BOOST_AUTO_TEST_CASE( testOrder )
 	tp.pk = {"a", "b"};
 	tp.order = &order;
 	tp.beforeDelete = [](const DB::SelectCommandPtr & i) {
-			i->forEachRow<int64_t, int64_t, std::string, std::string>([](auto a, auto b, auto c, auto d) {
-						fprintf(stderr, "<< %ld %ld %s %s\n", a, b, c.c_str(), d.c_str());
-					});
-			};
+		i->forEachRow<int64_t, int64_t, std::string, std::string>([](auto a, auto b, auto c, auto d) {
+			fprintf(stderr, "<< %ld %ld %s %s\n", a, b, c.c_str(), d.c_str());
+		});
+	};
 	tp.beforeUpdate = [](const DB::SelectCommandPtr & i) {
-			i->forEachRow<int64_t, int64_t, std::string, std::string, std::string, std::string>([](auto a, auto b, auto c1, auto d1, auto c2, auto d2) {
-						fprintf(stderr, "== %ld %ld %s->%s %s->%s\n", a, b, c1.c_str(), c2.c_str(), d1.c_str(), d2.c_str());
-					});
-			};
+		i->forEachRow<int64_t, int64_t, std::string, std::string, std::string, std::string>(
+				[](auto a, auto b, auto c1, auto d1, auto c2, auto d2) {
+					fprintf(stderr, "== %ld %ld %s->%s %s->%s\n", a, b, c1.c_str(), c2.c_str(), d1.c_str(), d2.c_str());
+				});
+	};
 	tp.beforeInsert = [](const DB::SelectCommandPtr & i) {
-			i->forEachRow<int64_t, int64_t, std::string, std::string>([](auto a, auto b, auto c, auto d) {
-						fprintf(stderr, ">> %ld %ld %s %s\n", a, b, c.c_str(), d.c_str());
-					});
-			};
+		i->forEachRow<int64_t, int64_t, std::string, std::string>([](auto a, auto b, auto c, auto d) {
+			fprintf(stderr, ">> %ld %ld %s %s\n", a, b, c.c_str(), d.c_str());
+		});
+	};
 	db->beginTx();
 	auto r = db->patchTable(&tp);
 	db->commitTx();
@@ -151,7 +153,7 @@ BOOST_AUTO_TEST_CASE( testOrder )
 	BOOST_REQUIRE_EQUAL(1, r.updates);
 }
 
-BOOST_AUTO_TEST_CASE( testWhere )
+BOOST_AUTO_TEST_CASE(testWhere)
 {
 	Mock mock;
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
@@ -171,7 +173,7 @@ BOOST_AUTO_TEST_CASE( testWhere )
 	BOOST_REQUIRE_EQUAL(1, r.updates);
 }
 
-BOOST_AUTO_TEST_CASE( testInstead )
+BOOST_AUTO_TEST_CASE(testInstead)
 {
 	Mock mock;
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
@@ -191,7 +193,7 @@ BOOST_AUTO_TEST_CASE( testInstead )
 	BOOST_REQUIRE_EQUAL(1, r.updates);
 }
 
-BOOST_AUTO_TEST_CASE( testSrcExprTable )
+BOOST_AUTO_TEST_CASE(testSrcExprTable)
 {
 	Mock mock;
 	DB::StaticSqlWriter s("source");
@@ -210,7 +212,7 @@ BOOST_AUTO_TEST_CASE( testSrcExprTable )
 	BOOST_REQUIRE_EQUAL(1, r.updates);
 }
 
-BOOST_AUTO_TEST_CASE( testSrcExprSelectTable )
+BOOST_AUTO_TEST_CASE(testSrcExprSelectTable)
 {
 	Mock mock;
 	DB::StaticSqlWriter s("(SELECT * FROM source)");
@@ -230,22 +232,19 @@ BOOST_AUTO_TEST_CASE( testSrcExprSelectTable )
 }
 
 class BindInt : public DB::StaticSqlWriter {
-	public:
-		BindInt(const std::string & s, int i) :
-			DB::StaticSqlWriter(s),
-			myInt(i)
-		{
-		}
+public:
+	BindInt(const std::string & s, int i) : DB::StaticSqlWriter(s), myInt(i) { }
 
-		void bindParams(DB::Command * c, unsigned int & offset) override
-		{
-			c->bindParamI(offset++, myInt);
-		}
+	void
+	bindParams(DB::Command * c, unsigned int & offset) override
+	{
+		c->bindParamI(offset++, myInt);
+	}
 
-		int myInt;
+	int myInt;
 };
 
-BOOST_AUTO_TEST_CASE( testSrcExprSelectFilteredTable )
+BOOST_AUTO_TEST_CASE(testSrcExprSelectFilteredTable)
 {
 	Mock mock;
 	BindInt s("(SELECT s.* FROM source s WHERE s.a = ?)", 1);
@@ -263,4 +262,3 @@ BOOST_AUTO_TEST_CASE( testSrcExprSelectFilteredTable )
 	BOOST_REQUIRE_EQUAL(1, r.inserts);
 	BOOST_REQUIRE_EQUAL(1, r.updates);
 }
-

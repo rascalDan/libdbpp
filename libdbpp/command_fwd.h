@@ -1,9 +1,9 @@
 #ifndef DB_COMMAND_FWD_H
 #define DB_COMMAND_FWD_H
 
-#include <string>
 #include <map>
 #include <memory>
+#include <string>
 
 namespace DB {
 	using CommandOptionsMap = std::map<std::string, std::string, std::less<>>;
@@ -18,6 +18,4 @@ namespace DB {
 	using SelectCommandPtr = std::shared_ptr<SelectCommand>;
 }
 
-
 #endif
-

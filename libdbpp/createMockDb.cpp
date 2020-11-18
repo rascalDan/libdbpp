@@ -1,15 +1,19 @@
-#include <iostream>
-#include <boost/program_options.hpp>
-#include <filesystem>
-#include <csignal>
 #include "mockDatabase.h"
+#include <boost/program_options.hpp>
+#include <csignal>
+#include <filesystem>
+#include <iostream>
 
 namespace po = boost::program_options;
 namespace fs = std::filesystem;
 
-void emptyHandler(int) { }
+void
+emptyHandler(int)
+{
+}
 
-void createFailHandler()
+void
+createFailHandler()
 {
 	try {
 		if (auto eptr = std::current_exception()) {
@@ -30,6 +34,7 @@ main(int argc, char ** argv)
 	std::string connector, master, database;
 	bool drop;
 
+	// clang-format off
 	opts.add_options()
 		("help,h", "Show this help message")
 		("drop,X", po::bool_switch(&drop)->default_value(false), "Drop immediately after creation (don't wait for signal)")
@@ -38,6 +43,7 @@ main(int argc, char ** argv)
 		("master,m", po::value(&master), "Master connection string")
 		("database,d", po::value(&database)->default_value("mock"), "Database name prefix to use")
 		;
+	// clang-format on
 
 	po::positional_options_description p;
 	p.add("script", -1);
@@ -70,4 +76,3 @@ main(int argc, char ** argv)
 	std::cout << " done." << std::endl;
 	return 0;
 }
-

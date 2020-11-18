@@ -1,10 +1,10 @@
 #include "selectcommand.h"
 #include "error.h"
-#include <boost/multi_index_container.hpp>
-#include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index/indexed_by.hpp>
-#include <boost/multi_index/member.hpp>
 #include <boost/multi_index/mem_fun.hpp>
+#include <boost/multi_index/member.hpp>
+#include <boost/multi_index/ordered_index.hpp>
+#include <boost/multi_index_container.hpp>
 #include <compileTimeFormatter.h>
 
 namespace DB {
@@ -26,22 +26,20 @@ namespace DB {
 		return ColumnDoesNotExistMsg::get(colName);
 	}
 
-	using ColumnsBase = boost::multi_index_container<ColumnPtr, boost::multi_index::indexed_by<
-		boost::multi_index::ordered_unique<boost::multi_index::member<DB::Column, const unsigned int, &DB::Column::colNo>>,
-		boost::multi_index::ordered_unique<boost::multi_index::member<DB::Column, const std::string, &DB::Column::name>>
-						>>;
-	class SelectCommand::Columns : public ColumnsBase { };
+	using ColumnsBase = boost::multi_index_container<ColumnPtr,
+			boost::multi_index::indexed_by<boost::multi_index::ordered_unique<boost::multi_index::member<DB::Column,
+												   const unsigned int, &DB::Column::colNo>>,
+					boost::multi_index::ordered_unique<
+							boost::multi_index::member<DB::Column, const std::string, &DB::Column::name>>>>;
+	class SelectCommand::Columns : public ColumnsBase {
+	};
 };
 
-DB::SelectCommand::SelectCommand(const std::string & sql) :
-	DB::Command(sql),
-	columns(std::make_unique<Columns>())
-{
-}
+DB::SelectCommand::SelectCommand(const std::string & sql) : DB::Command(sql), columns(std::make_unique<Columns>()) { }
 
 DB::SelectCommand::~SelectCommand() = default;
 
-const DB::Column&
+const DB::Column &
 DB::SelectCommand::operator[](unsigned int n) const
 {
 	if (n < columns->size()) {
@@ -50,11 +48,10 @@ DB::SelectCommand::operator[](unsigned int n) const
 	throw ColumnIndexOutOfRange(n);
 }
 
-const DB::Column&
+const DB::Column &
 DB::SelectCommand::operator[](const Glib::ustring & n) const
 {
-	if (auto i = columns->get<1>().find(n.collate_key());
-			i != columns->get<1>().end()) {
+	if (auto i = columns->get<1>().find(n.collate_key()); i != columns->get<1>().end()) {
 		return **i;
 	}
 	throw ColumnDoesNotExist(n);
@@ -78,20 +75,16 @@ DB::SelectCommand::insertColumn(ColumnPtr col)
 	return *columns->insert(std::move(col)).first;
 }
 
-DB::RowBase::RowBase(SelectCommand * s) :
-	sel(s)
-{
-}
+DB::RowBase::RowBase(SelectCommand * s) : sel(s) { }
 
-const DB::Column&
+const DB::Column &
 DB::RowBase::operator[](const Glib::ustring & n) const
 {
 	return sel->operator[](n);
 }
 
-const DB::Column&
+const DB::Column &
 DB::RowBase::operator[](unsigned int col) const
 {
 	return sel->operator[](col);
 }
-

@@ -5,15 +5,10 @@ template class AdHoc::ResourcePool<DB::Connection>;
 template class AdHoc::ResourceHandle<DB::Connection>;
 
 namespace DB {
-	BasicConnectionPool::BasicConnectionPool(unsigned int m, unsigned int k) :
-		ResourcePool<Connection>(m, k)
-	{
-	}
+	BasicConnectionPool::BasicConnectionPool(unsigned int m, unsigned int k) : ResourcePool<Connection>(m, k) { }
 
 	ConnectionPool::ConnectionPool(unsigned int m, unsigned int k, const std::string & t, std::string cs) :
-		BasicConnectionPool(m, k),
-		factory(ConnectionFactory::get(t)),
-		connectionString(std::move(cs))
+		BasicConnectionPool(m, k), factory(ConnectionFactory::get(t)), connectionString(std::move(cs))
 	{
 	}
 
@@ -35,4 +30,3 @@ namespace DB {
 		c->ping();
 	}
 }
-

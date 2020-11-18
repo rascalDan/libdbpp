@@ -10,4 +10,3 @@ namespace DB {
 }
 
 #endif
-

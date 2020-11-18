@@ -2,9 +2,7 @@
 
 // LCOV_EXCL_START
 
-MockDb::MockDb(const std::string &)
-{
-}
+MockDb::MockDb(const std::string &) { }
 
 void
 MockDb::beginTxInt()
@@ -22,7 +20,6 @@ MockDb::rollbackTxInt()
 void
 MockDb::ping() const
 {
-
 }
 
 DB::BulkDeleteStyle
@@ -85,4 +82,3 @@ FACTORY(MockMock, DB::MockDatabaseFactory);
 FACTORY(MockDb, DB::ConnectionFactory);
 
 // LCOV_EXCL_STOP
-

@@ -1,16 +1,13 @@
 #include "connection.h"
+#include "error.h"
 #include "modifycommand.h"
 #include "selectcommand.h"
-#include "error.h"
-#include <factory.impl.h>
 #include <compileTimeFormatter.h>
+#include <factory.impl.h>
 #include <sqlParse.h>
 #include <system_error>
 
-DB::ConnectionError::ConnectionError() :
-	FailureTime(time(nullptr))
-{
-}
+DB::ConnectionError::ConnectionError() : FailureTime(time(nullptr)) { }
 
 std::string
 DB::TransactionStillOpen::message() const noexcept
@@ -135,7 +132,7 @@ DB::Connection::bulkUploadData(std::istream & in) const
 	}
 	std::array<char, BUFSIZ> buf {};
 	size_t total = 0;
-	for (std::streamsize r; (r = in.readsome(buf.data(), buf.size())) > 0; ) {
+	for (std::streamsize r; (r = in.readsome(buf.data(), buf.size())) > 0;) {
 		bulkUploadData(buf.data(), r);
 		total += r;
 	}
@@ -158,7 +155,6 @@ DB::Connection::bulkUploadData(FILE * in) const
 		throw std::system_error(-r, std::system_category());
 	}
 	return total;
-
 }
 
 AdHocFormatter(PluginLibraryFormat, "libdbpp-%?.so");
@@ -180,8 +176,7 @@ DB::TransactionRequired::message() const noexcept
 	return "A transaction must be opened before performing this operation";
 }
 
-DB::TransactionScope::TransactionScope(DB::Connection & c) :
-	conn(&c)
+DB::TransactionScope::TransactionScope(DB::Connection & c) : conn(&c)
 {
 	conn->beginTx();
 }
@@ -205,4 +200,3 @@ DB::TransactionScope::~TransactionScope() noexcept
 
 INSTANTIATEFACTORY(DB::Connection, std::string);
 PLUGINRESOLVER(DB::ConnectionFactory, DB::Connection::resolvePlugin);
-

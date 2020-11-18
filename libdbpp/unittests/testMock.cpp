@@ -1,20 +1,18 @@
 #define BOOST_TEST_MODULE DbMock
 #include <boost/test/unit_test.hpp>
 
-#include <definedDirs.h>
-#include <fstream>
 #include "../error.h"
 #include "../mockDatabase.h"
 #include "mockdb.h"
+#include <definedDirs.h>
+#include <fstream>
 
-BOOST_AUTO_TEST_CASE( noFactory )
+BOOST_AUTO_TEST_CASE(noFactory)
 {
-	BOOST_REQUIRE_THROW({
-		(void)DB::MockDatabaseFactory::get("not-found");
-	}, AdHoc::LoadLibraryException);
+	BOOST_REQUIRE_THROW({ (void)DB::MockDatabaseFactory::get("not-found"); }, AdHoc::LoadLibraryException);
 }
 
-BOOST_AUTO_TEST_CASE( mockFactory )
+BOOST_AUTO_TEST_CASE(mockFactory)
 {
 	auto f = DB::MockDatabaseFactory::get("MockMock");
 	BOOST_REQUIRE(f);
@@ -26,19 +24,22 @@ BOOST_AUTO_TEST_CASE( mockFactory )
 	BOOST_REQUIRE_EQUAL(typeid(MockDb), typeid(cr));
 }
 
-BOOST_AUTO_TEST_CASE( missingMock )
+BOOST_AUTO_TEST_CASE(missingMock)
 {
-	BOOST_REQUIRE_THROW({
-		(void)DB::MockDatabaseFactory::createNew("MockMock",
-				"user=postgres dbname=postgres", typeid(this).name(), { rootDir / "missing.sql" });
-	}, std::fstream::failure);
+	BOOST_REQUIRE_THROW(
+			{
+				(void)DB::MockDatabaseFactory::createNew(
+						"MockMock", "user=postgres dbname=postgres", typeid(this).name(), {rootDir / "missing.sql"});
+			},
+			std::fstream::failure);
 }
 
-BOOST_AUTO_TEST_CASE( failingMock )
+BOOST_AUTO_TEST_CASE(failingMock)
 {
-	BOOST_REQUIRE_THROW({
-		(void)DB::MockDatabaseFactory::createNew("MockMock",
-				"user=postgres dbname=postgres", typeid(this).name(), { rootDir / "badMock.sql" });
-	}, DB::Error);
+	BOOST_REQUIRE_THROW(
+			{
+				(void)DB::MockDatabaseFactory::createNew(
+						"MockMock", "user=postgres dbname=postgres", typeid(this).name(), {rootDir / "badMock.sql"});
+			},
+			DB::Error);
 }
-

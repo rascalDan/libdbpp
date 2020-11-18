@@ -1,17 +1,17 @@
 #define BOOST_TEST_MODULE DbConnection
 #include <boost/test/unit_test.hpp>
 
-#include <factory.h>
-#include <connection.h>
-#include <pq-command.h>
-#include <definedDirs.h>
-#include <fstream>
-#include <vector>
-#include <error.h>
-#include <sqlParse.h>
 #include "mockdb.h"
+#include <connection.h>
+#include <definedDirs.h>
+#include <error.h>
+#include <factory.h>
+#include <fstream>
+#include <pq-command.h>
+#include <sqlParse.h>
+#include <vector>
 
-BOOST_AUTO_TEST_CASE( create )
+BOOST_AUTO_TEST_CASE(create)
 {
 	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
 	BOOST_REQUIRE(mock);
@@ -20,17 +20,16 @@ BOOST_AUTO_TEST_CASE( create )
 	BOOST_REQUIRE(!mock->select(""));
 }
 
-BOOST_AUTO_TEST_CASE( resolve )
+BOOST_AUTO_TEST_CASE(resolve)
 {
 	auto libname = DB::Connection::resolvePlugin(typeid(DB::Connection), "postgresql");
 	BOOST_REQUIRE(libname);
 	BOOST_REQUIRE_EQUAL("libdbpp-postgresql.so", *libname);
 	BOOST_REQUIRE_THROW(
-			(void)DB::ConnectionFactory::createNew("otherdb", "doesn't matter"),
-			AdHoc::LoadLibraryException);
+			(void)DB::ConnectionFactory::createNew("otherdb", "doesn't matter"), AdHoc::LoadLibraryException);
 }
 
-BOOST_AUTO_TEST_CASE( finish )
+BOOST_AUTO_TEST_CASE(finish)
 {
 	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
 	BOOST_REQUIRE(mock);
@@ -45,7 +44,7 @@ BOOST_AUTO_TEST_CASE( finish )
 	mock->finish();
 }
 
-BOOST_AUTO_TEST_CASE( tx )
+BOOST_AUTO_TEST_CASE(tx)
 {
 	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
 	BOOST_REQUIRE(mock);
@@ -64,7 +63,7 @@ BOOST_AUTO_TEST_CASE( tx )
 	BOOST_REQUIRE_EQUAL(false, mock->inTx());
 }
 
-BOOST_AUTO_TEST_CASE( txscope )
+BOOST_AUTO_TEST_CASE(txscope)
 {
 	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
 	BOOST_REQUIRE(mock);
@@ -84,7 +83,7 @@ BOOST_AUTO_TEST_CASE( txscope )
 	}
 }
 
-BOOST_AUTO_TEST_CASE( savepoints )
+BOOST_AUTO_TEST_CASE(savepoints)
 {
 	auto mock = DB::ConnectionFactory::createNew("MockDb", "doesn't matter");
 	auto mockdb = std::dynamic_pointer_cast<MockDb>(mock);
@@ -101,7 +100,7 @@ BOOST_AUTO_TEST_CASE( savepoints )
 	BOOST_REQUIRE_EQUAL("ROLLBACK TO SAVEPOINT sp1", *mockdb->executed.rbegin());
 }
 
-BOOST_AUTO_TEST_CASE( commandOptions )
+BOOST_AUTO_TEST_CASE(commandOptions)
 {
 	auto optsDefault = DB::CommandOptionsFactory::createNew("", 1234, {});
 	BOOST_REQUIRE(optsDefault);
@@ -109,12 +108,9 @@ BOOST_AUTO_TEST_CASE( commandOptions )
 	BOOST_REQUIRE_EQUAL(1234, *optsDefault->hash);
 }
 
-BOOST_AUTO_TEST_CASE( commandOptionsPq1 )
+BOOST_AUTO_TEST_CASE(commandOptionsPq1)
 {
-	auto optsBase = DB::CommandOptionsFactory::createNew("postgresql", 12345, {
-		{"no-cursor", ""},
-		{"page-size", "5"}
-	});
+	auto optsBase = DB::CommandOptionsFactory::createNew("postgresql", 12345, {{"no-cursor", ""}, {"page-size", "5"}});
 	BOOST_REQUIRE(optsBase);
 	auto optsPq = std::dynamic_pointer_cast<PQ::CommandOptions>(optsBase);
 	BOOST_REQUIRE(optsPq);
@@ -124,11 +120,9 @@ BOOST_AUTO_TEST_CASE( commandOptionsPq1 )
 	BOOST_REQUIRE_EQUAL(5, optsPq->fetchTuples);
 }
 
-BOOST_AUTO_TEST_CASE( commandOptionsPq2 )
+BOOST_AUTO_TEST_CASE(commandOptionsPq2)
 {
-	auto optsBase = DB::CommandOptionsFactory::createNew("postgresql", 123456, {
-		{"page-size", "50"}
-	});
+	auto optsBase = DB::CommandOptionsFactory::createNew("postgresql", 123456, {{"page-size", "50"}});
 	BOOST_REQUIRE(optsBase);
 	auto optsPq = std::dynamic_pointer_cast<PQ::CommandOptions>(optsBase);
 	BOOST_REQUIRE(optsPq);
@@ -137,4 +131,3 @@ BOOST_AUTO_TEST_CASE( commandOptionsPq2 )
 	BOOST_REQUIRE(optsPq->useCursor);
 	BOOST_REQUIRE_EQUAL(50, optsPq->fetchTuples);
 }
-

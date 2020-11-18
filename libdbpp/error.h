@@ -20,27 +20,27 @@ namespace DB {
 
 	/// Exception thrown on an attempt to convert betweem incompatible types.
 	class DLL_PUBLIC InvalidConversion : public AdHoc::Exception<Error> {
-		public:
-			/// Create a new InvalidConversion exception with the names of the conversion types.
-			/// @param from Source type
-			/// @param to Destination type
-			InvalidConversion(const char * const from, const char * const to);
+	public:
+		/// Create a new InvalidConversion exception with the names of the conversion types.
+		/// @param from Source type
+		/// @param to Destination type
+		InvalidConversion(const char * const from, const char * const to);
 
-		private:
-			std::string message() const noexcept override;
-			const std::string from;
-			const std::string to;
+	private:
+		std::string message() const noexcept override;
+		const std::string from;
+		const std::string to;
 	};
 
 	/// Exception thrown when a null value occurs when reading into a non-optional value.
 	class DLL_PUBLIC UnexpectedNullValue : public AdHoc::Exception<Error> {
-		public:
-			/// Create a new UnexpectedNullValue given the source type name.
-			explicit UnexpectedNullValue(const char * const from);
+	public:
+		/// Create a new UnexpectedNullValue given the source type name.
+		explicit UnexpectedNullValue(const char * const from);
 
-		private:
-			std::string message() const noexcept override;
-			const char * to;
+	private:
+		std::string message() const noexcept override;
+		const char * to;
 	};
 }
 

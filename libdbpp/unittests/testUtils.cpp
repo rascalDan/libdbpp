@@ -1,29 +1,28 @@
 #define BOOST_TEST_MODULE DbUtil
 #include <boost/test/unit_test.hpp>
 
-#include <connection.h>
-#include <selectcommand.h>
-#include <modifycommand.h>
-#include <selectcommandUtil.impl.h>
-#include <definedDirs.h>
-#include <fstream>
-#include <pq-mock.h>
-#include <boost/date_time/posix_time/posix_time_io.hpp>
 #include <IceUtil/Exception.h>
 #include <IceUtil/Optional.h>
+#include <boost/date_time/posix_time/posix_time_io.hpp>
+#include <connection.h>
+#include <definedDirs.h>
+#include <fstream>
+#include <modifycommand.h>
+#include <pq-mock.h>
+#include <selectcommand.h>
+#include <selectcommandUtil.impl.h>
 #include <testCore.h>
 
 class StandardMockDatabase : public DB::PluginMock<PQ::Mock> {
-	public:
-		StandardMockDatabase() : DB::PluginMock<PQ::Mock>("pqmock", {
-				rootDir / "util.sql" }, "user=postgres dbname=postgres")
-		{
-		}
+public:
+	StandardMockDatabase() : DB::PluginMock<PQ::Mock>("pqmock", {rootDir / "util.sql"}, "user=postgres dbname=postgres")
+	{
+	}
 };
 
-BOOST_GLOBAL_FIXTURE( StandardMockDatabase );
+BOOST_GLOBAL_FIXTURE(StandardMockDatabase);
 
-BOOST_AUTO_TEST_CASE( forEachRow )
+BOOST_AUTO_TEST_CASE(forEachRow)
 {
 	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	auto sel = db->select("SELECT a, b, c, d, e, f FROM forEachRow ORDER BY a LIMIT 1");
@@ -32,17 +31,18 @@ BOOST_AUTO_TEST_CASE( forEachRow )
 				BOOST_REQUIRE_EQUAL(1, a);
 				BOOST_REQUIRE_CLOSE(4.3, b, 0.001);
 				BOOST_REQUIRE_EQUAL("Some text", c);
-				BOOST_REQUIRE_EQUAL(boost::posix_time::ptime_from_tm({ 17, 39, 13, 7, 10, 115, 0, 0, 0, 0, nullptr}), d);
+				BOOST_REQUIRE_EQUAL(boost::posix_time::ptime_from_tm({17, 39, 13, 7, 10, 115, 0, 0, 0, 0, nullptr}), d);
 				BOOST_REQUIRE_EQUAL(boost::posix_time::time_duration(4, 3, 2), e);
 				BOOST_REQUIRE_EQUAL(true, f);
 			});
 }
 
-BOOST_AUTO_TEST_CASE( forEachRowNulls )
+BOOST_AUTO_TEST_CASE(forEachRowNulls)
 {
 	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	auto sel = db->select("SELECT a, b, c, d, e, f FROM forEachRow ORDER BY a DESC LIMIT 1");
-	sel->forEachRow<int64_t, std::optional<double>, std::string, std::optional<boost::posix_time::ptime>, std::optional<boost::posix_time::time_duration>, bool>(
+	sel->forEachRow<int64_t, std::optional<double>, std::string, std::optional<boost::posix_time::ptime>,
+			std::optional<boost::posix_time::time_duration>, bool>(
 			[](auto && a, auto b, auto c, auto d, auto && e, auto f) {
 				BOOST_REQUIRE_EQUAL(2, a);
 				BOOST_REQUIRE(b);
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE( forEachRowNulls )
 			});
 }
 
-BOOST_AUTO_TEST_CASE( stdforOverRows )
+BOOST_AUTO_TEST_CASE(stdforOverRows)
 {
 	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	unsigned int count = 0;
@@ -75,14 +75,14 @@ BOOST_AUTO_TEST_CASE( stdforOverRows )
 	BOOST_REQUIRE_EQUAL(totalOfc, "Some textSome text");
 }
 
-BOOST_AUTO_TEST_CASE( stdforOverRowsStructuredBinding )
+BOOST_AUTO_TEST_CASE(stdforOverRowsStructuredBinding)
 {
 	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	unsigned int count = 0;
 	int64_t totalOfa = 0;
 	std::string totalOfc;
 	auto sel = db->select("SELECT a, c FROM forEachRow ORDER BY a DESC");
-	for (const auto [ a, c ] : sel->as<int64_t, std::string_view>()) {
+	for (const auto [a, c] : sel->as<int64_t, std::string_view>()) {
 		count += 1;
 		totalOfa += a;
 		totalOfc += c;
@@ -92,14 +92,14 @@ BOOST_AUTO_TEST_CASE( stdforOverRowsStructuredBinding )
 	BOOST_REQUIRE_EQUAL(totalOfc, "Some textSome text");
 }
 
-BOOST_AUTO_TEST_CASE( stdforOverRowsStructuredBindingOptional )
+BOOST_AUTO_TEST_CASE(stdforOverRowsStructuredBindingOptional)
 {
 	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	unsigned int count = 0;
 	int64_t totalOfa = 0;
 	std::string totalOfc;
 	auto sel = db->select("SELECT a, c FROM forEachRow ORDER BY a DESC");
-	for (const auto [ a, c ] : sel->as<std::optional<int64_t>, std::optional<std::string>>()) {
+	for (const auto [a, c] : sel->as<std::optional<int64_t>, std::optional<std::string>>()) {
 		count += 1;
 		BOOST_REQUIRE(a);
 		totalOfa += *a;
@@ -111,13 +111,13 @@ BOOST_AUTO_TEST_CASE( stdforOverRowsStructuredBindingOptional )
 	BOOST_REQUIRE_EQUAL(totalOfc, "Some textSome text");
 }
 
-BOOST_AUTO_TEST_CASE( execute )
+BOOST_AUTO_TEST_CASE(execute)
 {
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
 	db->execute("UPDATE forEachRow SET a = 2");
 }
 
-BOOST_AUTO_TEST_CASE( columns )
+BOOST_AUTO_TEST_CASE(columns)
 {
 	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	auto sel = db->select("SELECT a, b, c, d, e FROM forEachRow ORDER BY a LIMIT 1");
@@ -136,7 +136,7 @@ BOOST_AUTO_TEST_CASE( columns )
 	BOOST_REQUIRE_THROW((void)(*sel)[""], DB::ColumnDoesNotExist);
 }
 
-BOOST_AUTO_TEST_CASE( extract )
+BOOST_AUTO_TEST_CASE(extract)
 {
 	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	auto sel = db->select("SELECT a, b, c FROM forEachRow WHERE f");
@@ -164,7 +164,7 @@ BOOST_AUTO_TEST_CASE( extract )
 	BOOST_REQUIRE(!sel->fetch());
 }
 
-BOOST_AUTO_TEST_CASE( bulkLoadStream )
+BOOST_AUTO_TEST_CASE(bulkLoadStream)
 {
 	std::ifstream in(rootDir / "source.dat");
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
@@ -172,11 +172,11 @@ BOOST_AUTO_TEST_CASE( bulkLoadStream )
 	BOOST_REQUIRE_EQUAL(56, db->bulkUploadData(in));
 	db->endBulkUpload(nullptr);
 	db->select("SELECT COUNT(*) FROM bulk1")->forEachRow<int64_t>([](auto n) {
-			BOOST_REQUIRE_EQUAL(4, n);
-		});
+		BOOST_REQUIRE_EQUAL(4, n);
+	});
 }
 
-BOOST_AUTO_TEST_CASE( bulkLoadFile )
+BOOST_AUTO_TEST_CASE(bulkLoadFile)
 {
 	auto f = fopen((rootDir / "source.dat").c_str(), "r");
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
@@ -185,12 +185,12 @@ BOOST_AUTO_TEST_CASE( bulkLoadFile )
 	db->endBulkUpload(nullptr);
 	fclose(f);
 	db->select("SELECT COUNT(*) FROM bulk2")->forEachRow<int64_t>([](auto n) {
-			BOOST_REQUIRE_EQUAL(4, n);
-		});
+		BOOST_REQUIRE_EQUAL(4, n);
+	});
 }
 
 using StringTypes = boost::mpl::list<std::string, std::string_view, Glib::ustring>;
-BOOST_AUTO_TEST_CASE_TEMPLATE( nullBind, Str, StringTypes )
+BOOST_AUTO_TEST_CASE_TEMPLATE(nullBind, Str, StringTypes)
 {
 	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	db->execute("DELETE FROM forEachRow");
@@ -202,7 +202,8 @@ BOOST_AUTO_TEST_CASE_TEMPLATE( nullBind, Str, StringTypes )
 	ins->bindParamT(4, std::optional<boost::posix_time::time_duration>());
 	ins->bindParamB(5, std::optional<bool>());
 	ins->execute();
-	auto sel = db->select("SELECT a, b, c, d, e, f FROM forEachRow WHERE a IS NULL AND b IS NULL AND c IS NULL AND d IS NULL AND e IS NULL AND f IS NULL");
+	auto sel = db->select("SELECT a, b, c, d, e, f FROM forEachRow WHERE a IS NULL AND b IS NULL AND c IS NULL AND d "
+						  "IS NULL AND e IS NULL AND f IS NULL");
 	unsigned int count = 0;
 	for (const auto & row : sel->as<int, std::optional<double>, Str>()) {
 		count += 1;
@@ -214,7 +215,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE( nullBind, Str, StringTypes )
 	BOOST_REQUIRE_EQUAL(1, count);
 }
 
-BOOST_AUTO_TEST_CASE( iceNullBind )
+BOOST_AUTO_TEST_CASE(iceNullBind)
 {
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
 	auto ins = db->modify("INSERT INTO forEachRow VALUES(?, ?, ?, ?, ?, ?)");
@@ -225,7 +226,8 @@ BOOST_AUTO_TEST_CASE( iceNullBind )
 	ins->bindParamT(4, IceUtil::Optional<boost::posix_time::time_duration>());
 	ins->bindParamB(5, IceUtil::Optional<bool>());
 	ins->execute();
-	auto sel = db->select("SELECT a, b, c, d, e, f FROM forEachRow WHERE a IS NULL AND b IS NULL AND c IS NULL AND d IS NULL AND e IS NULL AND f IS NULL");
+	auto sel = db->select("SELECT a, b, c, d, e, f FROM forEachRow WHERE a IS NULL AND b IS NULL AND c IS NULL AND d "
+						  "IS NULL AND e IS NULL AND f IS NULL");
 	unsigned int count = 0;
 	for (const auto & row : sel->as<>()) {
 		(void)row;
@@ -234,7 +236,7 @@ BOOST_AUTO_TEST_CASE( iceNullBind )
 	BOOST_REQUIRE_EQUAL(2, count);
 }
 
-BOOST_AUTO_TEST_CASE( charStarBindNull )
+BOOST_AUTO_TEST_CASE(charStarBindNull)
 {
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
 	db->modify("DELETE FROM forEachRow")->execute();
@@ -261,7 +263,7 @@ BOOST_AUTO_TEST_CASE( charStarBindNull )
 	}
 }
 
-BOOST_AUTO_TEST_CASE( bind )
+BOOST_AUTO_TEST_CASE(bind)
 {
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
 	auto m = db->modify("doesn't matter, only testing compile");
@@ -270,7 +272,7 @@ BOOST_AUTO_TEST_CASE( bind )
 	m->bindParamI(0, (time_t)1);
 }
 
-BOOST_AUTO_TEST_CASE( bindIntPtr )
+BOOST_AUTO_TEST_CASE(bindIntPtr)
 {
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
 	db->modify("DELETE FROM forEachRow")->execute();
@@ -301,7 +303,7 @@ BOOST_AUTO_TEST_CASE( bindIntPtr )
 	BOOST_REQUIRE_EQUAL(159, total);
 }
 
-BOOST_FIXTURE_TEST_CASE( traits_bind, DB::TestCore )
+BOOST_FIXTURE_TEST_CASE(traits_bind, DB::TestCore)
 {
 	using namespace std::literals;
 	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
@@ -356,14 +358,14 @@ BOOST_FIXTURE_TEST_CASE( traits_bind, DB::TestCore )
 	check(__LINE__, std::optional<DB::Blob>(testBlob), false, testBlob, cmd2);
 }
 
-BOOST_AUTO_TEST_CASE( testBlobRaw )
+BOOST_AUTO_TEST_CASE(testBlobRaw)
 {
 	DB::Blob ptr(this, 1);
 	BOOST_REQUIRE_EQUAL(ptr.data, this);
 	BOOST_REQUIRE_EQUAL(ptr.len, 1);
 }
 
-BOOST_AUTO_TEST_CASE( testBlobObject )
+BOOST_AUTO_TEST_CASE(testBlobObject)
 {
 	int32_t x = 20;
 	DB::Blob obj(&x);
@@ -371,7 +373,7 @@ BOOST_AUTO_TEST_CASE( testBlobObject )
 	BOOST_REQUIRE_EQUAL(obj.len, 4);
 }
 
-BOOST_AUTO_TEST_CASE( testBlobVec )
+BOOST_AUTO_TEST_CASE(testBlobVec)
 {
 	std::vector<uint8_t> buf(20, 0);
 	DB::Blob vec(buf);
@@ -385,15 +387,15 @@ struct S {
 };
 BOOST_STATIC_ASSERT(sizeof(S) == 16);
 
-BOOST_AUTO_TEST_CASE( testBlobStruct )
+BOOST_AUTO_TEST_CASE(testBlobStruct)
 {
-	S s = { 8, 4 };
+	S s = {8, 4};
 	DB::Blob str(&s);
 	BOOST_REQUIRE_EQUAL(str.data, &s);
 	BOOST_REQUIRE_EQUAL(str.len, 16);
 }
 
-BOOST_AUTO_TEST_CASE( testBlobVecStruct )
+BOOST_AUTO_TEST_CASE(testBlobVecStruct)
 {
 	std::vector<S> buf(20, {4, 8});
 	DB::Blob vec(buf);
@@ -401,7 +403,7 @@ BOOST_AUTO_TEST_CASE( testBlobVecStruct )
 	BOOST_REQUIRE_EQUAL(vec.len, 20 * 16);
 }
 
-BOOST_AUTO_TEST_CASE( testBlobCompare )
+BOOST_AUTO_TEST_CASE(testBlobCompare)
 {
 	std::vector<S> buf1(20, {4, 8});
 	DB::Blob vec1(buf1);
@@ -422,17 +424,21 @@ BOOST_AUTO_TEST_CASE( testBlobCompare )
 // These just compile time support, actual data extraction should be tested by the implementing connector.
 template<typename T>
 auto
-testExtractT(DB::Row<T> row) {
+testExtractT(DB::Row<T> row)
+{
 	return row.template value<0>();
 }
 
 template<typename T>
 void
-testExtractT(const DB::SelectCommandPtr & sel) {
+testExtractT(const DB::SelectCommandPtr & sel)
+{
 	// test default construct
 	T test;
 	(void)test;
-	for (const auto & row : sel->as<T>()) { testExtractT(row); }
+	for (const auto & row : sel->as<T>()) {
+		testExtractT(row);
+	}
 #ifdef __clang__
 	// Clang cannot compile this for reasons largely todo with ambiguousness in the spec
 	// Fixed when we move to std::chrono
@@ -440,11 +446,13 @@ testExtractT(const DB::SelectCommandPtr & sel) {
 #else
 	if constexpr (true) {
 #endif
-		for (const auto & row : sel->as<std::optional<T>>()) { testExtractT(row); }
+		for (const auto & row : sel->as<std::optional<T>>()) {
+			testExtractT(row);
+		}
 	}
 }
 
-BOOST_AUTO_TEST_CASE( testExtractTypes )
+BOOST_AUTO_TEST_CASE(testExtractTypes)
 {
 	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	auto sel = db->select("SELECT 1 FROM forEachRow LIMIT 0");
@@ -462,4 +470,3 @@ BOOST_AUTO_TEST_CASE( testExtractTypes )
 	testExtractT<boost::posix_time::time_duration>(sel);
 	testExtractT<DB::Blob>(sel);
 }
-

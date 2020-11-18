@@ -1,20 +1,21 @@
 #define BOOST_TEST_MODULE DbConnectionPool
 #include <boost/test/unit_test.hpp>
 
+#include <buffer.h>
 #include <connectionPool.h>
 #include <pq-mock.h>
-#include <buffer.h>
 
 class MockPool : public DB::PluginMock<PQ::Mock>, public DB::ConnectionPool {
-	public:
-		MockPool() :
-			PluginMock<PQ::Mock>("pqmock", { }, "user=postgres dbname=postgres"),
-			DB::ConnectionPool(4, 2, "postgresql", stringbf("user=postgres dbname=%s", databaseName()))
-		{
-		}
+public:
+	MockPool() :
+		PluginMock<PQ::Mock>("pqmock", {}, "user=postgres dbname=postgres"), DB::ConnectionPool(4, 2, "postgresql",
+																					 stringbf("user=postgres dbname=%s",
+																							 databaseName()))
+	{
+	}
 };
 
-BOOST_AUTO_TEST_CASE( basic )
+BOOST_AUTO_TEST_CASE(basic)
 {
 	MockPool pool;
 	DB::Connection * cr;
@@ -38,4 +39,3 @@ BOOST_AUTO_TEST_CASE( basic )
 	BOOST_REQUIRE_EQUAL(0, pool.inUseCount());
 	BOOST_REQUIRE_EQUAL(2, pool.availableCount());
 }
-
