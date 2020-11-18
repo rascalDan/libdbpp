@@ -65,7 +65,7 @@ main(int argc, char ** argv)
 
 	if (!drop) {
 		std::cout << "Done. ctrl+c to tear down and exit." << std::endl;
-		sigset(SIGINT, &emptyHandler);
+		signal(SIGINT, &emptyHandler);
 		pause();
 
 		std::cout << std::endl;
