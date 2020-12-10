@@ -32,7 +32,7 @@ main(int argc, char ** argv)
 	po::options_description opts("LibDB++ Create Mock Database Options");
 	std::vector<fs::path> scripts;
 	std::string connector, master, database;
-	bool drop;
+	bool drop {false};
 
 	// clang-format off
 	opts.add_options()
