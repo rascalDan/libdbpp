@@ -6,7 +6,7 @@
 
 class MockDb : public DB::Connection {
 public:
-	MockDb(const std::string &);
+	explicit MockDb(const std::string &);
 
 	void beginTxInt() override;
 	void commitTxInt() override;
