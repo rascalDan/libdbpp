@@ -14,13 +14,13 @@ BOOST_AUTO_TEST_CASE(noFactory)
 
 BOOST_AUTO_TEST_CASE(mockFactory)
 {
-	auto f = DB::MockDatabaseFactory::get("MockMock");
+	const auto f = DB::MockDatabaseFactory::get("MockMock");
 	BOOST_REQUIRE(f);
-	auto m = f->create("", typeid(this).name(), {});
+	const auto m = f->create("", typeid(this).name(), {});
 	BOOST_REQUIRE(m);
-	auto c = m->openConnection();
+	const auto c = m->openConnection();
 	BOOST_REQUIRE(c);
-	auto & cr = *c;
+	const auto & cr = *c;
 	BOOST_REQUIRE_EQUAL(typeid(MockDb), typeid(cr));
 }
 
