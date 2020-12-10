@@ -31,9 +31,13 @@ BOOST_AUTO_TEST_CASE(basic)
 	}
 	{
 		auto c1 = pool.get();
+		BOOST_REQUIRE(c1);
 		auto c2 = pool.get();
+		BOOST_REQUIRE(c2);
 		auto c3 = pool.get();
+		BOOST_REQUIRE(c3);
 		auto c4 = pool.get();
+		BOOST_REQUIRE(c4);
 		BOOST_REQUIRE_EQUAL(4, pool.inUseCount());
 	}
 	BOOST_REQUIRE_EQUAL(0, pool.inUseCount());
