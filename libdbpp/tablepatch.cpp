@@ -295,9 +295,8 @@ DB::Connection::patchUpdates(TablePatch * tp)
 			}
 			return upd->execute(true);
 		}
-		default:
-			return 0;
 	}
+	return 0;
 }
 
 static void
