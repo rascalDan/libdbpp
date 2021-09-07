@@ -15,6 +15,8 @@ namespace DB {
 	/// Abstract class for something that can handle field data. See Column::apply.
 	class DLL_PUBLIC HandleField {
 	public:
+		virtual ~HandleField() = default;
+
 		/// The field is null.
 		virtual void null() = 0;
 		/// The field contains text data.

@@ -14,6 +14,7 @@ project
 			<variant>release:<lto>on
 			<variant>debug:<warnings>extra
 			<variant>debug:<warnings-as-errors>on
+			<variant>debug:<cflags>-Wnon-virtual-dtor
 			<variant>coverage:<coverage>on
 			<toolset>tidy:<checkxx>boost-*
 			<toolset>tidy:<checkxx>bugprone-*
