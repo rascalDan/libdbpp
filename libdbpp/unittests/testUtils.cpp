@@ -189,7 +189,7 @@ BOOST_AUTO_TEST_CASE(bulkLoadFile)
 	});
 }
 
-using StringTypes = boost::mpl::list<std::string, std::string_view, Glib::ustring>;
+using StringTypes = std::tuple<std::string, std::string_view, Glib::ustring>;
 BOOST_AUTO_TEST_CASE_TEMPLATE(nullBind, Str, StringTypes)
 {
 	auto db = DB::MockDatabase::openConnectionTo("pqmock");
