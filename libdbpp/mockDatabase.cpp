@@ -7,10 +7,10 @@
 #include <modifycommand.h>
 #include <plugins.impl.h>
 
-INSTANTIATEPLUGINOF(DB::MockDatabase);
+INSTANTIATEPLUGINOF(DB::MockDatabase)
 INSTANTIATEFACTORY(
-		DB::MockDatabase, const std::string &, const std::string &, const std::vector<std::filesystem::path> &);
-PLUGINRESOLVER(DB::MockDatabaseFactory, DB::Connection::resolvePlugin);
+		DB::MockDatabase, const std::string &, const std::string &, const std::vector<std::filesystem::path> &)
+PLUGINRESOLVER(DB::MockDatabaseFactory, DB::Connection::resolvePlugin)
 
 namespace DB {
 
@@ -25,7 +25,7 @@ namespace DB {
 	void
 	MockDatabase::PlaySchemaScripts(const std::vector<std::filesystem::path> & ss) const
 	{
-		auto conn = ConnectionPtr(openConnection());
+		auto conn = openConnection();
 		try {
 			for (const auto & s : ss) {
 				conn->beginTx();

@@ -8,7 +8,14 @@
 #include <boost/lexical_cast.hpp>
 #include <c++11Helpers.h>
 #include <factory.h>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#ifndef __clang__
+#	pragma GCC diagnostic ignored "-Wuseless-cast"
+#endif
 #include <glibmm/ustring.h>
+#pragma GCC diagnostic pop
 #include <memory>
 #include <type_traits>
 #include <visibility.h>
@@ -173,12 +180,12 @@ namespace DB {
 			bindNull(i); \
 	}
 		/// @cond
-		OPTWRAPPER(bindParamI);
-		OPTWRAPPER(bindParamF);
+		OPTWRAPPER(bindParamI)
+		OPTWRAPPER(bindParamF)
 		// NOLINTNEXTLINE(hicpp-no-array-decay)
-		OPTWRAPPER(bindParamS);
-		OPTWRAPPER(bindParamB);
-		OPTWRAPPER(bindParamT);
+		OPTWRAPPER(bindParamS)
+		OPTWRAPPER(bindParamB)
+		OPTWRAPPER(bindParamT)
 		/// @endcond
 #undef OPTWRAPPER
 		/// Bind a (possibly null) c-string to parameter i.

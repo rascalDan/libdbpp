@@ -113,7 +113,7 @@ BOOST_AUTO_TEST_CASE(stdforOverRowsStructuredBindingOptional)
 
 BOOST_AUTO_TEST_CASE(execute)
 {
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	db->execute("UPDATE forEachRow SET a = 2");
 }
 
@@ -123,7 +123,6 @@ BOOST_AUTO_TEST_CASE(columns)
 	auto sel = db->select("SELECT a, b, c, d, e FROM forEachRow ORDER BY a LIMIT 1");
 	sel->execute();
 	BOOST_REQUIRE_THROW((void)(*sel)[5], DB::ColumnIndexOutOfRange);
-	BOOST_REQUIRE_THROW((void)(*sel)[-1], DB::ColumnIndexOutOfRange);
 	BOOST_REQUIRE_EQUAL(0, (*sel)[0].colNo);
 	BOOST_REQUIRE_EQUAL(4, (*sel)[4].colNo);
 	BOOST_REQUIRE_EQUAL("c", (*sel)[2].name);
@@ -167,7 +166,7 @@ BOOST_AUTO_TEST_CASE(extract)
 BOOST_AUTO_TEST_CASE(bulkLoadStream)
 {
 	std::ifstream in(rootDir / "source.dat");
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	db->beginBulkUpload("bulk1", "");
 	BOOST_REQUIRE_EQUAL(56, db->bulkUploadData(in));
 	db->endBulkUpload(nullptr);
@@ -179,7 +178,7 @@ BOOST_AUTO_TEST_CASE(bulkLoadStream)
 BOOST_AUTO_TEST_CASE(bulkLoadFile)
 {
 	auto f = fopen((rootDir / "source.dat").c_str(), "r");
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	db->beginBulkUpload("bulk2", "");
 	BOOST_REQUIRE_EQUAL(56, db->bulkUploadData(f));
 	db->endBulkUpload(nullptr);
@@ -217,7 +216,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(nullBind, Str, StringTypes)
 
 BOOST_AUTO_TEST_CASE(iceNullBind)
 {
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	auto ins = db->modify("INSERT INTO forEachRow VALUES(?, ?, ?, ?, ?, ?)");
 	ins->bindParamI(0, IceUtil::Optional<int>());
 	ins->bindParamF(1, IceUtil::Optional<double>());
@@ -238,7 +237,7 @@ BOOST_AUTO_TEST_CASE(iceNullBind)
 
 BOOST_AUTO_TEST_CASE(charStarBindNull)
 {
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	db->modify("DELETE FROM forEachRow")->execute();
 	auto ins = db->modify("INSERT INTO forEachRow(a, c) VALUES(?, ?)");
 	char * cs = nullptr;
@@ -265,16 +264,16 @@ BOOST_AUTO_TEST_CASE(charStarBindNull)
 
 BOOST_AUTO_TEST_CASE(bind)
 {
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	auto m = db->modify("doesn't matter, only testing compile");
-	m->bindParamI(0, (unsigned char)1);
-	m->bindParamI(0, (char)1);
-	m->bindParamI(0, (time_t)1);
+	m->bindParamI(0, static_cast<unsigned char>(1));
+	m->bindParamI(0, static_cast<char>(1));
+	m->bindParamI(0, static_cast<time_t>(1));
 }
 
 BOOST_AUTO_TEST_CASE(bindIntPtr)
 {
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	db->modify("DELETE FROM forEachRow")->execute();
 	auto ins = db->modify("INSERT INTO forEachRow(a, b) VALUES(?, ?)");
 	int * is = nullptr;
@@ -306,7 +305,7 @@ BOOST_AUTO_TEST_CASE(bindIntPtr)
 BOOST_FIXTURE_TEST_CASE(traits_bind, DB::TestCore)
 {
 	using namespace std::literals;
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	auto cmd = db->select("select x is null, format('%s', x) from (select ? x) d");
 	auto cmd2 = db->select("select x is null, x from (select ?::bytea x) d");
 	auto check = [](int line, const auto & v, bool isNull, const auto & testval, auto & cmd) {
@@ -323,12 +322,12 @@ BOOST_FIXTURE_TEST_CASE(traits_bind, DB::TestCore)
 	check(__LINE__, testInt, false, "43"sv, cmd);
 	check(__LINE__, std::make_unique<short>(testInt), false, "43"sv, cmd);
 	check(__LINE__, std::unique_ptr<short>(), true, ""sv, cmd);
-	check(__LINE__, (unsigned int)testInt, false, "43"sv, cmd);
+	check(__LINE__, static_cast<unsigned int>(testInt), false, "43"sv, cmd);
 	check(__LINE__, &testInt, false, "43"sv, cmd);
 	check(__LINE__, testDouble, false, "3.14"sv, cmd);
 	check(__LINE__, std::make_shared<float>(testDouble), false, "3.14"sv, cmd);
 	check(__LINE__, std::shared_ptr<float>(), true, ""sv, cmd);
-	check(__LINE__, (float)testDouble, false, "3.14"sv, cmd);
+	check(__LINE__, static_cast<float>(testDouble), false, "3.14"sv, cmd);
 	check(__LINE__, &testDouble, false, "3.14"sv, cmd);
 	check(__LINE__, testString, false, testString, cmd);
 	check(__LINE__, &testString, false, testString, cmd);

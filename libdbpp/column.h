@@ -6,7 +6,14 @@
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <c++11Helpers.h>
 #include <exception.h>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#ifndef __clang__
+#	pragma GCC diagnostic ignored "-Wuseless-cast"
+#endif
 #include <glibmm/ustring.h>
+#pragma GCC diagnostic pop
 #include <memory>
 #include <optional>
 #include <visibility.h>
@@ -41,7 +48,7 @@ namespace DB {
 	public:
 		/// Creates a new column with the given name and ordinal.
 		Column(const Glib::ustring &, unsigned int);
-		virtual ~Column() = 0;
+		virtual ~Column() = default;
 		/// Standard special members
 		SPECIAL_MEMBERS_MOVE_RO(Column);
 
@@ -123,7 +130,7 @@ namespace DB {
 						return;
 					}
 					if constexpr (std::is_convertible<T, D>::value) {
-						target = (T)v;
+						target = static_cast<T>(v);
 						return;
 					}
 				}

@@ -2,9 +2,9 @@
 #include "connection.h"
 #include <factory.impl.h>
 
-INSTANTIATEFACTORY(DB::CommandOptions, std::size_t, const DB::CommandOptionsMap &);
-NAMEDFACTORY("", DB::CommandOptions, DB::CommandOptionsFactory);
-PLUGINRESOLVER(DB::CommandOptionsFactory, DB::Connection::resolvePlugin);
+INSTANTIATEFACTORY(DB::CommandOptions, std::size_t, const DB::CommandOptionsMap &)
+NAMEDFACTORY("", DB::CommandOptions, DB::CommandOptionsFactory)
+PLUGINRESOLVER(DB::CommandOptionsFactory, DB::Connection::resolvePlugin)
 
 DB::Command::Command(std::string s) : sql(std::move(s)) { }
 

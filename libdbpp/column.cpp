@@ -7,14 +7,12 @@
 namespace DB {
 	Column::Column(const Glib::ustring & n, unsigned int i) : colNo(i), name(n.collate_key()) { }
 
-	Column::~Column() = default;
-
 	static std::string
 	demangle(const char * const mangled)
 	{
 		std::unique_ptr<char, decltype(&free)> r(abi::__cxa_demangle(mangled, nullptr, nullptr, nullptr), &free);
 		return &*r;
-	};
+	}
 
 	InvalidConversion::InvalidConversion(const char * const f, const char * const t) :
 		from(demangle(f)), to(demangle(t))
@@ -42,5 +40,4 @@ namespace DB {
 	{
 		throw DB::ColumnTypeNotSupported();
 	}
-
 }

@@ -286,7 +286,6 @@ DB::Connection::patchUpdates(TablePatch * tp)
 			// -----------------------------------------------------------------
 			auto upd = modify(updSql);
 			unsigned int offset = 0;
-			tp->where->bindParams(upd.get(), offset);
 			if (tp->where) {
 				tp->where->bindParams(upd.get(), offset);
 			}

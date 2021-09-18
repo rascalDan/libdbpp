@@ -10,9 +10,13 @@
 %{
 #include "sqlParse.h"
 #pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wconversion"
 #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
 #ifdef __clang__
 #pragma GCC diagnostic ignored "-Wnull-conversion"
+#else
+#pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif
 %}
 
@@ -68,7 +72,7 @@ scriptdir "$SCRIPTDIR"
 }
 
 <MCOMMENT><<EOF>> {
-	throw SqlParseException("Unterminated comment", yylineno);
+	throw SqlParseException("Unterminated comment", static_cast<unsigned int>(yylineno));
 }
 
 <LCOMMENT>{non_newline}* {
@@ -128,7 +132,7 @@ scriptdir "$SCRIPTDIR"
 }
 
 <DOLLARQUOTE><<EOF>> {
-	throw SqlParseException("Unterminated dollar quoted string", yylineno);
+	throw SqlParseException("Unterminated dollar quoted string", static_cast<unsigned int>(yylineno));
 }
 
 <QUOTE>{any} {
@@ -136,7 +140,7 @@ scriptdir "$SCRIPTDIR"
 }
 
 <QUOTE><<EOF>> {
-	throw SqlParseException("Unterminated quoted string", yylineno);
+	throw SqlParseException("Unterminated quoted string", static_cast<unsigned int>(yylineno));
 }
 
 <STATEMENT>{term} {

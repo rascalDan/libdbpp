@@ -78,7 +78,7 @@ MockMock::DropDatabase() const
 {
 }
 
-FACTORY(MockMock, DB::MockDatabaseFactory);
-FACTORY(MockDb, DB::ConnectionFactory);
+FACTORY(MockMock, DB::MockDatabaseFactory)
+FACTORY(MockDb, DB::ConnectionFactory)
 
 // LCOV_EXCL_STOP

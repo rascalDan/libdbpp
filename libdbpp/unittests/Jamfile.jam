@@ -1,5 +1,3 @@
-import testing ;
-
 import feature : feature ;
 
 path-constant me : . ;

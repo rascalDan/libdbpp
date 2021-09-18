@@ -1,4 +1,5 @@
 import os ;
+import testing ;
 
 using gcc : : [ os.environ CXX ] ;
 using pkg-config ;
@@ -15,6 +16,20 @@ project
 			<variant>debug:<warnings>extra
 			<variant>debug:<warnings-as-errors>on
 			<variant>debug:<cflags>-Wnon-virtual-dtor
+			<variant>debug:<cflags>-Wold-style-cast
+			<variant>debug:<cflags>-Wcast-align
+			<variant>debug:<cflags>-Wunused
+			<variant>debug:<cflags>-Woverloaded-virtual
+			<variant>debug:<cflags>-Wpedantic
+			<variant>debug:<cflags>-Wconversion
+			<variant>debug:<cflags>-Wsign-conversion
+			<variant>debug:<cflags>-Wnull-dereference
+			<variant>debug:<cflags>-Wdouble-promotion
+			<variant>debug:<cflags>-Wformat=2
+			<toolset>gcc,<variant>debug:<cflags>-Wduplicated-cond
+			<toolset>gcc,<variant>debug:<cflags>-Wduplicated-branches
+			<toolset>gcc,<variant>debug:<cflags>-Wlogical-op
+			<toolset>gcc,<variant>debug:<cflags>-Wuseless-cast
 			<variant>coverage:<coverage>on
 			<toolset>tidy:<checkxx>boost-*
 			<toolset>tidy:<checkxx>bugprone-*

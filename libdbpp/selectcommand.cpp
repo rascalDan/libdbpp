@@ -33,7 +33,7 @@ namespace DB {
 							boost::multi_index::member<DB::Column, const std::string, &DB::Column::name>>>>;
 	class SelectCommand::Columns : public ColumnsBase {
 	};
-};
+}
 
 DB::SelectCommand::SelectCommand(const std::string & sql) : DB::Command(sql), columns(std::make_unique<Columns>()) { }
 
@@ -66,7 +66,7 @@ DB::SelectCommand::getOrdinal(const Glib::ustring & n) const
 unsigned int
 DB::SelectCommand::columnCount() const
 {
-	return columns->size();
+	return static_cast<unsigned int>(columns->size());
 }
 
 const DB::ColumnPtr &

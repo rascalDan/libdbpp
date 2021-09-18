@@ -132,7 +132,7 @@ DB::Connection::bulkUploadData(std::istream & in) const
 	}
 	std::array<char, BUFSIZ> buf {};
 	size_t total = 0;
-	for (std::streamsize r; (r = in.readsome(buf.data(), buf.size())) > 0;) {
+	for (std::size_t r; (r = static_cast<std::size_t>(in.readsome(buf.data(), buf.size()))) > 0;) {
 		bulkUploadData(buf.data(), r);
 		total += r;
 	}
@@ -151,8 +151,8 @@ DB::Connection::bulkUploadData(FILE * in) const
 		bulkUploadData(buf.data(), r);
 		total += r;
 	}
-	if ((int)r < 0) {
-		throw std::system_error(-r, std::system_category());
+	if (-r > 0) {
+		throw std::system_error(static_cast<int>(-r), std::system_category());
 	}
 	return total;
 }
@@ -198,5 +198,5 @@ DB::TransactionScope::~TransactionScope() noexcept
 	}
 }
 
-INSTANTIATEFACTORY(DB::Connection, std::string);
-PLUGINRESOLVER(DB::ConnectionFactory, DB::Connection::resolvePlugin);
+INSTANTIATEFACTORY(DB::Connection, std::string)
+PLUGINRESOLVER(DB::ConnectionFactory, DB::Connection::resolvePlugin)

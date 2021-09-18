@@ -48,11 +48,11 @@ public:
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(mock, Mock);
+BOOST_FIXTURE_TEST_SUITE(mock, Mock)
 
 BOOST_AUTO_TEST_CASE(sanityFail)
 {
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	BOOST_REQUIRE(db);
 	DB::TablePatch tp;
 	tp.src = "source";
@@ -63,7 +63,7 @@ BOOST_AUTO_TEST_CASE(sanityFail)
 
 BOOST_AUTO_TEST_CASE(noTx)
 {
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	BOOST_REQUIRE(db);
 	DB::TablePatch tp;
 	tp.src = "source";
@@ -73,12 +73,12 @@ BOOST_AUTO_TEST_CASE(noTx)
 	BOOST_REQUIRE_THROW(db->patchTable(&tp), DB::TransactionRequired);
 }
 
-BOOST_AUTO_TEST_SUITE_END();
+BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_CASE(testBasic)
 {
 	Mock mock;
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	BOOST_REQUIRE(db);
 	DB::TablePatch tp;
 	tp.src = "source";
@@ -102,7 +102,7 @@ BOOST_AUTO_TEST_CASE(testBasic)
 BOOST_AUTO_TEST_CASE(allKeys)
 {
 	Mock mock;
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	BOOST_REQUIRE(db);
 	DB::TablePatch tp;
 	tp.src = "source";
@@ -120,7 +120,7 @@ BOOST_AUTO_TEST_CASE(allKeys)
 BOOST_AUTO_TEST_CASE(testOrder)
 {
 	Mock mock;
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	BOOST_REQUIRE(db);
 	DB::TablePatch tp;
 	OrderByA order;
@@ -156,7 +156,7 @@ BOOST_AUTO_TEST_CASE(testOrder)
 BOOST_AUTO_TEST_CASE(testWhere)
 {
 	Mock mock;
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	BOOST_REQUIRE(db);
 	DB::TablePatch tp;
 	WhereAequals1 where;
@@ -176,7 +176,7 @@ BOOST_AUTO_TEST_CASE(testWhere)
 BOOST_AUTO_TEST_CASE(testInstead)
 {
 	Mock mock;
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	BOOST_REQUIRE(db);
 	DB::TablePatch tp;
 	MarkDeleted mark;
@@ -197,7 +197,7 @@ BOOST_AUTO_TEST_CASE(testSrcExprTable)
 {
 	Mock mock;
 	DB::StaticSqlWriter s("source");
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	BOOST_REQUIRE(db);
 	DB::TablePatch tp;
 	tp.srcExpr = &s;
@@ -216,7 +216,7 @@ BOOST_AUTO_TEST_CASE(testSrcExprSelectTable)
 {
 	Mock mock;
 	DB::StaticSqlWriter s("(SELECT * FROM source)");
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	BOOST_REQUIRE(db);
 	DB::TablePatch tp;
 	tp.srcExpr = &s;
@@ -248,7 +248,7 @@ BOOST_AUTO_TEST_CASE(testSrcExprSelectFilteredTable)
 {
 	Mock mock;
 	BindInt s("(SELECT s.* FROM source s WHERE s.a = ?)", 1);
-	auto db = DB::ConnectionPtr(DB::MockDatabase::openConnectionTo("pqmock"));
+	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	BOOST_REQUIRE(db);
 	DB::TablePatch tp;
 	tp.srcExpr = &s;

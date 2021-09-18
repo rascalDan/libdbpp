@@ -10,7 +10,7 @@
 #include <vector>
 
 using SQLs = std::vector<std::string>;
-BOOST_TEST_SPECIALIZED_COLLECTION_COMPARE(SQLs);
+BOOST_TEST_SPECIALIZED_COLLECTION_COMPARE(SQLs)
 
 class RecordingParser : std::fstream, public DB::SqlParse {
 public:
