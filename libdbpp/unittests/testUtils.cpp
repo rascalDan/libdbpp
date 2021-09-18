@@ -139,6 +139,7 @@ BOOST_AUTO_TEST_CASE(extract)
 {
 	auto db = DB::MockDatabase::openConnectionTo("pqmock");
 	auto sel = db->select("SELECT a, b, c FROM forEachRow WHERE f");
+	// cppcheck-suppress assertWithSideEffect
 	BOOST_REQUIRE(sel->fetch());
 	int64_t lint;
 	double ldouble;
@@ -160,6 +161,7 @@ BOOST_AUTO_TEST_CASE(extract)
 	BOOST_REQUIRE_THROW((*sel)[2] >> ldouble, DB::InvalidConversion);
 	BOOST_REQUIRE_THROW((*sel)[1] >> lstring, DB::InvalidConversion);
 	BOOST_REQUIRE_THROW((*sel)[0] >> lstring, DB::InvalidConversion);
+	// cppcheck-suppress assertWithSideEffect
 	BOOST_REQUIRE(!sel->fetch());
 }
 

@@ -22,7 +22,9 @@ namespace DB {
 	/// Abstract class for something that can handle field data. See Column::apply.
 	class DLL_PUBLIC HandleField {
 	public:
+		HandleField() = default;
 		virtual ~HandleField() = default;
+		SPECIAL_MEMBERS_DEFAULT(HandleField);
 
 		/// The field is null.
 		virtual void null() = 0;

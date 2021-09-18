@@ -42,6 +42,8 @@ project
 			<toolset>tidy:<checkxx>hicpp-*
 			<toolset>tidy:<xcheckxx>hicpp-named-parameter
 			<toolset>tidy:<checkxx>performance-*
+			<toolset>tidy:<librarydef>boost
+			<toolset>tidy:<librarydef>std
 	;
 
 build-project libdbpp ;
