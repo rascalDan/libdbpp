@@ -1,14 +1,15 @@
 #define BOOST_TEST_MODULE DbConnection
 #include <boost/test/unit_test.hpp>
 
+#include "command.h"
+#include "command_fwd.h"
 #include "mockdb.h"
 #include <connection.h>
-#include <definedDirs.h>
-#include <error.h>
-#include <factory.h>
-#include <fstream>
+#include <exception>
+#include <factory.impl.h>
+#include <memory>
+#include <optional>
 #include <pq-command.h>
-#include <sqlParse.h>
 #include <vector>
 
 BOOST_AUTO_TEST_CASE(create)

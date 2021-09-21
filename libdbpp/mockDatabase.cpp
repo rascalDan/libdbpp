@@ -1,11 +1,11 @@
 #define BOOST_FILESYSTEM_DYN_LINK
 #define BOOST_FILESYSTEM_SOURCE
 #include "mockDatabase.h"
+#include "connection.h"
 #include <compileTimeFormatter.h>
 #include <factory.impl.h>
-#include <fstream>
-#include <modifycommand.h>
-#include <plugins.impl.h>
+#include <fstream> // IWYU pragma: keep
+#include <unistd.h>
 
 INSTANTIATEPLUGINOF(DB::MockDatabase)
 INSTANTIATEFACTORY(

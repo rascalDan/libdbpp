@@ -1,8 +1,18 @@
 #include "mockDatabase.h"
+#include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
+#include <chrono>
 #include <csignal>
+#include <cstdlib>
+#include <exception>
+#include <factory.impl.h>
 #include <filesystem>
 #include <iostream>
+#include <memory>
+#include <string>
+#include <unistd.h>
+#include <vector>
+// IWYU pragma: no_include <boost/detail/basic_pointerbuf.hpp>
 
 namespace po = boost::program_options;
 namespace fs = std::filesystem;

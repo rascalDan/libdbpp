@@ -1,13 +1,11 @@
 #ifndef TABLEPATCH_H
 #define TABLEPATCH_H
 
-#include <connection.h>
+#include "command_fwd.h"
 #include <functional>
-#include <map>
-#include <modifycommand.h>
-#include <selectcommand.h>
 #include <set>
 #include <string>
+#include <visibility.h>
 
 namespace DB {
 	class SqlWriter;

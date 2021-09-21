@@ -1,10 +1,13 @@
 #include "connection.h"
 #include "error.h"
 #include "modifycommand.h"
-#include "selectcommand.h"
+#include <array>
 #include <compileTimeFormatter.h>
+#include <ctime>
+#include <exception>
 #include <factory.impl.h>
 #include <sqlParse.h>
+#include <stdexcept>
 #include <system_error>
 
 DB::ConnectionError::ConnectionError() : FailureTime(time(nullptr)) { }

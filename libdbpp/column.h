@@ -1,11 +1,8 @@
 #ifndef DB_COLUMN_H
 #define DB_COLUMN_H
 
-#include "dbTypes.h"
 #include "error.h"
-#include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <c++11Helpers.h>
-#include <exception.h>
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #pragma GCC diagnostic ignored "-Wsign-conversion"
@@ -14,11 +11,21 @@
 #endif
 #include <glibmm/ustring.h>
 #pragma GCC diagnostic pop
+#include <boost/date_time/posix_time/ptime.hpp>
+#include <cstdint>
 #include <memory>
 #include <optional>
+#include <string>
+#include <string_view>
+#include <type_traits>
+#include <typeinfo>
 #include <visibility.h>
 
+namespace boost::posix_time {
+	class time_duration;
+}
 namespace DB {
+	class Blob;
 	/// Abstract class for something that can handle field data. See Column::apply.
 	class DLL_PUBLIC HandleField {
 	public:
@@ -44,7 +51,6 @@ namespace DB {
 		virtual void blob(const Blob &);
 	};
 
-	class Command;
 	/// Represents a column in a result set and provides access to the current rows data.
 	class DLL_PUBLIC Column {
 	public:

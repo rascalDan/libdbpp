@@ -1,4 +1,11 @@
 #include "mockdb.h"
+#include "command_fwd.h"
+#include "connection.h"
+#include "connection_fwd.h"
+#include "error.h"
+#include "factory.h"
+#include "mockDatabase.h"
+#include <memory>
 
 // LCOV_EXCL_START
 

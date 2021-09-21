@@ -2,8 +2,13 @@
 #define DB_CONNECTIONPOOL_H
 
 #include "connection.h"
+#include "connection_fwd.h" // for ConnectionPtr
+#include "resourcePool.impl.h" // for ResourcePool<>::InUse, ResourcePool
+#include <map> // for operator!=
 #include <memory>
-#include <resourcePool.h>
+//#include <resourcePool.h>
+#include <string>
+#include <tuple> // for get
 #include <visibility.h>
 
 namespace DB {

@@ -2,12 +2,15 @@
 #define DB_COMMAND_H
 
 #include "command_fwd.h"
-#include "dbTypes.h"
 #include "error.h"
-#include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <boost/date_time/posix_time/ptime.hpp>
 #include <boost/lexical_cast.hpp>
 #include <c++11Helpers.h>
+#include <cstddef>
 #include <factory.h>
+#include <optional>
+#include <string>
+#include <string_view>
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #pragma GCC diagnostic ignored "-Wsign-conversion"
@@ -16,11 +19,14 @@
 #endif
 #include <glibmm/ustring.h>
 #pragma GCC diagnostic pop
-#include <memory>
 #include <type_traits>
 #include <visibility.h>
 
+namespace boost::posix_time {
+	class time_duration;
+}
 namespace DB {
+	class Blob;
 	/// Exception thrown when binding a parameter of type the connector doesn't support.
 	class DLL_PUBLIC ParameterTypeNotSupported : public Error {
 	};
@@ -67,7 +73,7 @@ namespace DB {
 	public:
 		/// Creates a new command from the given SQL.
 		explicit Command(std::string sql);
-		virtual ~Command() = 0;
+		virtual ~Command() = default;
 
 		/// Standard special members
 		SPECIAL_MEMBERS_COPY_RO(Command);

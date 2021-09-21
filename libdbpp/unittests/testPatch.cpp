@@ -1,13 +1,21 @@
 #define BOOST_TEST_MODULE DbTablePatch
 #include <boost/test/unit_test.hpp>
 
+#include "command_fwd.h"
+#include "mockDatabase.h"
+#include "selectcommand.h"
 #include <buffer.h>
 #include <command.h>
 #include <connection.h>
+#include <cstdint>
+#include <cstdio>
 #include <definedDirs.h>
+#include <filesystem>
+#include <memory>
 #include <pq-mock.h>
 #include <selectcommandUtil.impl.h>
 #include <sqlWriter.h>
+#include <string>
 #include <tablepatch.h>
 
 class Mock : public DB::PluginMock<PQ::Mock> {

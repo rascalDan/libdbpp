@@ -1,6 +1,10 @@
+#include "connection.h"
 #include "sqlParse.h"
 #include <compileTimeFormatter.h>
+#include <filesystem>
 #include <stdexcept>
+#include <string>
+#include <utility>
 
 namespace DB {
 	SqlParseException::SqlParseException(const char * r, unsigned int l) : reason(r), line(l) { }

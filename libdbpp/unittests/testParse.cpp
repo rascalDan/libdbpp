@@ -1,12 +1,12 @@
 #define BOOST_TEST_MODULE DbConnection
 #include <boost/test/unit_test.hpp>
 
-#include <connection.h>
 #include <definedDirs.h>
-#include <error.h>
-#include <factory.h>
+#include <filesystem>
 #include <fstream>
+#include <initializer_list>
 #include <sqlParse.h>
+#include <string>
 #include <vector>
 
 using SQLs = std::vector<std::string>;

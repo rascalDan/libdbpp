@@ -1,9 +1,13 @@
 #define BOOST_TEST_MODULE DbConnectionPool
 #include <boost/test/unit_test.hpp>
 
+#include "connection.h"
+#include "mockDatabase.h"
 #include <buffer.h>
 #include <connectionPool.h>
+#include <memory>
 #include <pq-mock.h>
+#include <resourcePool.impl.h>
 
 class MockPool : public DB::PluginMock<PQ::Mock>, public DB::ConnectionPool {
 public:

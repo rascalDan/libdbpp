@@ -3,9 +3,23 @@
 
 #include "column.h"
 #include "command.h"
-#include "error.h"
+#include "dbTypes.h" // IWYU pragma: keep
+#include <array>
+#include <c++11Helpers.h>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#ifndef __clang__
+#	pragma GCC diagnostic ignored "-Wuseless-cast"
+#endif
+#include <glibmm/ustring.h>
+#pragma GCC diagnostic pop
+#include <cstddef>
 #include <exception.h>
 #include <functional>
+#include <memory>
+#include <string>
+#include <tuple>
 #include <visibility.h>
 
 #ifndef BOOST_TEST_MODULE
@@ -15,7 +29,7 @@
 #endif
 
 namespace DB {
-	class Column;
+	class Error;
 	class SelectCommand;
 
 	/// @cond

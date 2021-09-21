@@ -1,5 +1,5 @@
 #include "dbTypes.h"
-#include <memory.h>
+#include <cstring>
 
 DB::Blob::Blob(const void * d, size_t l) : data(d), len(l) { }
 

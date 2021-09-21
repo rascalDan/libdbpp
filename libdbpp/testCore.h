@@ -1,7 +1,13 @@
 #ifndef DB_TESTCORE_H
 #define DB_TESTCORE_H
 
-#include <command.h>
+#include "dbTypes.h"
+#include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <boost/date_time/posix_time/ptime.hpp>
+#include <cstdint>
+#include <iosfwd>
+#include <string_view>
+#include <vector>
 #include <visibility.h>
 
 namespace DB {

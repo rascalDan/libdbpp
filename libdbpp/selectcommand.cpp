@@ -1,11 +1,14 @@
 #include "selectcommand.h"
 #include "error.h"
 #include <boost/multi_index/indexed_by.hpp>
-#include <boost/multi_index/mem_fun.hpp>
-#include <boost/multi_index/member.hpp>
+#include <boost/multi_index/mem_fun.hpp> // IWYU pragma: keep
+#include <boost/multi_index/member.hpp> // IWYU pragma: keep
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index_container.hpp>
+#include <boost/operators.hpp>
 #include <compileTimeFormatter.h>
+#include <glibmm/ustring.h>
+#include <utility>
 
 namespace DB {
 	ColumnIndexOutOfRange::ColumnIndexOutOfRange(unsigned int n) : colNo(n) { }

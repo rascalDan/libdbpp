@@ -1,10 +1,12 @@
 #include "tablepatch.h"
 #include "connection.h"
 #include "modifycommand.h"
-#include "selectcommand.h"
+#include "selectcommand.h" // IWYU pragma: keep
 #include "sqlWriter.h"
-#include <boost/algorithm/string/join.hpp>
+#include <boost/format.hpp>
+#include <boost/format/format_fwd.hpp>
 #include <buffer.h>
+#include <memory>
 #include <safeMapFind.h>
 
 DB::PatchResult

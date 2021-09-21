@@ -3,6 +3,7 @@
 
 #include "command.h"
 #include "error.h"
+#include <string>
 #include <visibility.h>
 
 namespace DB {

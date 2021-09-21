@@ -1,14 +1,18 @@
 #ifndef DB_MOCKDATABASE_H
 #define DB_MOCKDATABASE_H
 
-#include "connection.h"
+#include "connection_fwd.h"
+#include <c++11Helpers.h>
+#include <factory.impl.h>
 #include <filesystem>
+#include <initializer_list>
+#include <memory>
 #include <string>
 #include <vector>
 #include <visibility.h>
 
 namespace DB {
-
+	class Connection;
 	/// MockDatabase creates, registers and destroys a database suitable for unit testing.
 	class DLL_PUBLIC MockDatabase : public AdHoc::AbstractPluginImplementation {
 	public:

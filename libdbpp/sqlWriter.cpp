@@ -1,4 +1,6 @@
 #include "sqlWriter.h"
+#include "buffer.h"
+#include <utility>
 
 void
 DB::SqlWriter::bindParams(DB::Command *, unsigned int &)

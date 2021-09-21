@@ -1,14 +1,14 @@
 #include "command.h"
 #include "connection.h"
 #include <factory.impl.h>
+#include <map>
+#include <utility>
 
 INSTANTIATEFACTORY(DB::CommandOptions, std::size_t, const DB::CommandOptionsMap &)
 NAMEDFACTORY("", DB::CommandOptions, DB::CommandOptionsFactory)
 PLUGINRESOLVER(DB::CommandOptionsFactory, DB::Connection::resolvePlugin)
 
 DB::Command::Command(std::string s) : sql(std::move(s)) { }
-
-DB::Command::~Command() = default;
 
 DB::CommandOptions::CommandOptions(std::size_t h, const CommandOptionsMap &) : hash(h) { }
 

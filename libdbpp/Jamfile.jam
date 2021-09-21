@@ -39,6 +39,7 @@ exe createmockdb :
 	createMockDb.cpp
 	: :
 	<library>dbppcore
+	<library>adhocutil
 	<library>stdc++fs
 	<library>boost_program_options
 	;

@@ -2,21 +2,22 @@
 #define DB_CONNECTION_H
 
 #include "command_fwd.h"
-#include "connection_fwd.h"
 #include "error.h"
 #include <c++11Helpers.h>
+#include <cstdint>
+#include <cstdio>
 #include <exception.h>
 #include <factory.h>
 #include <filesystem>
+#include <iosfwd>
 #include <memory>
 #include <optional>
 #include <set>
 #include <string>
+#include <string_view>
+#include <sys/types.h>
+#include <typeinfo>
 #include <visibility.h>
-
-namespace AdHoc {
-	class Buffer;
-}
 
 namespace DB {
 	class TablePatch;

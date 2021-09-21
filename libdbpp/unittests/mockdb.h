@@ -1,8 +1,13 @@
 #ifndef DB_MOCKDB_H
 #define DB_MOCKDB_H
 
+#include "../command_fwd.h"
 #include "../connection.h"
+#include "../connection_fwd.h"
 #include "../mockDatabase.h"
+#include <filesystem>
+#include <string>
+#include <vector>
 
 class MockDb : public DB::Connection {
 public:

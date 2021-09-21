@@ -1,10 +1,13 @@
 #ifndef DB_SQLWRITER_H
 #define DB_SQLWRITER_H
 
-#include <buffer.h>
 #include <c++11Helpers.h>
+#include <string>
 #include <visibility.h>
 
+namespace AdHoc {
+	class Buffer;
+}
 namespace DB {
 	class Command;
 

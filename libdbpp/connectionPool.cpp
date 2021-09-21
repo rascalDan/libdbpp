@@ -1,5 +1,7 @@
 #include "connectionPool.h"
+#include <factory.h>
 #include <resourcePool.impl.h>
+#include <utility>
 
 template class AdHoc::ResourcePool<DB::Connection>;
 template class AdHoc::ResourceHandle<DB::Connection>;

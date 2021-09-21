@@ -1,8 +1,12 @@
 #include "column.h"
 #include <compileTimeFormatter.h>
+#include <cstdlib>
 #include <cxxabi.h>
-#include <exception>
 #include <memory>
+
+namespace Glib {
+	class ustring;
+}
 
 namespace DB {
 	Column::Column(const Glib::ustring & n, unsigned int i) : colNo(i), name(n.collate_key()) { }

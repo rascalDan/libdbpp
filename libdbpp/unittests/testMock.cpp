@@ -1,11 +1,18 @@
 #define BOOST_TEST_MODULE DbMock
 #include <boost/test/unit_test.hpp>
 
-#include "../error.h"
-#include "../mockDatabase.h"
+#include "mockDatabase.h"
 #include "mockdb.h"
 #include <definedDirs.h>
+#include <factory.impl.h> // for Factory::createNew, Factory::get
+#include <filesystem> // for operator/, path
 #include <fstream>
+#include <memory> // for allocator, __shared_ptr_access
+#include <typeinfo> // for type_info
+
+namespace DB {
+	class Error;
+}
 
 BOOST_AUTO_TEST_CASE(noFactory)
 {

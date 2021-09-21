@@ -1,17 +1,52 @@
 #define BOOST_TEST_MODULE DbUtil
 #include <boost/test/unit_test.hpp>
 
-#include <IceUtil/Exception.h>
+#include "column.h"
+#include "command_fwd.h"
+#include "dbTypes.h"
+#include "mockDatabase.h"
+#include <IceUtil/Exception.h> // IWYU pragma: keep
 #include <IceUtil/Optional.h>
+#include <boost/date_time/posix_time/conversion.hpp>
 #include <boost/date_time/posix_time/posix_time_io.hpp>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <boost/date_time/posix_time/ptime.hpp>
+#include <boost/static_assert.hpp>
 #include <connection.h>
+#include <cstdint>
+#include <cstdio>
 #include <definedDirs.h>
-#include <fstream>
+#include <deque>
+#include <filesystem>
+#include <fstream> // IWYU pragma: keep
+#include <glibmm/ustring.h>
+#include <iterator>
+#include <memory>
 #include <modifycommand.h>
+#include <optional>
 #include <pq-mock.h>
 #include <selectcommand.h>
 #include <selectcommandUtil.impl.h>
+#include <sstream>
+#include <string>
+#include <string_view>
+#include <sys/types.h>
 #include <testCore.h>
+#include <tuple>
+#include <type_traits>
+#include <utility>
+#include <vector>
+// IWYU pragma: no_include <boost/date_time/gregorian_calendar.ipp>
+
+namespace DB {
+	class InvalidConversion;
+}
+namespace DB {
+	class UnexpectedNullValue;
+}
+namespace boost::posix_time {
+	class time_duration;
+}
 
 class StandardMockDatabase : public DB::PluginMock<PQ::Mock> {
 public:

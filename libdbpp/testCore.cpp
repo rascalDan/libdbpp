@@ -1,12 +1,18 @@
 #include "testCore.h"
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/test/test_tools.hpp>
+#include "column.h"
+#include <boost/date_time/posix_time/conversion.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp> // IWYU pragma: keep
+#include <boost/test/unit_test.hpp>
 #include <compileTimeFormatter.h>
 #include <fileUtils.h>
 #include <selectcommand.h>
+#include <type_traits>
+#include <typeinfo>
 
+namespace boost::posix_time {
+	class time_duration;
+}
 namespace DB {
-
 	TestCore::TestCore() :
 		testString("Some C String"), testDateTime(boost::posix_time::from_time_t(1430530593)),
 		testInterval(boost::posix_time::time_duration(1, 2, 3)), testBlobData([]() {
