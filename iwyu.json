@@ -19,7 +19,7 @@
 		"symbol": [
 			"boost::posix_time::time_duration",
 			"private",
-			"<boost/date_time/posix_time/posix_time_types.hpp>",
+			"<boost/date_time/posix_time/posix_time.hpp>",
 			"public"
 		]
 	},
@@ -28,6 +28,22 @@
 			"<bits/types/stack_t.h>",
 			"private",
 			"<ucontext.h>",
+			"public"
+		]
+	},
+	{
+		"include": [
+			"@.field_types.h.",
+			"private",
+			"<mysql.h>",
+			"public"
+		]
+	},
+	{
+		"include": [
+			"@.mysql_time.h.",
+			"private",
+			"<mysql.h>",
 			"public"
 		]
 	},
@@ -116,6 +132,38 @@
 			"@<boost/iostreams/detail/.*>",
 			"private",
 			"<boost/iostreams/stream.hpp>",
+			"public"
+		]
+	},
+	{
+		"include": [
+			"@<boost/date_time/gregorian/.*>",
+			"private",
+			"<boost/date_time/gregorian_calendar.hpp>",
+			"public"
+		]
+	},
+	{
+		"include": [
+			"@<boost/date_time/time_.*>",
+			"private",
+			"<boost/date_time/time.hpp>",
+			"public"
+		]
+	},
+	{
+		"include": [
+			"@<boost/date_time/posix_time/posix_time_.*>",
+			"private",
+			"<boost/date_time/posix_time/posix_time.hpp>",
+			"public"
+		]
+	},
+	{
+		"include": [
+			"@<boost/date_time/posix_time/(ptime|conversion|time_(formatt|pars)ers).hpp>",
+			"private",
+			"<boost/date_time/posix_time/posix_time.hpp>",
 			"public"
 		]
 	},

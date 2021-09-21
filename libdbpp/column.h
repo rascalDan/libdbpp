@@ -11,7 +11,7 @@
 #endif
 #include <glibmm/ustring.h>
 #pragma GCC diagnostic pop
-#include <boost/date_time/posix_time/ptime.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <cstdint>
 #include <memory>
 #include <optional>
@@ -21,9 +21,6 @@
 #include <typeinfo>
 #include <visibility.h>
 
-namespace boost::posix_time {
-	class time_duration;
-}
 namespace DB {
 	class Blob;
 	/// Abstract class for something that can handle field data. See Column::apply.

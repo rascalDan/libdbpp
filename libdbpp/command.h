@@ -3,7 +3,7 @@
 
 #include "command_fwd.h"
 #include "error.h"
-#include <boost/date_time/posix_time/ptime.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/lexical_cast.hpp>
 #include <c++11Helpers.h>
 #include <cstddef>
@@ -22,9 +22,6 @@
 #include <type_traits>
 #include <visibility.h>
 
-namespace boost::posix_time {
-	class time_duration;
-}
 namespace DB {
 	class Blob;
 	/// Exception thrown when binding a parameter of type the connector doesn't support.

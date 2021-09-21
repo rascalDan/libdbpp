@@ -2,8 +2,7 @@
 #define DB_TESTCORE_H
 
 #include "dbTypes.h"
-#include <boost/date_time/posix_time/posix_time_types.hpp>
-#include <boost/date_time/posix_time/ptime.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <cstdint>
 #include <iosfwd>
 #include <string_view>

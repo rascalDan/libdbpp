@@ -7,10 +7,8 @@
 #include "mockDatabase.h"
 #include <IceUtil/Exception.h> // IWYU pragma: keep
 #include <IceUtil/Optional.h>
-#include <boost/date_time/posix_time/conversion.hpp>
-#include <boost/date_time/posix_time/posix_time_io.hpp>
-#include <boost/date_time/posix_time/posix_time_types.hpp>
-#include <boost/date_time/posix_time/ptime.hpp>
+#include <boost/date_time/gregorian_calendar.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/static_assert.hpp>
 #include <connection.h>
 #include <cstdint>
@@ -40,12 +38,7 @@
 
 namespace DB {
 	class InvalidConversion;
-}
-namespace DB {
 	class UnexpectedNullValue;
-}
-namespace boost::posix_time {
-	class time_duration;
 }
 
 class StandardMockDatabase : public DB::PluginMock<PQ::Mock> {
