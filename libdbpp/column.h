@@ -11,6 +11,7 @@
 #endif
 #include <glibmm/ustring.h>
 #pragma GCC diagnostic pop
+#include "dbTypes.h"
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <cstdint>
 #include <memory>
@@ -20,9 +21,9 @@
 #include <type_traits>
 #include <typeinfo>
 #include <visibility.h>
+// IWYU pragma: no_forward_declare DB::Blob
 
 namespace DB {
-	class Blob;
 	/// Abstract class for something that can handle field data. See Column::apply.
 	class DLL_PUBLIC HandleField {
 	public:
