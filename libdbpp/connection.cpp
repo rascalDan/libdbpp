@@ -154,8 +154,8 @@ DB::Connection::bulkUploadData(FILE * in) const
 		bulkUploadData(buf.data(), r);
 		total += r;
 	}
-	if (-r > 0) {
-		throw std::system_error(static_cast<int>(-r), std::system_category());
+	if (const auto err = ferror(in)) {
+		throw std::system_error(err, std::system_category());
 	}
 	return total;
 }
