@@ -3,13 +3,14 @@
 
 #include "connection_fwd.h"
 #include <c++11Helpers.h>
-#include <factory.impl.h>
+#include <factory.h> // IWYU pragma: keep
 #include <filesystem>
 #include <initializer_list>
 #include <memory>
 #include <string>
 #include <vector>
 #include <visibility.h>
+// IWYU pragma: no_include "factory.impl.h"
 
 namespace DB {
 	class Connection;

@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <exception.h>
-#include <factory.h>
+#include <factory.h> // IWYU pragma: keep
 #include <filesystem>
 #include <iosfwd>
 #include <memory>
@@ -18,6 +18,7 @@
 #include <sys/types.h>
 #include <typeinfo>
 #include <visibility.h>
+// IWYU pragma: no_include "factory.impl.h"
 
 namespace DB {
 	class TablePatch;

@@ -18,7 +18,6 @@
 #include <filesystem>
 #include <fstream> // IWYU pragma: keep
 #include <glibmm/ustring.h>
-#include <iterator>
 #include <memory>
 #include <modifycommand.h>
 #include <optional>

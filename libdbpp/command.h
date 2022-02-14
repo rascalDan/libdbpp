@@ -7,7 +7,7 @@
 #include <boost/lexical_cast.hpp>
 #include <c++11Helpers.h>
 #include <cstddef>
-#include <factory.h>
+#include <factory.h> // IWYU pragma: keep
 #include <optional>
 #include <string>
 #include <string_view>
@@ -21,6 +21,7 @@
 #pragma GCC diagnostic pop
 #include <type_traits>
 #include <visibility.h>
+// IWYU pragma: no_include "factory.impl.h"
 
 namespace DB {
 	class Blob;
