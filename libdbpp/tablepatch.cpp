@@ -132,7 +132,7 @@ DB::Connection::patchDeletes(TablePatch * tp)
 	}
 	AdHoc::Buffer toDelSql;
 	switch (bulkDeleteStyle()) {
-		case BulkDeleteUsingSubSelect: {
+		case BulkDeleteStyle::UsingSubSelect: {
 			// -----------------------------------------------------------------
 			// Build SQL to delete keys ----------------------------------------
 			// -----------------------------------------------------------------
@@ -163,14 +163,14 @@ DB::Connection::patchDeletes(TablePatch * tp)
 			toDelSql.append(")");
 			break;
 		}
-		case BulkDeleteUsingUsingAlias:
-		case BulkDeleteUsingUsing: {
+		case BulkDeleteStyle::UsingUsingAlias:
+		case BulkDeleteStyle::UsingUsing: {
 			if (tp->insteadOfDelete) {
 				toDelSql.appendbf("UPDATE %s a ", tp->dest);
 			}
 			else {
 				toDelSql.appendbf("DELETE FROM %s USING %s a ",
-						(bulkDeleteStyle() == BulkDeleteUsingUsingAlias ? "a" : tp->dest), tp->dest);
+						(bulkDeleteStyle() == BulkDeleteStyle::UsingUsingAlias ? "a" : tp->dest), tp->dest);
 			}
 			toDelSql.append(" LEFT OUTER JOIN ");
 			tp->srcExpr->writeSql(toDelSql);
@@ -247,7 +247,7 @@ DB::Connection::patchUpdates(TablePatch * tp)
 		tp->beforeUpdate(upd);
 	}
 	switch (bulkUpdateStyle()) {
-		case BulkUpdateUsingFromSrc: {
+		case BulkUpdateStyle::UsingFromSrc: {
 			// -----------------------------------------------------------------
 			// Build SQL for list of updates to perform ------------------------
 			// -----------------------------------------------------------------
@@ -269,7 +269,7 @@ DB::Connection::patchUpdates(TablePatch * tp)
 			}
 			return upd->execute(true);
 		} break;
-		case BulkUpdateUsingJoin: {
+		case BulkUpdateStyle::UsingJoin: {
 			// -----------------------------------------------------------------
 			// Build SQL for list of updates to perform ------------------------
 			// -----------------------------------------------------------------

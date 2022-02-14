@@ -32,13 +32,13 @@ MockDb::ping() const
 DB::BulkDeleteStyle
 MockDb::bulkDeleteStyle() const
 {
-	return DB::BulkDeleteUsingUsing;
+	return DB::BulkDeleteStyle::UsingUsing;
 }
 
 DB::BulkUpdateStyle
 MockDb::bulkUpdateStyle() const
 {
-	return DB::BulkUpdateUsingJoin;
+	return DB::BulkUpdateStyle::UsingJoin;
 }
 
 void

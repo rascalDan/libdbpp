@@ -23,15 +23,15 @@
 namespace DB {
 	class TablePatch;
 
-	enum BulkDeleteStyle {
-		BulkDeleteUsingSubSelect,
-		BulkDeleteUsingUsing,
-		BulkDeleteUsingUsingAlias,
+	enum class BulkDeleteStyle {
+		UsingSubSelect,
+		UsingUsing,
+		UsingUsingAlias,
 	};
 
-	enum BulkUpdateStyle {
-		BulkUpdateUsingFromSrc = 1,
-		BulkUpdateUsingJoin = 2,
+	enum class BulkUpdateStyle {
+		UsingFromSrc = 1,
+		UsingJoin = 2,
 	};
 
 	using TableName = std::string;
