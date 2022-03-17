@@ -8,6 +8,7 @@
 #include <buffer.h>
 #include <memory>
 #include <safeMapFind.h>
+#include <utility>
 
 DB::PatchResult
 DB::Connection::patchTable(TablePatch * tp)
@@ -41,17 +42,17 @@ push(const boost::format &, typename Container::const_iterator &)
 
 template<typename Container, typename Value, typename... Values>
 static inline void
-push(boost::format & f, typename Container::const_iterator & i, const Value & v, const Values &... vs)
+push(boost::format & f, typename Container::const_iterator & i, const Value & v, Values &&... vs)
 {
 	f % v(i);
-	push<Container>(f, i, vs...);
+	push<Container>(f, i, std::forward<Values>(vs)...);
 }
 
 template<typename Separator, typename Container, typename... Ps>
 static inline unsigned int
 appendIf(AdHoc::Buffer & buf, const Container & c,
 		const std::function<bool(const typename Container::const_iterator)> & sel, const Separator & sep,
-		const std::string & fmts, const Ps &... ps)
+		const std::string & fmts, Ps &&... ps)
 {
 	auto fmt = AdHoc::Buffer::getFormat(fmts);
 	unsigned int x = 0;
@@ -60,7 +61,7 @@ appendIf(AdHoc::Buffer & buf, const Container & c,
 			if (x > 0) {
 				buf.appendbf("%s", sep);
 			}
-			push<Container>(fmt, i, ps...);
+			push<Container>(fmt, i, std::forward<Ps>(ps)...);
 			buf.append(fmt.str());
 			x += 1;
 		}
@@ -70,14 +71,14 @@ appendIf(AdHoc::Buffer & buf, const Container & c,
 
 template<typename Separator, typename Container, typename... Ps>
 static inline unsigned int
-append(AdHoc::Buffer & buf, const Container & c, const Separator & sep, const std::string & fmts, const Ps &... ps)
+append(AdHoc::Buffer & buf, const Container & c, const Separator & sep, const std::string & fmts, Ps &&... ps)
 {
 	return appendIf(
 			buf, c,
 			[](auto) {
 				return true;
 			},
-			sep, fmts, ps...);
+			sep, fmts, std::forward<Ps>(ps)...);
 }
 
 template<typename Container>

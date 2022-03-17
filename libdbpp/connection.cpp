@@ -162,7 +162,7 @@ DB::Connection::bulkUploadData(FILE * in) const
 
 AdHocFormatter(PluginLibraryFormat, "libdbpp-%?.so");
 std::optional<std::string>
-DB::Connection::resolvePlugin(const std::type_info &, const std::string_view & name)
+DB::Connection::resolvePlugin(const std::type_info &, const std::string_view name)
 {
 	return PluginLibraryFormat::get(name);
 }

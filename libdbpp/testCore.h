@@ -27,8 +27,8 @@ namespace DB {
 		std::vector<unsigned char> testBlobData;
 		DB::Blob testBlob;
 
-		template<typename T> void assertScalarValueHelper(SelectCommand & sel, const T & t) const;
-		template<typename T> void assertColumnValueHelper(SelectCommand & sel, unsigned int col, const T & t) const;
+		template<typename T> void assertScalarValueHelper(SelectCommand & sel, const T t) const;
+		template<typename T> void assertColumnValueHelper(SelectCommand & sel, unsigned int col, const T t) const;
 	};
 	/// @endcond
 

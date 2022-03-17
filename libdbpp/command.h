@@ -100,7 +100,7 @@ namespace DB {
 		/// Bind a string to parameter i.
 		virtual void bindParamS(unsigned int i, const Glib::ustring &) = 0;
 		/// Bind a string_view to parameter i.
-		virtual void bindParamS(unsigned int i, const std::string_view &) = 0;
+		virtual void bindParamS(unsigned int i, const std::string_view) = 0;
 		/// Bind a string to parameter i (wraps string_view).
 		inline void
 		bindParamS(unsigned int i, const std::string & v)
@@ -109,9 +109,9 @@ namespace DB {
 		}
 
 		/// Bind a duration to parameter i.
-		virtual void bindParamT(unsigned int i, const boost::posix_time::time_duration &) = 0;
+		virtual void bindParamT(unsigned int i, const boost::posix_time::time_duration) = 0;
 		/// Bind a date time to parameter i.
-		virtual void bindParamT(unsigned int i, const boost::posix_time::ptime &) = 0;
+		virtual void bindParamT(unsigned int i, const boost::posix_time::ptime) = 0;
 
 		/// Bind a BLOB to parameter i.
 		virtual void bindParamBLOB(unsigned int i, const Blob &);

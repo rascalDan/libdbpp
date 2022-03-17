@@ -42,9 +42,9 @@ namespace DB {
 		/// The field is floating point/fixed point/numeric.
 		virtual void floatingpoint(double) = 0;
 		/// The field is an interval/duration/time span.
-		virtual void interval(const boost::posix_time::time_duration &) = 0;
+		virtual void interval(const boost::posix_time::time_duration) = 0;
 		/// The field is a timestamp/date/datetime.
-		virtual void timestamp(const boost::posix_time::ptime &) = 0;
+		virtual void timestamp(const boost::posix_time::ptime) = 0;
 		/// The field is a BLOB.
 		virtual void blob(const Blob &);
 	};
@@ -100,12 +100,12 @@ namespace DB {
 				(*this)(v);
 			}
 			void
-			timestamp(const boost::posix_time::ptime & v) override
+			timestamp(const boost::posix_time::ptime v) override
 			{
 				(*this)(v);
 			}
 			void
-			interval(const boost::posix_time::time_duration & v) override
+			interval(const boost::posix_time::time_duration v) override
 			{
 				(*this)(v);
 			}

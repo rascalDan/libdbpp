@@ -44,12 +44,12 @@ namespace DB {
 			(*this)(v);
 		}
 		void
-		timestamp(const boost::posix_time::ptime & v) override
+		timestamp(const boost::posix_time::ptime v) override
 		{
 			(*this)(v);
 		}
 		void
-		interval(const boost::posix_time::time_duration & v) override
+		interval(const boost::posix_time::time_duration v) override
 		{
 			(*this)(v);
 		}
@@ -82,8 +82,9 @@ namespace DB {
 
 	template<typename T>
 	void
-	TestCore::assertScalarValueHelper(DB::SelectCommand & sel, const T & t) const
+	TestCore::assertScalarValueHelper(DB::SelectCommand & sel, const T t) const
 	{
+		static_assert(std::is_trivially_copyable_v<T>);
 		while (sel.fetch()) {
 			assertColumnValueHelper(sel, 0, t);
 		}
@@ -91,8 +92,9 @@ namespace DB {
 
 	template<typename T>
 	void
-	TestCore::assertColumnValueHelper(DB::SelectCommand & sel, unsigned int col, const T & t) const
+	TestCore::assertColumnValueHelper(DB::SelectCommand & sel, unsigned int col, const T t) const
 	{
+		static_assert(std::is_trivially_copyable_v<T>);
 		Assert<T> a(t);
 		sel[col].apply(a);
 	}
@@ -105,27 +107,26 @@ namespace DB {
 		return s;
 	}
 
-	template void TestCore::assertScalarValueHelper<bool>(SelectCommand &, const bool &) const;
-	template void TestCore::assertScalarValueHelper<int64_t>(SelectCommand &, const int64_t &) const;
-	template void TestCore::assertScalarValueHelper<int>(SelectCommand &, const int &) const;
-	template void TestCore::assertScalarValueHelper<double>(SelectCommand &, const double &) const;
-	template void TestCore::assertScalarValueHelper<std::string_view>(SelectCommand &, const std::string_view &) const;
+	template void TestCore::assertScalarValueHelper<bool>(SelectCommand &, const bool) const;
+	template void TestCore::assertScalarValueHelper<int64_t>(SelectCommand &, const int64_t) const;
+	template void TestCore::assertScalarValueHelper<int>(SelectCommand &, const int) const;
+	template void TestCore::assertScalarValueHelper<double>(SelectCommand &, const double) const;
+	template void TestCore::assertScalarValueHelper<std::string_view>(SelectCommand &, const std::string_view) const;
 	template void TestCore::assertScalarValueHelper<boost::posix_time::ptime>(
-			SelectCommand &, const boost::posix_time::ptime &) const;
+			SelectCommand &, const boost::posix_time::ptime) const;
 	template void TestCore::assertScalarValueHelper<boost::posix_time::time_duration>(
-			SelectCommand &, const boost::posix_time::time_duration &) const;
-	template void TestCore::assertScalarValueHelper<DB::Blob>(SelectCommand &, const DB::Blob &) const;
+			SelectCommand &, const boost::posix_time::time_duration) const;
+	template void TestCore::assertScalarValueHelper<DB::Blob>(SelectCommand &, const DB::Blob) const;
 
-	template void TestCore::assertColumnValueHelper<bool>(SelectCommand &, unsigned int, const bool &) const;
-	template void TestCore::assertColumnValueHelper<int>(SelectCommand &, unsigned int, const int &) const;
-	template void TestCore::assertColumnValueHelper<int64_t>(SelectCommand &, unsigned int, const int64_t &) const;
-	template void TestCore::assertColumnValueHelper<double>(SelectCommand &, unsigned int, const double &) const;
+	template void TestCore::assertColumnValueHelper<bool>(SelectCommand &, unsigned int, const bool) const;
+	template void TestCore::assertColumnValueHelper<int>(SelectCommand &, unsigned int, const int) const;
+	template void TestCore::assertColumnValueHelper<int64_t>(SelectCommand &, unsigned int, const int64_t) const;
+	template void TestCore::assertColumnValueHelper<double>(SelectCommand &, unsigned int, const double) const;
 	template void TestCore::assertColumnValueHelper<std::string_view>(
-			SelectCommand &, unsigned int, const std::string_view &) const;
+			SelectCommand &, unsigned int, const std::string_view) const;
 	template void TestCore::assertColumnValueHelper<boost::posix_time::ptime>(
-			SelectCommand &, unsigned int, const boost::posix_time::ptime &) const;
+			SelectCommand &, unsigned int, const boost::posix_time::ptime) const;
 	template void TestCore::assertColumnValueHelper<boost::posix_time::time_duration>(
-			SelectCommand &, unsigned int, const boost::posix_time::time_duration &) const;
-	template void TestCore::assertColumnValueHelper<DB::Blob>(SelectCommand &, unsigned int, const DB::Blob &) const;
-
+			SelectCommand &, unsigned int, const boost::posix_time::time_duration) const;
+	template void TestCore::assertColumnValueHelper<DB::Blob>(SelectCommand &, unsigned int, const DB::Blob) const;
 }

@@ -145,7 +145,7 @@ namespace DB {
 		PatchResult patchTable(TablePatch * tp);
 
 		/// AdHoc plugin resolver helper for database connectors.
-		static std::optional<std::string> resolvePlugin(const std::type_info &, const std::string_view &);
+		static std::optional<std::string> resolvePlugin(const std::type_info &, const std::string_view);
 
 	protected:
 		/// Create a new connection.

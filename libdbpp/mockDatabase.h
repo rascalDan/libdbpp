@@ -8,6 +8,7 @@
 #include <initializer_list>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 #include <visibility.h>
 // IWYU pragma: no_include "factory.impl.h"
@@ -68,11 +69,11 @@ namespace DB {
 		/// @param s the collection of scripts to populate the mock database.
 		/// @param args arguments to the mock database constructor.
 		template<typename... Args>
-		PluginMock(const std::string & name, const std::initializer_list<std::filesystem::path> & s,
-				const Args &... args) :
+		PluginMock(const std::string & name, const std::initializer_list<std::filesystem::path> & s, Args &&... args) :
 			mockName(name)
 		{
-			AdHoc::PluginManager::getDefault()->create<MockDatabase, T>(mockName, __FILE__, __LINE__, args..., name, s);
+			AdHoc::PluginManager::getDefault()->create<MockDatabase, T>(
+					mockName, __FILE__, __LINE__, std::forward<Args>(args)..., name, s);
 		}
 		~PluginMock()
 		{

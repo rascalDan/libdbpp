@@ -8,11 +8,11 @@
 namespace DB {
 	template<typename Fields, typename Func, unsigned int field, typename... Fn, typename... Args>
 	inline void
-	forEachField(DB::SelectCommand * sel, const Func & func, const Args &... args)
+	forEachField(DB::SelectCommand * sel, const Func & func, Args &&... args)
 	{
 		if constexpr (field >= std::tuple_size<Fields>::value) {
 			(void)sel;
-			func(args...);
+			func(std::forward<Args>(args)...);
 		}
 		else {
 			typename std::tuple_element<field, Fields>::type a;
