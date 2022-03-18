@@ -6,19 +6,13 @@
 
 /// @cond
 namespace DB {
-	template<typename Fields, typename Func, unsigned int field, typename... Fn, typename... Args>
+	template<typename... Fn, std::size_t... I>
 	inline void
-	forEachField(DB::SelectCommand * sel, const Func & func, Args &&... args)
+	forEachField(DB::SelectCommand * sel [[maybe_unused]], auto && func, std::index_sequence<I...>)
 	{
-		if constexpr (field >= std::tuple_size<Fields>::value) {
-			(void)sel;
-			func(std::forward<Args>(args)...);
-		}
-		else {
-			typename std::tuple_element<field, Fields>::type a;
-			(*sel)[field] >> a;
-			forEachField<Fields, Func, field + 1, Fn...>(sel, func, args..., a);
-		}
+		std::tuple<Fn...> values;
+		(((*sel)[I] >> std::get<I>(values)), ...);
+		std::apply(func, values);
 	}
 
 	template<typename... Fn, typename Func>
@@ -26,7 +20,7 @@ namespace DB {
 	SelectCommand::forEachRow(const Func & func)
 	{
 		while (fetch()) {
-			forEachField<std::tuple<Fn...>, Func, 0>(this, func);
+			forEachField<Fn...>(this, func, std::make_index_sequence<sizeof...(Fn)> {});
 		}
 	}
 
