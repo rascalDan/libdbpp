@@ -17,6 +17,7 @@
 #include <sqlWriter.h>
 #include <string>
 #include <tablepatch.h>
+#include <tuple>
 
 class Mock : public DB::PluginMock<PQ::Mock> {
 public:
