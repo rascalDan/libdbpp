@@ -73,6 +73,7 @@ main(int argc, char ** argv)
 	std::cout << " done." << std::endl;
 	std::set_terminate(nullptr);
 
+	// cppcheck-suppress knownConditionTrueFalse
 	if (!drop) {
 		std::cout << "Done. ctrl+c to tear down and exit." << std::endl;
 		signal(SIGINT, &emptyHandler);

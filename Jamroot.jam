@@ -31,6 +31,7 @@ project
 			<toolset>gcc,<variant>debug:<cflags>-Wlogical-op
 			<toolset>gcc,<variant>debug:<cflags>-Wuseless-cast
 			<variant>coverage:<coverage>on
+			<toolset>tidy:<enable>all
 			<toolset>tidy:<checkxx>boost-*
 			<toolset>tidy:<checkxx>bugprone-*
 			<toolset>tidy:<xcheckxx>bugprone-easily-swappable-parameters
